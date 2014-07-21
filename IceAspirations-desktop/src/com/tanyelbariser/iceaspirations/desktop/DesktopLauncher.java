@@ -7,6 +7,9 @@ import com.tanyelbariser.iceaspirations.IceAspirations;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		//Changed width & height to exactly half the pixels of my phone to fit onto my laptop screen
+		config.width = 384;
+		config.height = 640;
 		new LwjglApplication(new IceAspirations(), config);
 	}
 }

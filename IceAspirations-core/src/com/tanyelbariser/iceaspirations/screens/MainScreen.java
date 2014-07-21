@@ -9,11 +9,25 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MainScreen implements Screen {
 	SpriteBatch batch;
-	Texture texture;
 	Sprite sprite;
+	final String TAG = "IN MAINSCREEN"; 
 
 	@Override
+	public void show() {
+		Gdx.app.log(TAG, "show()");
+		batch = new SpriteBatch();
+		sprite = new Sprite(new Texture("Cartoon Sky.jpg"));
+		sprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());		
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		Gdx.app.log(TAG, "resize(int width, int height)");	
+	}
+	
+	@Override
 	public void render(float delta) {
+		Gdx.app.log(TAG, "render(float delta)");
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
@@ -22,41 +36,25 @@ public class MainScreen implements Screen {
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void show() {
-		batch = new SpriteBatch();
-		texture = new Texture("Cartoon Sky.jpg");
-		sprite = new Sprite(texture);
-		sprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());		
+	public void pause() {
+		Gdx.app.log(TAG, "pause()");
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-		
+		Gdx.app.log(TAG, "hide()");
+		dispose();	
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
+		Gdx.app.log(TAG, "dipose()");
+		batch.dispose();
+		sprite.getTexture().dispose();
 	}
-
+	
+	@Override
+	public void resume() {
+		Gdx.app.log(TAG, "resume()");
+	}
 }
