@@ -15,7 +15,7 @@ import com.tanyelbariser.iceaspirations.IceAspirations;
 public class MainScreen implements Screen {
 	IceAspirations iceA;
 	SpriteBatch batch;
-	Sprite sprite;
+	Sprite background, title;
 	BitmapFont blue;
 	Stage stage;
 	ImageTextButtonStyle style;
@@ -29,9 +29,13 @@ public class MainScreen implements Screen {
 	public void show() {
 		stage = new Stage();
 		batch = new SpriteBatch();
-		sprite = new Sprite(new Texture("Main Screen.png"));
-		sprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		background = new Sprite(new Texture("Background.png"));
+		title = new Sprite(new Texture("Title.png"));
+		float titleX = Gdx.graphics.getWidth() / 2 - title.getWidth() /  2;
+		float titleY = Math.round(Gdx.graphics.getHeight() / 1.3);
+		title.setPosition(titleX, titleY);
 		blue = new BitmapFont(Gdx.files.internal("blue.fnt"), false);
+		blue.setScale(Gdx.graphics.getWidth() / 200);
 		style = new ImageTextButtonStyle();
 		style.font = blue;
 
@@ -49,10 +53,11 @@ public class MainScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		sprite.draw(batch);
+		background.draw(batch);
+		title.draw(batch);
 		batch.end();
 
 		stage.act(delta);
@@ -71,11 +76,10 @@ public class MainScreen implements Screen {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		sprite.getTexture().dispose();
+		background.getTexture().dispose();
+		title.getTexture().dispose();
 		blue.dispose();
 		stage.dispose();
-		
-		
 	}
 
 	@Override
