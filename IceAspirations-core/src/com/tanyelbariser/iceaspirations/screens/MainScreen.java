@@ -45,6 +45,7 @@ public class MainScreen implements Screen {
 		float titleX = Gdx.graphics.getWidth() / 2 - title.getWidth() / 2;
 		float titleY = Math.round(Gdx.graphics.getHeight() / 1.4);
 		title.setPosition(titleX, titleY);
+		title.setScale((float) ((float) Gdx.graphics.getWidth() / 768));
 		blue = new BitmapFont(Gdx.files.internal("blue.fnt"), false);
 		blue.setScale(Gdx.graphics.getWidth() / 300);
 		style = new ImageTextButtonStyle();
@@ -57,8 +58,8 @@ public class MainScreen implements Screen {
 		imageStyle.up = skin.getDrawable("unmute");
 		imageStyle.down = skin.getDrawable("mute");
 		sound = new ImageButton(imageStyle);
-		//Change the size of the images later so don't have to set size
-		sound.setSize(128,128);
+		float soundSize = Gdx.graphics.getWidth() / 6;
+		sound.setSize(soundSize,soundSize);
 		sound.setPosition(0, 0);
 		stage.addActor(sound);
 		
