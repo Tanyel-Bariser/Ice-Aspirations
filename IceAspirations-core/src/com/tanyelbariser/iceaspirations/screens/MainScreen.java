@@ -22,7 +22,7 @@ public class MainScreen implements Screen {
 	IceAspirations iceA;
 	SpriteBatch batch;
 	Sprite background, title;
-	BitmapFont blue;
+	static BitmapFont blue;
 	Stage stage;
 	ImageTextButtonStyle style;
 	ImageTextButton play, highscores, quit;
@@ -77,7 +77,7 @@ public class MainScreen implements Screen {
 		});
 		stage.addActor(play);
 
-		// Create play button in main screen to transition to high scores screen
+		// Create high scores button in main screen to transition to high scores screen
 		highscores = new ImageTextButton("High Scores", style);
 		float highscoresX = width / 2 - highscores.getWidth()
 				/ 2;
@@ -106,6 +106,7 @@ public class MainScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		stage.getViewport().update(width, height);
 	}
 
 	@Override
@@ -135,8 +136,8 @@ public class MainScreen implements Screen {
 		batch.dispose();
 		background.getTexture().dispose();
 		title.getTexture().dispose();
-		blue.dispose();
 		stage.dispose();
+		atlas.dispose();
 	}
 
 	@Override
