@@ -7,10 +7,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 
@@ -22,6 +26,10 @@ public class MainScreen implements Screen {
 	Stage stage;
 	ImageTextButtonStyle style;
 	ImageTextButton play, highscores, quit;
+	ImageButtonStyle imageStyle;
+	ImageButton sound;
+	TextureAtlas atlas;
+	Skin skin;
 
 	public MainScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -41,7 +49,19 @@ public class MainScreen implements Screen {
 		blue.setScale(Gdx.graphics.getWidth() / 300);
 		style = new ImageTextButtonStyle();
 		style.font = blue;
-
+		
+		atlas = new TextureAtlas("Buttons.atlas");
+		skin = new Skin(atlas);
+		
+		imageStyle = new ImageButtonStyle();
+		imageStyle.up = skin.getDrawable("unmute");
+		imageStyle.down = skin.getDrawable("mute");
+		sound = new ImageButton(imageStyle);
+		//Change the size of the images later so don't have to set size
+		sound.setSize(128,128);
+		sound.setPosition(0, 0);
+		stage.addActor(sound);
+		
 		// Create play button in main screen to transition to game screen
 		play = new ImageTextButton("Play", style);
 		float playX = Gdx.graphics.getWidth() / 2 - play.getWidth() / 2;
