@@ -59,10 +59,22 @@ public class MainScreen implements Screen {
 		imageStyle = new ImageButtonStyle();
 		imageStyle.up = skin.getDrawable("unmute");
 		imageStyle.down = skin.getDrawable("mute");
+		imageStyle.checked = imageStyle.down;
 		sound = new ImageButton(imageStyle);
 		float soundSize = width / 6;
 		sound.setSize(soundSize,soundSize);
 		sound.setPosition(0, 0);
+		sound.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				boolean checked = sound.isChecked();
+				if (checked) {
+					sound.setChecked(true);
+				} else {
+					sound.setChecked(false);
+				}
+			}
+		});
 		stage.addActor(sound);
 		
 		// Create play button in main screen to transition to game screen
@@ -106,7 +118,7 @@ public class MainScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		stage.getViewport().update(width, height);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override
