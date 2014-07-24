@@ -30,6 +30,8 @@ public class MainScreen implements Screen {
 	ImageButton sound;
 	TextureAtlas atlas;
 	Skin skin;
+	float width = Gdx.graphics.getWidth();
+	float height = Gdx.graphics.getHeight();
 
 	public MainScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -42,12 +44,12 @@ public class MainScreen implements Screen {
 		batch = new SpriteBatch();
 		background = new Sprite(new Texture("Background.png"));
 		title = new Sprite(new Texture("Title.png"));
-		float titleX = Gdx.graphics.getWidth() / 2 - title.getWidth() / 2;
-		float titleY = Math.round(Gdx.graphics.getHeight() / 1.4);
+		float titleX = width / 2 - title.getWidth() / 2;
+		float titleY = Math.round(height / 1.4);
 		title.setPosition(titleX, titleY);
-		title.setScale((float) ((float) Gdx.graphics.getWidth() / 768));
+		title.setScale(width / 768);
 		blue = new BitmapFont(Gdx.files.internal("blue.fnt"), false);
-		blue.setScale(Gdx.graphics.getWidth() / 300);
+		blue.setScale(width / 300);
 		style = new ImageTextButtonStyle();
 		style.font = blue;
 		
@@ -58,15 +60,15 @@ public class MainScreen implements Screen {
 		imageStyle.up = skin.getDrawable("unmute");
 		imageStyle.down = skin.getDrawable("mute");
 		sound = new ImageButton(imageStyle);
-		float soundSize = Gdx.graphics.getWidth() / 6;
+		float soundSize = width / 6;
 		sound.setSize(soundSize,soundSize);
 		sound.setPosition(0, 0);
 		stage.addActor(sound);
 		
 		// Create play button in main screen to transition to game screen
 		play = new ImageTextButton("Play", style);
-		float playX = Gdx.graphics.getWidth() / 2 - play.getWidth() / 2;
-		float playY = Gdx.graphics.getHeight() / 2;
+		float playX = width / 2 - play.getWidth() / 2;
+		float playY = height / 2;
 		play.setPosition(playX, playY);
 		play.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
@@ -77,9 +79,9 @@ public class MainScreen implements Screen {
 
 		// Create play button in main screen to transition to high scores screen
 		highscores = new ImageTextButton("High Scores", style);
-		float highscoresX = Gdx.graphics.getWidth() / 2 - highscores.getWidth()
+		float highscoresX = width / 2 - highscores.getWidth()
 				/ 2;
-		float highscoresY = Gdx.graphics.getHeight() / 2
+		float highscoresY = height / 2
 				- highscores.getHeight();
 		highscores.setPosition(highscoresX, highscoresY);
 		highscores.addListener(new ClickListener() {
@@ -91,8 +93,8 @@ public class MainScreen implements Screen {
 
 		// Create quit button in main screen to exit game
 		quit = new ImageTextButton("Quit", style);
-		float quitX = Gdx.graphics.getWidth() / 2 - quit.getWidth() / 2;
-		float quitY = Gdx.graphics.getHeight() / 2 - quit.getHeight() * 2;
+		float quitX = width / 2 - quit.getWidth() / 2;
+		float quitY = height / 2 - quit.getHeight() * 2;
 		quit.setPosition(quitX, quitY);
 		quit.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
