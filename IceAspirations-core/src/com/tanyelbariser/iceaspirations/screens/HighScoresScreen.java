@@ -8,12 +8,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 
-public class GameScreen implements Screen {
+public class HighScoresScreen implements Screen {
 	IceAspirations iceA;
 	SpriteBatch batch;
 	Sprite background;
 
-	public GameScreen(IceAspirations iceA) {
+	public HighScoresScreen(IceAspirations iceA) {
 		this.iceA = iceA;
 	}
 

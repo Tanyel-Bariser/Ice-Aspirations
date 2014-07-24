@@ -61,6 +61,11 @@ public class MainScreen implements Screen {
 		float highscoresY = Gdx.graphics.getHeight() / 2
 				- highscores.getHeight();
 		highscores.setPosition(highscoresX, highscoresY);
+		highscores.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				iceA.setScreen(new HighScoresScreen(iceA));
+			}
+		});
 		stage.addActor(highscores);
 
 		// Create quit button in main screen to exit game
