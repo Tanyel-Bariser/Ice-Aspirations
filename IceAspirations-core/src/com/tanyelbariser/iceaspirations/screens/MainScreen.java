@@ -47,6 +47,11 @@ public class MainScreen implements Screen {
 		float playX = Gdx.graphics.getWidth() / 2 - play.getWidth() / 2;
 		float playY = Gdx.graphics.getHeight() / 2;
 		play.setPosition(playX, playY);
+		play.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				iceA.setScreen(new GameScreen(iceA));
+			}
+		});
 		stage.addActor(play);
 
 		// Create play button in main screen to transition to high scores screen
