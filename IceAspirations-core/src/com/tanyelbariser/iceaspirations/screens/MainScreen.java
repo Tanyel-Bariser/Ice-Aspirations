@@ -2,6 +2,7 @@ package com.tanyelbariser.iceaspirations.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -32,6 +33,7 @@ public class MainScreen implements Screen {
 	Skin skin;
 	float width = Gdx.graphics.getWidth();
 	float height = Gdx.graphics.getHeight();
+	Music music;
 
 	public MainScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -42,72 +44,104 @@ public class MainScreen implements Screen {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		batch = new SpriteBatch();
+
 		background = new Sprite(new Texture("Background.png"));
+
 		title = new Sprite(new Texture("Title.png"));
 		float titleX = width / 2 - title.getWidth() / 2;
 		float titleY = Math.round(height / 1.4);
 		title.setPosition(titleX, titleY);
 		title.setScale(width / 768);
+
 		blue = new BitmapFont(Gdx.files.internal("blue.fnt"), false);
 		blue.setScale(width / 300);
 		style = new ImageTextButtonStyle();
 		style.font = blue;
-		
+
 		atlas = new TextureAtlas("Buttons.atlas");
 		skin = new Skin(atlas);
-		
+
+		musicSetUp();
+		playButtonSetUp();
+		highscoreButtonSetUp();
+		quitButtonSetup();
+	}
+
+	private void musicSetUp() {
+		music = Gdx.audio.newMusic(Gdx.files.internal("Rise of spirit.mp3"));
+		music.setLooping(true);
+		music.play();
+		music.setVolume(0.2f);
+
 		imageStyle = new ImageButtonStyle();
 		imageStyle.up = skin.getDrawable("unmute");
 		imageStyle.down = skin.getDrawable("mute");
 		imageStyle.checked = imageStyle.down;
+
 		sound = new ImageButton(imageStyle);
+
 		float soundSize = width / 6;
-		sound.setSize(soundSize,soundSize);
+		sound.setSize(soundSize, soundSize);
+
 		sound.setPosition(0, 0);
+
 		sound.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				boolean checked = sound.isChecked();
 				if (checked) {
 					sound.setChecked(true);
+					music.pause();
 				} else {
 					sound.setChecked(false);
+					music.play();
 				}
 			}
 		});
 		stage.addActor(sound);
-		
-		// Create play button in main screen to transition to game screen
+	}
+
+	// Create play button in main screen to transition to game screen
+	private void playButtonSetUp() {
 		play = new ImageTextButton("Play", style);
-		float playX = width / 2 - play.getWidth() / 2;
-		float playY = height / 2;
-		play.setPosition(playX, playY);
+
+		float x = width / 2 - play.getWidth() / 2;
+		float y = height / 2;
+		play.setPosition(x, y);
+
 		play.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				iceA.setScreen(new GameScreen(iceA));
 			}
 		});
 		stage.addActor(play);
+	}
 
-		// Create high scores button in main screen to transition to high scores screen
+	// Create high scores button in main screen to transition to high scores
+	// screen
+	private void highscoreButtonSetUp() {
 		highscores = new ImageTextButton("High Scores", style);
-		float highscoresX = width / 2 - highscores.getWidth()
-				/ 2;
-		float highscoresY = height / 2
-				- highscores.getHeight();
-		highscores.setPosition(highscoresX, highscoresY);
+
+		float x = width / 2 - highscores.getWidth() / 2;
+		float y = height / 2 - highscores.getHeight();
+		highscores.setPosition(x, y);
+
 		highscores.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				iceA.setScreen(new HighScoresScreen(iceA));
 			}
 		});
 		stage.addActor(highscores);
+	}
 
-		// Create quit button in main screen to exit game
+	// Create quit button in main screen to exit game
+	private void quitButtonSetup() {
 		quit = new ImageTextButton("Quit", style);
-		float quitX = width / 2 - quit.getWidth() / 2;
-		float quitY = height / 2 - quit.getHeight() * 2;
-		quit.setPosition(quitX, quitY);
+		
+		float x = width / 2 - quit.getWidth() / 2;
+		float y = height / 2 - quit.getHeight() * 2;
+		quit.setPosition(x, y);
+		
 		quit.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				Gdx.app.exit();
@@ -125,6 +159,7 @@ public class MainScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
 		batch.begin();
 		background.draw(batch);
 		title.draw(batch);
