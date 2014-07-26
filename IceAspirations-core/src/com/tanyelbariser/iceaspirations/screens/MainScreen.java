@@ -43,6 +43,7 @@ public class MainScreen implements Screen {
 	public void show() {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
+		
 		batch = new SpriteBatch();
 
 		background = new Sprite(new Texture("Background.png"));
@@ -67,10 +68,11 @@ public class MainScreen implements Screen {
 		quitButtonSetup();
 	}
 
+	// Enables game music and mute/unmute button
 	private void musicSetUp() {
 		music = Gdx.audio.newMusic(Gdx.files.internal("Rise of spirit.mp3"));
 		music.setLooping(true);
-		music.play();
+		//music.play();
 		music.setVolume(0.2f);
 
 		imageStyle = new ImageButtonStyle();
@@ -101,7 +103,7 @@ public class MainScreen implements Screen {
 		stage.addActor(sound);
 	}
 
-	// Create play button in main screen to transition to game screen
+	// Button to transition to game screen
 	private void playButtonSetUp() {
 		play = new ImageTextButton("Play", style);
 
@@ -117,8 +119,7 @@ public class MainScreen implements Screen {
 		stage.addActor(play);
 	}
 
-	// Create high scores button in main screen to transition to high scores
-	// screen
+	// Button to transition to high scores screen
 	private void highscoreButtonSetUp() {
 		highscores = new ImageTextButton("High Scores", style);
 
@@ -134,7 +135,7 @@ public class MainScreen implements Screen {
 		stage.addActor(highscores);
 	}
 
-	// Create quit button in main screen to exit game
+	// Button to exit game
 	private void quitButtonSetup() {
 		quit = new ImageTextButton("Quit", style);
 		

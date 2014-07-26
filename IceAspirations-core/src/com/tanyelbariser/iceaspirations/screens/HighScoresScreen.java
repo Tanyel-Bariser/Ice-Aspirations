@@ -1,5 +1,7 @@
 package com.tanyelbariser.iceaspirations.screens;
 
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -53,12 +55,24 @@ public class HighScoresScreen implements Screen {
 		batch = new SpriteBatch();
 		background = new Sprite(new Texture("Background.png"));
 		
+		Random random = new Random();
+		String score = "1) " + String.valueOf(random.nextInt(10000));
+		String score1 = "2) " + String.valueOf(random.nextInt(10000));
+		String score2 = "3) " + String.valueOf(random.nextInt(10000));
+		
+		
 		style = new LabelStyle(MainScreen.blue, Color.BLUE);
 		heading = new Label("High Scores", style);
+		Label points = new Label(score, style);
+		Label points1 = new Label(score1, style);
+		Label points2 = new Label(score2, style);
 		
 		table = new Table();
 		table.setBounds(0, 0, width, height);
-		table.add(heading);
+		table.add(heading).row();
+		table.add(points).row();
+		table.add(points1).row();
+		table.add(points2);
 		
 		stage = new Stage();
 		stage.addActor(table);
