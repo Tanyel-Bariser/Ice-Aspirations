@@ -1,17 +1,28 @@
 package com.tanyelbariser.iceaspirations.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 
 public class GameScreen implements Screen {
 	IceAspirations iceA;
 	SpriteBatch batch;
 	Sprite background;
+	Stage stage;
+	ImageButton pause;
+	float width = Gdx.graphics.getWidth();
+	float height = Gdx.graphics.getHeight();
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -24,6 +35,9 @@ public class GameScreen implements Screen {
 		batch.begin();
 		background.draw(batch);
 		batch.end();
+		
+		stage.act(delta);
+		stage.draw();
 	}
 
 	@Override
@@ -36,7 +50,38 @@ public class GameScreen implements Screen {
 	public void show() {
 		batch = new SpriteBatch();
 		background = new Sprite(new Texture("Background.png"));
+		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
+		
+		TextureAtlas atlas = new TextureAtlas("Atlas.atlas");
+		Skin skin = new Skin(atlas);
 
+		ImageButtonStyle imageStyle = new ImageButtonStyle();
+		imageStyle.up = skin.getDrawable("Pause");
+		imageStyle.down = skin.getDrawable("Play");
+		imageStyle.checked = imageStyle.down;
+		
+		pause = new ImageButton(imageStyle);
+
+		float pauseSize = width / 6;
+		pause.setSize(pauseSize, pauseSize);
+
+		pause.setPosition(width - pauseSize, height - pauseSize);
+
+		pause.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				boolean checked = pause.isChecked();
+				if (checked) {
+					pause.setChecked(true);
+					//pause game
+				} else {
+					pause.setChecked(false);
+					//unpause game
+				}
+			}
+		});
+		stage.addActor(pause);
 	}
 
 	@Override
