@@ -17,7 +17,7 @@ public class GameScreen implements Screen {
 	SpriteBatch batch;
 	Sprite background;
 	Stage stage;
-	ImageButton pause;
+	ImageButton pause, back;
 	float width = Gdx.graphics.getWidth();
 	float height = Gdx.graphics.getHeight();
 
@@ -50,6 +50,7 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(stage);
 
 		pauseButtonSetUp();
+		backButtonSetUp();
 	}
 
 	private void pauseButtonSetUp() {
@@ -72,13 +73,35 @@ public class GameScreen implements Screen {
 				if (checked) {
 					pause.setChecked(true);
 					// pause game
+					stage.addActor(back);
 				} else {
 					pause.setChecked(false);
 					// unpause game
+					back.remove();
 				}
 			}
 		});
 		stage.addActor(pause);
+	}
+	
+	private void backButtonSetUp() {		
+		ImageButtonStyle imageStyle = new ImageButtonStyle();
+		imageStyle.up = IceAspirations.skin.getDrawable("Back");
+		imageStyle.down = IceAspirations.skin.getDrawable("Back");
+
+		back = new ImageButton(imageStyle);
+
+		float backSize = width / 6;
+		back.setSize(backSize, backSize);
+
+		back.setPosition(0, 0);
+		
+		back.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				iceA.setScreen(new MainScreen(iceA));
+			}
+		});
 	}
 
 	@Override
