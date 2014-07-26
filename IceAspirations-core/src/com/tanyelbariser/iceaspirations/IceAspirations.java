@@ -3,6 +3,9 @@ package com.tanyelbariser.iceaspirations;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -13,10 +16,17 @@ import com.tanyelbariser.iceaspirations.screens.MainScreen;
 
 public class IceAspirations extends Game {
 	public static Music music;
+	public static Skin skin;
+	public static BitmapFont blue;
 	public static ImageButton soundButton;
+	public static Sprite background;
 	
 	@Override
 	public void create() {
+		TextureAtlas atlas = new TextureAtlas("Atlas.atlas");
+		skin = new Skin(atlas);
+		blue = new BitmapFont(Gdx.files.internal("blue.fnt"), false);
+		background = new Sprite(new Texture("Background.png"));
 		muteButtonSetup();
 		setScreen(new MainScreen(this));
 		musicSetup();
@@ -57,5 +67,13 @@ public class IceAspirations extends Game {
 				}
 			}
 		});
+	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		music.dispose();
+		skin.dispose();
+		blue.dispose();
 	}
 }

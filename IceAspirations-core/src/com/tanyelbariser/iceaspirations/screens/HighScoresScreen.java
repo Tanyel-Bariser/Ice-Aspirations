@@ -6,16 +6,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -24,11 +20,11 @@ import com.tanyelbariser.iceaspirations.IceAspirations;
 public class HighScoresScreen implements Screen {
 	IceAspirations iceA;
 	SpriteBatch batch;
-	Sprite background;
 	Stage stage;
 	Table table;
 	LabelStyle style;
 	Label heading;
+	ImageButton back;
 	float width = Gdx.graphics.getWidth();
 	float height = Gdx.graphics.getHeight();
 
@@ -42,7 +38,7 @@ public class HighScoresScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	
 		batch.begin();
-		background.draw(batch);
+		IceAspirations.background.draw(batch);
 		batch.end();
 		
 		stage.act(delta);
@@ -59,7 +55,6 @@ public class HighScoresScreen implements Screen {
 	@Override
 	public void show() {
 		batch = new SpriteBatch();
-		background = new Sprite(new Texture("Background.png"));
 		
 		Random random = new Random();
 		String score1 = "1) " + String.valueOf(random.nextInt(100) + 400);
@@ -69,7 +64,7 @@ public class HighScoresScreen implements Screen {
 		String score5 = "5) " + String.valueOf(random.nextInt(100));
 		
 		
-		style = new LabelStyle(MainScreen.blue, Color.BLUE);
+		style = new LabelStyle(IceAspirations.blue, Color.BLUE);
 		heading = new Label("High Scores", style);
 		
 		Label points1 = new Label(score1, style);
@@ -95,16 +90,12 @@ public class HighScoresScreen implements Screen {
 		backButtonSetUp();
 	}
 
-	private void backButtonSetUp() {
-		
-		TextureAtlas atlas = new TextureAtlas("Atlas.atlas");
-		Skin skin = new Skin(atlas);
-		
+	private void backButtonSetUp() {		
 		ImageButtonStyle imageStyle = new ImageButtonStyle();
-		imageStyle.up = skin.getDrawable("Back");
-		imageStyle.down = skin.getDrawable("Back");
+		imageStyle.up = IceAspirations.skin.getDrawable("Back");
+		imageStyle.down = IceAspirations.skin.getDrawable("Back");
 
-		ImageButton back = new ImageButton(imageStyle);
+		back = new ImageButton(imageStyle);
 
 		float backSize = width / 6;
 		back.setSize(backSize, backSize);
@@ -140,6 +131,6 @@ public class HighScoresScreen implements Screen {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		background.getTexture().dispose();
+		stage.dispose();
 	}
 }

@@ -4,17 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 
@@ -22,14 +17,10 @@ public class MainScreen implements Screen {
 	IceAspirations iceA;
 	SpriteBatch batch;
 	Sprite background, title;
-	static BitmapFont blue;
+	
 	Stage stage;
 	ImageTextButtonStyle style;
 	ImageTextButton play, highscores, quit;
-	ImageButtonStyle imageStyle;
-	ImageButton sound;
-	TextureAtlas atlas;
-	Skin skin;
 	float width = Gdx.graphics.getWidth();
 	float height = Gdx.graphics.getHeight();
 
@@ -44,21 +35,15 @@ public class MainScreen implements Screen {
 		
 		batch = new SpriteBatch();
 
-		background = new Sprite(new Texture("Background.png"));
-
 		title = new Sprite(new Texture("Title.png"));
 		float titleX = width / 2 - title.getWidth() / 2;
 		float titleY = Math.round(height / 1.4);
 		title.setPosition(titleX, titleY);
 		title.setScale(width / 768);
 
-		blue = new BitmapFont(Gdx.files.internal("blue.fnt"), false);
-		blue.setScale(width / 300);
+		IceAspirations.blue.setScale(width / 300);
 		style = new ImageTextButtonStyle();
-		style.font = blue;
-
-		atlas = new TextureAtlas("Atlas.atlas");
-		skin = new Skin(atlas);
+		style.font = IceAspirations.blue;
 
 		IceAspirations.soundButton.setPosition(0, 0);
 		stage.addActor(IceAspirations.soundButton);
@@ -127,7 +112,7 @@ public class MainScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		batch.begin();
-		background.draw(batch);
+		IceAspirations.background.draw(batch);
 		title.draw(batch);
 		batch.end();
 
@@ -147,10 +132,8 @@ public class MainScreen implements Screen {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		background.getTexture().dispose();
 		title.getTexture().dispose();
 		stage.dispose();
-		atlas.dispose();
 	}
 
 	@Override
