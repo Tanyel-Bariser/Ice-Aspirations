@@ -9,10 +9,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 
 public class HighScoresScreen implements Screen {
@@ -56,26 +62,62 @@ public class HighScoresScreen implements Screen {
 		background = new Sprite(new Texture("Background.png"));
 		
 		Random random = new Random();
-		String score = "1) " + String.valueOf(random.nextInt(10000));
-		String score1 = "2) " + String.valueOf(random.nextInt(10000));
-		String score2 = "3) " + String.valueOf(random.nextInt(10000));
+		String score1 = "1) " + String.valueOf(random.nextInt(100) + 400);
+		String score2 = "2) " + String.valueOf(random.nextInt(100) + 300);
+		String score3 = "3) " + String.valueOf(random.nextInt(100) + 200);
+		String score4 = "4) " + String.valueOf(random.nextInt(100) + 100);
+		String score5 = "5) " + String.valueOf(random.nextInt(100));
 		
 		
 		style = new LabelStyle(MainScreen.blue, Color.BLUE);
 		heading = new Label("High Scores", style);
-		Label points = new Label(score, style);
+		
 		Label points1 = new Label(score1, style);
 		Label points2 = new Label(score2, style);
+		Label points3 = new Label(score3, style);
+		Label points4 = new Label(score4, style);
+		Label points5 = new Label(score5, style);
 		
 		table = new Table();
 		table.setBounds(0, 0, width, height);
-		table.add(heading).row();
-		table.add(points).row();
+		table.add(heading).center().row();
 		table.add(points1).row();
-		table.add(points2);
+		table.add(points2).row();
+		table.add(points3).row();
+		table.add(points4).row();
+		table.add(points5);
 		
 		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
+		
 		stage.addActor(table);
+		
+		backButtonSetUp();
+	}
+
+	private void backButtonSetUp() {
+		
+		TextureAtlas atlas = new TextureAtlas("Atlas.atlas");
+		Skin skin = new Skin(atlas);
+		
+		ImageButtonStyle imageStyle = new ImageButtonStyle();
+		imageStyle.up = skin.getDrawable("Back");
+		imageStyle.down = skin.getDrawable("Back");
+
+		ImageButton back = new ImageButton(imageStyle);
+
+		float backSize = width / 6;
+		back.setSize(backSize, backSize);
+
+		back.setPosition(0, 0);
+		
+		back.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				iceA.setScreen(new MainScreen(iceA));
+			}
+		});
+		stage.addActor(back);
 	}
 
 	@Override

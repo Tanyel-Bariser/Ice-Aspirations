@@ -1,0 +1,166 @@
+
+Atlas.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Platform5
+  rotate: false
+  xy: 1, 398
+  size: 400, 85
+  orig: 400, 85
+  offset: 0, 0
+  index: -1
+Platform8
+  rotate: false
+  xy: 1, 241
+  size: 298, 155
+  orig: 298, 155
+  offset: 0, 0
+  index: -1
+Platform7
+  rotate: false
+  xy: 1, 89
+  size: 200, 150
+  orig: 200, 150
+  offset: 0, 0
+  index: -1
+Platform1
+  rotate: false
+  xy: 403, 383
+  size: 200, 100
+  orig: 200, 100
+  offset: 0, 0
+  index: -1
+Platform2
+  rotate: false
+  xy: 605, 383
+  size: 200, 100
+  orig: 200, 100
+  offset: 0, 0
+  index: -1
+Platform9
+  rotate: false
+  xy: 203, 80
+  size: 154, 159
+  orig: 154, 159
+  offset: 0, 0
+  index: -1
+Platform3
+  rotate: false
+  xy: 301, 281
+  size: 200, 100
+  orig: 200, 100
+  offset: 0, 0
+  index: -1
+Platform4
+  rotate: false
+  xy: 503, 281
+  size: 200, 100
+  orig: 200, 100
+  offset: 0, 0
+  index: -1
+Platform6
+  rotate: false
+  xy: 359, 179
+  size: 200, 100
+  orig: 200, 100
+  offset: 0, 0
+  index: -1
+Back
+  rotate: false
+  xy: 561, 148
+  size: 128, 131
+  orig: 128, 131
+  offset: 0, 0
+  index: -1
+Mute
+  rotate: false
+  xy: 359, 49
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Pause
+  rotate: false
+  xy: 705, 253
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Play
+  rotate: false
+  xy: 691, 123
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Rabbit4
+  rotate: false
+  xy: 489, 58
+  size: 62, 119
+  orig: 62, 119
+  offset: 0, 0
+  index: -1
+Unmute
+  rotate: false
+  xy: 553, 18
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Rabbit3
+  rotate: false
+  xy: 683, 2
+  size: 79, 119
+  orig: 79, 119
+  offset: 0, 0
+  index: -1
+Rabbit5
+  rotate: false
+  xy: 764, 1
+  size: 58, 120
+  orig: 58, 120
+  offset: 0, 0
+  index: -1
+Rabbit6
+  rotate: false
+  xy: 807, 384
+  size: 52, 99
+  orig: 52, 99
+  offset: 0, 0
+  index: -1
+Rabbit8
+  rotate: false
+  xy: 861, 366
+  size: 58, 117
+  orig: 58, 117
+  offset: 0, 0
+  index: -1
+Rabbit2
+  rotate: false
+  xy: 835, 246
+  size: 76, 118
+  orig: 76, 118
+  offset: 0, 0
+  index: -1
+Rabbit7
+  rotate: false
+  xy: 821, 125
+  size: 74, 119
+  orig: 74, 119
+  offset: 0, 0
+  index: -1
+Rabbit1
+  rotate: false
+  xy: 824, 5
+  size: 74, 118
+  orig: 74, 118
+  offset: 0, 0
+  index: -1
+Clock
+  rotate: false
+  xy: 1, 15
+  size: 64, 72
+  orig: 64, 72
+  offset: 0, 0
+  index: -1

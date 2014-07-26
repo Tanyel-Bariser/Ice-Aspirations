@@ -2,7 +2,6 @@ package com.tanyelbariser.iceaspirations.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,7 +32,6 @@ public class MainScreen implements Screen {
 	Skin skin;
 	float width = Gdx.graphics.getWidth();
 	float height = Gdx.graphics.getHeight();
-	Music music;
 
 	public MainScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -59,48 +57,15 @@ public class MainScreen implements Screen {
 		style = new ImageTextButtonStyle();
 		style.font = blue;
 
-		atlas = new TextureAtlas("Buttons.atlas");
+		atlas = new TextureAtlas("Atlas.atlas");
 		skin = new Skin(atlas);
 
-		musicSetUp();
+		IceAspirations.soundButton.setPosition(0, 0);
+		stage.addActor(IceAspirations.soundButton);
+		
 		playButtonSetUp();
 		highscoreButtonSetUp();
 		quitButtonSetup();
-	}
-
-	// Enables game music and mute/unmute button
-	private void musicSetUp() {
-		music = Gdx.audio.newMusic(Gdx.files.internal("Rise of spirit.mp3"));
-		music.setLooping(true);
-		//music.play();
-		music.setVolume(0.2f);
-
-		imageStyle = new ImageButtonStyle();
-		imageStyle.up = skin.getDrawable("unmute");
-		imageStyle.down = skin.getDrawable("mute");
-		imageStyle.checked = imageStyle.down;
-
-		sound = new ImageButton(imageStyle);
-
-		float soundSize = width / 6;
-		sound.setSize(soundSize, soundSize);
-
-		sound.setPosition(0, 0);
-
-		sound.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				boolean checked = sound.isChecked();
-				if (checked) {
-					sound.setChecked(true);
-					music.pause();
-				} else {
-					sound.setChecked(false);
-					music.play();
-				}
-			}
-		});
-		stage.addActor(sound);
 	}
 
 	// Button to transition to game screen
