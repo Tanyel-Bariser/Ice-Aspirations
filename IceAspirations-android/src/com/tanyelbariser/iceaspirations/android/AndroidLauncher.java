@@ -18,15 +18,21 @@ public class AndroidLauncher extends AndroidApplication {
 	}
 	@Override
 	public void onBackPressed() {
+		onPause();
 	    new AlertDialog.Builder(this)
 	        .setTitle("Confirm Exit")
 	        .setMessage("Do you want to quit the game?")
-	        .setNegativeButton(android.R.string.cancel, null)
+	        .setNegativeButton(android.R.string.cancel, new OnClickListener() {
+	        	@Override
+	        	public void onClick(DialogInterface dialog, int which) {
+	        		onResume();
+	        	}
+	        })
 	        .setPositiveButton(android.R.string.ok, new OnClickListener() {
-
-	            public void onClick(DialogInterface arg0, int arg1) {
-	            	AndroidLauncher.super.onBackPressed();
-	            }
+	        	@Override
+	        	public void onClick(DialogInterface dialog, int which) {
+	        		AndroidLauncher.super.onBackPressed();	
+	        	}
 	        }).create().show();
 	}
 }
