@@ -72,7 +72,7 @@ public class GameScreen implements Screen {
 				boolean checked = pause.isChecked();
 				if (checked) {
 					pause.setChecked(true);
-					// pause game
+					pause();
 					stage.addActor(back);
 				} else {
 					pause.setChecked(false);
