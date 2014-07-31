@@ -3,8 +3,15 @@ package com.tanyelbariser.iceaspirations.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -15,11 +22,15 @@ import com.tanyelbariser.iceaspirations.IceAspirations;
 public class GameScreen implements Screen {
 	IceAspirations iceA;
 	SpriteBatch batch;
-	Sprite background;
 	Stage stage;
 	ImageButton pause, back;
 	float width = Gdx.graphics.getWidth();
 	float height = Gdx.graphics.getHeight();
+	private World world;
+	private OrthographicCamera camera;
+	private Box2DDebugRenderer physicsDebugger;
+	private BodyDef bodyDef;
+	private FixtureDef fixDef;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -29,18 +40,19 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
 		batch.begin();
 		IceAspirations.background.draw(batch);
 		batch.end();
 
 		stage.act(delta);
 		stage.draw();
+			
+		physicsDebugger.render(world, camera.combined);
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -51,6 +63,26 @@ public class GameScreen implements Screen {
 
 		pauseButtonSetUp();
 		backButtonSetUp();
+		
+		float gravity = -9.81f;
+		world = new World(new Vector2(0, gravity), true);
+		physicsDebugger = new Box2DDebugRenderer();
+		camera = new OrthographicCamera(width/25, height/25);
+		
+		bodyDef = new BodyDef();
+		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.position.set(0, 1);
+		
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(0.5f, 1);
+		
+		fixDef = new FixtureDef();
+		fixDef.shape = shape;
+		fixDef.density = 3f;
+		fixDef.friction = 0f;
+		fixDef.restitution = 0f;
+		
+		world.createBody(bodyDef).createFixture(fixDef);
 	}
 
 	private void pauseButtonSetUp() {
@@ -125,5 +157,7 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		batch.dispose();
 		stage.dispose();
+		world.dispose();
+		physicsDebugger.dispose();
 	}
 }
