@@ -6,10 +6,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -39,6 +38,7 @@ public class GameScreen implements Screen {
 	    Running, Paused
 	}
 	State state = State.Running;
+	public static final int ZOOM = 25;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -85,7 +85,7 @@ public class GameScreen implements Screen {
 		float gravity = -9.81f;
 		world = new World(new Vector2(0, gravity), true);
 		physicsDebugger = new Box2DDebugRenderer();
-		camera = new OrthographicCamera(width/25, height/25);
+		camera = new OrthographicCamera(width/ZOOM, height/ZOOM);
 		
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
@@ -102,31 +102,27 @@ public class GameScreen implements Screen {
 		
 		world.createBody(bodyDef).createFixture(fixDef);
 		
-		
-		
-		
-		
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(0, 0);
 
-		// ground shape
-		ChainShape groundShape = new ChainShape();
-		Vector3 bottomLeft = new Vector3(0, Gdx.graphics.getHeight(), 0);
-		Vector3 bottomRight = new Vector3(Gdx.graphics.getWidth(), bottomLeft.y, 0);
-		camera.unproject(bottomLeft);
-		camera.unproject(bottomRight);
+		ChainShape worldContainerShape = new ChainShape();
+		float unprojectedWidth = width/ZOOM/2;
+		float unprojectedHeight = height/ZOOM/2;
+		Vector2 topLeft = new Vector2(-unprojectedWidth, 500);
+		Vector2 lowLeft = new Vector2(0, unprojectedHeight);
+		Vector2 lowRight = new Vector2(unprojectedWidth, unprojectedHeight);
+		Vector2 topRight = new Vector2(unprojectedWidth, 500);
 
-		groundShape.createChain(new float[] {bottomLeft.x, bottomLeft.y, bottomRight.x, bottomRight.y});
+		worldContainerShape.createChain(new Vector2[] {topLeft, lowLeft, lowRight, topRight});
 
-		// fixture definition
-		fixDef.shape = groundShape;
-		fixDef.friction = .5f;
+		fixDef.shape = worldContainerShape;
+		fixDef.friction = 0f;
 		fixDef.restitution = 0;
 
-		Body ground = world.createBody(bodyDef);
-		ground.createFixture(fixDef);
+		Body worldContainer = world.createBody(bodyDef);
+		worldContainer.createFixture(fixDef);
 		
-		groundShape.dispose();
+		worldContainerShape.dispose();
 	}
 
 	private void pauseButtonSetUp() {
