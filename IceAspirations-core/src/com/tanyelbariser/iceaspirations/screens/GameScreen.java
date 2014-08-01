@@ -6,10 +6,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -39,6 +38,7 @@ public class GameScreen implements Screen {
 	    Running, Paused
 	}
 	State state = State.Running;
+	private Body player;
 	public static final int ZOOM = 25;
 
 	public GameScreen(IceAspirations iceA) {
@@ -57,7 +57,16 @@ public class GameScreen implements Screen {
 		
 		if (state.equals(State.Running)) {
         	world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
-        	//future updates
+        	
+    		float playerY = player.getPosition().y;
+    		if (playerY > 0) {
+    			camera.position.y = playerY;
+    		} else {
+    			camera.position.y = 0;
+    		}
+    		camera.update();
+    		
+    		
 		}
 		
 		batch.begin();
@@ -72,6 +81,9 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		camera.viewportWidth = width / ZOOM;
+		camera.viewportHeight = height / ZOOM;
+		camera.update();
 	}
 
 	@Override
@@ -101,28 +113,23 @@ public class GameScreen implements Screen {
 		fixDef.friction = 0f;
 		fixDef.restitution = 0f;
 		
-		world.createBody(bodyDef).createFixture(fixDef);
-		
-		
-		
-		
+		player = world.createBody(bodyDef);
+		player.createFixture(fixDef);
 		
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(0, 0);
 
 		ChainShape worldContainerShape = new ChainShape();
-		Vector3 lowLeft = new Vector3(0, height, 0);
-		Vector3 lowRight = new Vector3(width, height, 0);
 
-		Vector2 topLeft = new Vector2(-width/ZOOM /2, 500);
+		Vector2 topLeft = new Vector2(-width/ZOOM/2, 500);
+		Vector2 bottomLeft = new Vector2(-width/ZOOM/2, -height/ZOOM/2);
+		Vector2 bottomRight = new Vector2(width/ZOOM/2, -height/ZOOM/2);
 		Vector2 topRight = new Vector2(width/ZOOM/2, 500);
-		camera.unproject(lowLeft);
-		camera.unproject(lowRight);
 
-		worldContainerShape.createChain(new float[] {topLeft.x, topLeft.y, lowLeft.x, lowLeft.y, lowRight.x, lowRight.y, topRight.x, topRight.y});
+		worldContainerShape.createChain(new Vector2[] {topLeft, bottomLeft, bottomRight, topRight});
 
 		fixDef.shape = worldContainerShape;
-		fixDef.friction = .5f;
+		fixDef.friction = 0f;
 		fixDef.restitution = 0;
 
 		Body worldContainer = world.createBody(bodyDef);

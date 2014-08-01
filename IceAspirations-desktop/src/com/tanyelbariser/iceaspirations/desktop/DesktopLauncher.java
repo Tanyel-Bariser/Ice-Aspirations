@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		//Changed width & height to exactly half the pixels of my phone to fit onto my laptop screen
 		config.width = 384;
 		config.height = 640;
+//		config.resizable = false; uncomment this when finished debugging
 		new LwjglApplication(new IceAspirations(), config);
 	}
 }
