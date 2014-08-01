@@ -41,6 +41,12 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		float approxFPS = 60;
+		final float TIMESTEP = 1/approxFPS;
+		final int VELOCITYITERATIONS = 11;
+		final int POSITIONITERATIONS = 4;
+		world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
+		
 		batch.begin();
 		IceAspirations.background.draw(batch);
 		batch.end();
