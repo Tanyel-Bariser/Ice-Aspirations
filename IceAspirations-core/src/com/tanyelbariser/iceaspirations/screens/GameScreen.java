@@ -6,9 +6,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -102,21 +103,26 @@ public class GameScreen implements Screen {
 		
 		world.createBody(bodyDef).createFixture(fixDef);
 		
+		
+		
+		
+		
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(0, 0);
 
 		ChainShape worldContainerShape = new ChainShape();
-		float unprojectedWidth = width/ZOOM/2;
-		float unprojectedHeight = height/ZOOM/2;
-		Vector2 topLeft = new Vector2(-unprojectedWidth, 500);
-		Vector2 lowLeft = new Vector2(0, unprojectedHeight);
-		Vector2 lowRight = new Vector2(unprojectedWidth, unprojectedHeight);
-		Vector2 topRight = new Vector2(unprojectedWidth, 500);
+		Vector3 lowLeft = new Vector3(0, height, 0);
+		Vector3 lowRight = new Vector3(width, height, 0);
 
-		worldContainerShape.createChain(new Vector2[] {topLeft, lowLeft, lowRight, topRight});
+		Vector2 topLeft = new Vector2(-width/ZOOM /2, 500);
+		Vector2 topRight = new Vector2(width/ZOOM/2, 500);
+		camera.unproject(lowLeft);
+		camera.unproject(lowRight);
+
+		worldContainerShape.createChain(new float[] {topLeft.x, topLeft.y, lowLeft.x, lowLeft.y, lowRight.x, lowRight.y, topRight.x, topRight.y});
 
 		fixDef.shape = worldContainerShape;
-		fixDef.friction = 0f;
+		fixDef.friction = .5f;
 		fixDef.restitution = 0;
 
 		Body worldContainer = world.createBody(bodyDef);
