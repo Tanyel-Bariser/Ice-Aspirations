@@ -6,9 +6,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -31,6 +34,11 @@ public class GameScreen implements Screen {
 	private Box2DDebugRenderer physicsDebugger;
 	private BodyDef bodyDef;
 	private FixtureDef fixDef;
+	
+	public enum State {
+	    Running, Paused
+	}
+	State state = State.Running;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -45,7 +53,11 @@ public class GameScreen implements Screen {
 		final float TIMESTEP = 1/approxFPS;
 		final int VELOCITYITERATIONS = 11;
 		final int POSITIONITERATIONS = 4;
-		world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
+		
+		if (state.equals(State.Running)) {
+        	world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
+        	//future updates
+		}
 		
 		batch.begin();
 		IceAspirations.background.draw(batch);
@@ -89,6 +101,32 @@ public class GameScreen implements Screen {
 		fixDef.restitution = 0f;
 		
 		world.createBody(bodyDef).createFixture(fixDef);
+		
+		
+		
+		
+		
+		bodyDef.type = BodyType.StaticBody;
+		bodyDef.position.set(0, 0);
+
+		// ground shape
+		ChainShape groundShape = new ChainShape();
+		Vector3 bottomLeft = new Vector3(0, Gdx.graphics.getHeight(), 0);
+		Vector3 bottomRight = new Vector3(Gdx.graphics.getWidth(), bottomLeft.y, 0);
+		camera.unproject(bottomLeft);
+		camera.unproject(bottomRight);
+
+		groundShape.createChain(new float[] {bottomLeft.x, bottomLeft.y, bottomRight.x, bottomRight.y});
+
+		// fixture definition
+		fixDef.shape = groundShape;
+		fixDef.friction = .5f;
+		fixDef.restitution = 0;
+
+		Body ground = world.createBody(bodyDef);
+		ground.createFixture(fixDef);
+		
+		groundShape.dispose();
 	}
 
 	private void pauseButtonSetUp() {
@@ -114,7 +152,7 @@ public class GameScreen implements Screen {
 					stage.addActor(back);
 				} else {
 					pause.setChecked(false);
-					// unpause game
+					resume();
 					back.remove();
 				}
 			}
@@ -149,14 +187,13 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
+		state = State.Paused;
 
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
+		state = State.Running;
 	}
 
 	@Override
