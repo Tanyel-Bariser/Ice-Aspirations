@@ -4,7 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -19,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 
 public class GameScreen implements Screen {
@@ -26,21 +30,34 @@ public class GameScreen implements Screen {
 	SpriteBatch batch;
 	Stage stage;
 	ImageButton pause, back;
-	float width = Gdx.graphics.getWidth();
+	static int phoneWidth = 768;
+	static float width = Gdx.graphics.getWidth();
 	float height = Gdx.graphics.getHeight();
 	private World world;
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer physicsDebugger;
 	private BodyDef bodyDef;
 	private FixtureDef fixDef;
+	private final Sprite background = new Sprite(new Texture("Background.png"));
+	float backgroundWidth = background.getWidth();
+	float backgroundHeight = background.getHeight();
+	private Body player;
+	public static final int ZOOM = (int) (50 * (width / phoneWidth));
+	private Array<Body> playerBodies = new Array<Body>();
+	private Sprite playerSprite;
 	
 	public enum State {
 	    Running, Paused
 	}
 	State state = State.Running;
-	private Body player;
-	public static final int ZOOM = 25;
+	
 
+	float approxFPS = 60;
+	final float TIMESTEP = 1/approxFPS;
+	final int VELOCITYITERATIONS = 11;
+	final int POSITIONITERATIONS = 4;
+	private Body body;
+	
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
 	}
@@ -49,12 +66,7 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		float approxFPS = 60;
-		final float TIMESTEP = 1/approxFPS;
-		final int VELOCITYITERATIONS = 11;
-		final int POSITIONITERATIONS = 4;
-		
+				
 		if (state.equals(State.Running)) {
         	world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
         	
@@ -64,13 +76,18 @@ public class GameScreen implements Screen {
     		} else {
     			camera.position.y = 0;
     		}
-    		camera.update();
-    		
-    		
+    		background.setPosition(camera.position.x - backgroundWidth/2, camera.position.y - backgroundHeight/2);
+    		camera.update();	
 		}
 		
+
+		playerSprite.setPosition(body.getPosition().x - playerSprite.getWidth()/2, body.getPosition().y - playerSprite.getHeight()/2);
+		playerSprite.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
+		
+		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		IceAspirations.background.draw(batch);
+		background.draw(batch);
+		playerSprite.draw(batch);
 		batch.end();
 
 		stage.act(delta);
@@ -91,6 +108,8 @@ public class GameScreen implements Screen {
 		batch = new SpriteBatch();
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
+		
+		background.setScale(1f/ZOOM * (width/phoneWidth));
 
 		pauseButtonSetUp();
 		backButtonSetUp();
@@ -115,6 +134,18 @@ public class GameScreen implements Screen {
 		
 		player = world.createBody(bodyDef);
 		player.createFixture(fixDef);
+		
+
+		playerSprite = IceAspirations.skin.getSprite("Rabbit1");
+		playerSprite.setSize(1.4f, 2.8f);
+		playerSprite.setOrigin(playerSprite.getWidth()/2, playerSprite.getHeight()/2);
+		player.setUserData(playerSprite);
+		world.getBodies(playerBodies);
+		body = playerBodies.first();
+		
+		
+		
+		
 		
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(0, 0);
