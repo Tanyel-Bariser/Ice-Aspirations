@@ -30,9 +30,10 @@ public class GameScreen implements Screen {
 	SpriteBatch batch;
 	Stage stage;
 	ImageButton pause, back;
-	static int phoneWidth = 768;
+	static float phoneWidth = 768;
 	static float width = Gdx.graphics.getWidth();
 	float height = Gdx.graphics.getHeight();
+	static float compatibility = width / phoneWidth;
 	private World world;
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer physicsDebugger;
@@ -42,7 +43,7 @@ public class GameScreen implements Screen {
 	float backgroundWidth = background.getWidth();
 	float backgroundHeight = background.getHeight();
 	private Body player;
-	public static final int ZOOM = (int) (50 * (width / phoneWidth));
+	public static final float ZOOM = 50f * compatibility;
 	private Array<Body> playerBodies = new Array<Body>();
 	private Sprite playerSprite;
 	
@@ -109,7 +110,7 @@ public class GameScreen implements Screen {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		
-		background.setScale(1f/ZOOM * (width/phoneWidth));
+		background.setScale(1f/ZOOM * compatibility);
 
 		pauseButtonSetUp();
 		backButtonSetUp();
@@ -124,7 +125,7 @@ public class GameScreen implements Screen {
 		bodyDef.position.set(0, 1);
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(0.5f, 1);
+		shape.setAsBox(1f, 2f);
 		
 		fixDef = new FixtureDef();
 		fixDef.shape = shape;
@@ -137,7 +138,7 @@ public class GameScreen implements Screen {
 		
 
 		playerSprite = IceAspirations.skin.getSprite("Rabbit1");
-		playerSprite.setSize(1.4f, 2.8f);
+		playerSprite.setSize(2.8f, 5.6f);
 		playerSprite.setOrigin(playerSprite.getWidth()/2, playerSprite.getHeight()/2);
 		player.setUserData(playerSprite);
 		world.getBodies(playerBodies);
