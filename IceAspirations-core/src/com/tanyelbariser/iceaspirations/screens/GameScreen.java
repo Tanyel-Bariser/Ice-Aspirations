@@ -15,7 +15,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -24,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.IceAspirations;
+import com.tanyelbariser.iceaspirations.entities.Player;
 
 public class GameScreen implements Screen {
 	IceAspirations iceA;
@@ -42,7 +42,7 @@ public class GameScreen implements Screen {
 	private final Sprite background = new Sprite(new Texture("Background.png"));
 	float backgroundWidth = background.getWidth();
 	float backgroundHeight = background.getHeight();
-	private Body player;
+	private Player player;
 	public static final float ZOOM = 50f * compatibility;
 	private Array<Body> playerBodies = new Array<Body>();
 	private Sprite playerSprite;
@@ -57,7 +57,6 @@ public class GameScreen implements Screen {
 	final float TIMESTEP = 1/approxFPS;
 	final int VELOCITYITERATIONS = 11;
 	final int POSITIONITERATIONS = 4;
-	private Body body;
 	
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -71,7 +70,7 @@ public class GameScreen implements Screen {
 		if (state.equals(State.Running)) {
         	world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
         	
-    		float playerY = player.getPosition().y;
+    		float playerY = player.player.getPosition().y;
     		if (playerY > 0) {
     			camera.position.y = playerY;
     		} else {
@@ -82,8 +81,8 @@ public class GameScreen implements Screen {
 		}
 		
 
-		playerSprite.setPosition(body.getPosition().x - playerSprite.getWidth()/2, body.getPosition().y - playerSprite.getHeight()/2);
-		playerSprite.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
+		playerSprite.setPosition(player.body.getPosition().x - playerSprite.getWidth()/2, player.body.getPosition().y - playerSprite.getHeight()/2);
+		playerSprite.setRotation(player.body.getAngle() * MathUtils.radiansToDegrees);
 		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
@@ -120,34 +119,10 @@ public class GameScreen implements Screen {
 		physicsDebugger = new Box2DDebugRenderer();
 		camera = new OrthographicCamera(width/ZOOM, height/ZOOM);
 		
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(0, 1);
+		player = new Player(world);
+		playerSprite = player.playerSprite;
 		
-		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(1f, 2f);
-		
-		fixDef = new FixtureDef();
-		fixDef.shape = shape;
-		fixDef.density = 3f;
-		fixDef.friction = 0f;
-		fixDef.restitution = 0f;
-		
-		player = world.createBody(bodyDef);
-		player.createFixture(fixDef);
-		
-
-		playerSprite = IceAspirations.skin.getSprite("Rabbit1");
-		playerSprite.setSize(2.8f, 5.6f);
-		playerSprite.setOrigin(playerSprite.getWidth()/2, playerSprite.getHeight()/2);
-		player.setUserData(playerSprite);
-		world.getBodies(playerBodies);
-		body = playerBodies.first();
-		
-		
-		
-		
-		
+		bodyDef = new BodyDef();		
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(0, 0);
 
@@ -160,6 +135,7 @@ public class GameScreen implements Screen {
 
 		worldContainerShape.createChain(new Vector2[] {topLeft, bottomLeft, bottomRight, topRight});
 
+		fixDef = new FixtureDef();
 		fixDef.shape = worldContainerShape;
 		fixDef.friction = 0f;
 		fixDef.restitution = 0;
