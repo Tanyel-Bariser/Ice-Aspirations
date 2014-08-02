@@ -21,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.entities.Player;
 
@@ -44,7 +43,6 @@ public class GameScreen implements Screen {
 	float backgroundHeight = background.getHeight();
 	private Player player;
 	public static final float ZOOM = 50f * compatibility;
-	private Array<Body> playerBodies = new Array<Body>();
 	private Sprite playerSprite;
 	
 	public enum State {
@@ -70,19 +68,17 @@ public class GameScreen implements Screen {
 		if (state.equals(State.Running)) {
         	world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
         	
-    		float playerY = player.player.getPosition().y;
+    		float playerY = player.body.getPosition().y;
     		if (playerY > 0) {
     			camera.position.y = playerY;
     		} else {
     			camera.position.y = 0;
     		}
     		background.setPosition(camera.position.x - backgroundWidth/2, camera.position.y - backgroundHeight/2);
+    		playerSprite.setPosition(player.body.getPosition().x - playerSprite.getWidth()/2, player.body.getPosition().y - playerSprite.getHeight()/2);
+    		playerSprite.setRotation(player.body.getAngle() * MathUtils.radiansToDegrees);
     		camera.update();	
 		}
-		
-
-		playerSprite.setPosition(player.body.getPosition().x - playerSprite.getWidth()/2, player.body.getPosition().y - playerSprite.getHeight()/2);
-		playerSprite.setRotation(player.body.getAngle() * MathUtils.radiansToDegrees);
 		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
