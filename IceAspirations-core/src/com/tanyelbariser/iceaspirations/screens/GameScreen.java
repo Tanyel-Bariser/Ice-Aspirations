@@ -68,6 +68,8 @@ public class GameScreen implements Screen {
 		if (state.equals(State.Running)) {
         	world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
         	
+        	player.update();
+        	
     		float playerY = player.body.getPosition().y;
     		if (playerY > 0) {
     			camera.position.y = playerY;

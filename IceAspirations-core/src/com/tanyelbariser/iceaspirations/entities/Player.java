@@ -25,7 +25,7 @@ public class Player {
 		bodyDef.position.set(0, -height/GameScreen.ZOOM/3);
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(1f, 2f);
+		shape.setAsBox(0.75f, 1.5f);
 		
 		fixDef = new FixtureDef();
 		fixDef.shape = shape;
@@ -38,8 +38,18 @@ public class Player {
 		
 
 		playerSprite = IceAspirations.skin.getSprite("Rabbit1");
-		playerSprite.setSize(2.8f, 5.6f);
+		playerSprite.setSize(2.1f, 4.2f);
 		playerSprite.setOrigin(playerSprite.getWidth()/2, playerSprite.getHeight()/2);
 		body.setUserData(playerSprite);
+	}
+	
+	public void update() {
+		float accel = -Gdx.input.getAccelerometerX() * 2;
+		float y = body.getLinearVelocity().y;
+		if (accel > 0) {
+			body.setLinearVelocity(accel, y);
+		} else {
+			body.setLinearVelocity(accel, y);
+		}
 	}
 }
