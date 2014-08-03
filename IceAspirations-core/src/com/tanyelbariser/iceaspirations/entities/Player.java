@@ -64,8 +64,9 @@ public class Player implements ContactListener {
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 		if(contact.getWorldManifold().getPoints()[0].y < body.getPosition().y) {
+			angle = contact.getFixtureB().getBody().getAngle();
 			if (timeSinceJump > 0.5f) {
-				float jumpPower = 150;
+				float jumpPower = 200;
 				if (Gdx.input.isTouched()) {
 					body.applyLinearImpulse(0, jumpPower, body.getWorldCenter().x,
 							body.getWorldCenter().y, true);
@@ -73,7 +74,7 @@ public class Player implements ContactListener {
 				}
 			}
 		}
-		angle = contact.getFixtureB().getBody().getAngle();
+		Gdx.app.log("ANGLE", String.valueOf(angle));
 	}
 
 	@Override

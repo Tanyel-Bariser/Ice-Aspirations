@@ -19,6 +19,7 @@ public class Platforms {
 	float leftScreenEdge = -GameScreen.width / GameScreen.ZOOM / 2;
 	float rightScreenEdge = GameScreen.width / GameScreen.ZOOM / 2;
 	float bottomScreenEdge = -GameScreen.height / GameScreen.ZOOM / 2;
+	private boolean placeLeft = true;
 
 	public Platforms(World world) {
 		platformY = bottomScreenEdge;
@@ -50,25 +51,26 @@ public class Platforms {
 
 	public void createPlatforms(float topEdge) {
 		while (platformY < topEdge + 10) {
-
-			float platformX = MathUtils.random(leftScreenEdge, rightScreenEdge);
-
+			float width = 3, height = 1;			
+			float platformX = 0;
+			if (placeLeft ) {
+				platformX  = MathUtils.random(leftScreenEdge + width/2, 0 - width/2);
+			} else {
+				platformX = MathUtils.random(0 + width/2, rightScreenEdge - width/2);
+			}
+			placeLeft = !placeLeft;
 			PolygonShape shape = new PolygonShape();
 			Vector2 platformPosition = new Vector2(platformX, platformY);
 
-			float width = 3, height = 1;
-			shape.setAsBox(width / 2, height / 2, platformPosition,
-					MathUtils.random(-5, 5));
+			float angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
+					45 * MathUtils.degreesToRadians);
+			shape.setAsBox(width / 2, height / 2, platformPosition, angle);
 
-			fixDef.shape = shape;
-			fixDef.friction = 0f;
-			fixDef.restitution = 0;
-
-			worldContainer.createFixture(fixDef);
+			worldContainer.createFixture(shape, 0);
 
 			shape.dispose();
 
-			platformY += MathUtils.random(3, 4);
+			platformY += MathUtils.random(3.5f, 6);
 		}
 	}
 }
