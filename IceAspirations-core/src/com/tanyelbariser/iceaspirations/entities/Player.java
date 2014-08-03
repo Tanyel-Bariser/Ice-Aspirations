@@ -5,13 +5,17 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
-public class Player {
+public class Player implements ContactListener {
 	final float height = Gdx.graphics.getHeight();
 	final float width = Gdx.graphics.getWidth();
 	private BodyDef bodyDef;
@@ -19,8 +23,11 @@ public class Player {
 	public Body body;
 	public Sprite playerSprite;
 	private float timeSinceJump;
+	private float angle;
 
 	public Player(World world) {
+		world.setContactListener(this);
+		
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(0, -height / GameScreen.ZOOM / 3);
@@ -45,22 +52,32 @@ public class Player {
 	}
 
 	public void update(float delta) {
+		body.setTransform(body.getPosition(), angle);
 		float accel = -Gdx.input.getAccelerometerX() * 2;
 		float y = body.getLinearVelocity().y;
-		if (accel > 0) {
-			body.setLinearVelocity(accel, y);
-		} else {
-			body.setLinearVelocity(accel, y);
-		}
-
+		body.setLinearVelocity(accel, y);
 		timeSinceJump += delta;
-		if (timeSinceJump > 0.5f) {
-			float jumpPower = 150;
-			if (Gdx.input.isTouched()) {
-				body.applyLinearImpulse(0, jumpPower, body.getWorldCenter().x,
-						body.getWorldCenter().y, true);
-				timeSinceJump = 0;
+	}
+
+	@Override
+	public void postSolve(Contact contact, ContactImpulse impulse) {
+		if(contact.getWorldManifold().getPoints()[0].y < body.getPosition().y) {
+			if (timeSinceJump > 0.5f) {
+				float jumpPower = 150;
+				if (Gdx.input.isTouched()) {
+					body.applyLinearImpulse(0, jumpPower, body.getWorldCenter().x,
+							body.getWorldCenter().y, true);
+					timeSinceJump = 0;
+				}
 			}
 		}
+		angle = contact.getFixtureB().getBody().getAngle();
 	}
+
+	@Override
+	public void beginContact(Contact contact) {}
+	@Override
+	public void endContact(Contact contact) {}
+	@Override
+	public void preSolve(Contact contact, Manifold oldManifold) {}
 }
