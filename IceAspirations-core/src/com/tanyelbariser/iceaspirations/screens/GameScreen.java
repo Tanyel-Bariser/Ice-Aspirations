@@ -9,12 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.ChainShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -23,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.entities.Player;
+import com.tanyelbariser.iceaspirations.platforms.Platforms;
 
 public class GameScreen implements Screen {
 	IceAspirations iceA;
@@ -30,14 +26,12 @@ public class GameScreen implements Screen {
 	Stage stage;
 	ImageButton pause, back;
 	static float phoneWidth = 768;
-	static float width = Gdx.graphics.getWidth();
-	float height = Gdx.graphics.getHeight();
+	public static float width = Gdx.graphics.getWidth();
+	public static float height = Gdx.graphics.getHeight();
 	static float compatibility = width / phoneWidth;
 	private World world;
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer physicsDebugger;
-	private BodyDef bodyDef;
-	private FixtureDef fixDef;
 	private final Sprite background = new Sprite(new Texture("Background.png"));
 	float backgroundWidth = background.getWidth();
 	float backgroundHeight = background.getHeight();
@@ -120,28 +114,7 @@ public class GameScreen implements Screen {
 		player = new Player(world);
 		playerSprite = player.playerSprite;
 		
-		bodyDef = new BodyDef();		
-		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(0, 0);
-
-		ChainShape worldContainerShape = new ChainShape();
-
-		Vector2 topLeft = new Vector2(-width/ZOOM/2, 500);
-		Vector2 bottomLeft = new Vector2(-width/ZOOM/2, -height/ZOOM/2);
-		Vector2 bottomRight = new Vector2(width/ZOOM/2, -height/ZOOM/2);
-		Vector2 topRight = new Vector2(width/ZOOM/2, 500);
-
-		worldContainerShape.createChain(new Vector2[] {topLeft, bottomLeft, bottomRight, topRight});
-
-		fixDef = new FixtureDef();
-		fixDef.shape = worldContainerShape;
-		fixDef.friction = 0f;
-		fixDef.restitution = 0;
-
-		Body worldContainer = world.createBody(bodyDef);
-		worldContainer.createFixture(fixDef);
-		
-		worldContainerShape.dispose();
+		new Platforms(world);
 	}
 
 	private void pauseButtonSetUp() {

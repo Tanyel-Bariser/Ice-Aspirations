@@ -43,6 +43,8 @@ public class Player implements ContactListener {
 
 		body = world.createBody(bodyDef);
 		body.createFixture(fixDef);
+		
+		shape.dispose();
 
 		playerSprite = IceAspirations.skin.getSprite("Rabbit1");
 		playerSprite.setSize(2.1f, 4.2f);
