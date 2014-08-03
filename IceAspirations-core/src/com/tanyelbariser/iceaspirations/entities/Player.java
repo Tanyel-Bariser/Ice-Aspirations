@@ -18,38 +18,49 @@ public class Player {
 	private FixtureDef fixDef;
 	public Body body;
 	public Sprite playerSprite;
+	private float timeSinceJump;
 
 	public Player(World world) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(0, -height/GameScreen.ZOOM/3);
-		
+		bodyDef.position.set(0, -height / GameScreen.ZOOM / 3);
+
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.75f, 1.5f);
-		
+
 		fixDef = new FixtureDef();
 		fixDef.shape = shape;
 		fixDef.density = 3f;
 		fixDef.friction = 0f;
 		fixDef.restitution = 0f;
-		
+
 		body = world.createBody(bodyDef);
 		body.createFixture(fixDef);
-		
 
 		playerSprite = IceAspirations.skin.getSprite("Rabbit1");
 		playerSprite.setSize(2.1f, 4.2f);
-		playerSprite.setOrigin(playerSprite.getWidth()/2, playerSprite.getHeight()/2);
+		playerSprite.setOrigin(playerSprite.getWidth() / 2,
+				playerSprite.getHeight() / 2);
 		body.setUserData(playerSprite);
 	}
-	
-	public void update() {
+
+	public void update(float delta) {
 		float accel = -Gdx.input.getAccelerometerX() * 2;
 		float y = body.getLinearVelocity().y;
 		if (accel > 0) {
 			body.setLinearVelocity(accel, y);
 		} else {
 			body.setLinearVelocity(accel, y);
+		}
+
+		timeSinceJump += delta;
+		if (timeSinceJump > 0.5f) {
+			float jumpPower = 150;
+			if (Gdx.input.isTouched()) {
+				body.applyLinearImpulse(0, jumpPower, body.getWorldCenter().x,
+						body.getWorldCenter().y, true);
+				timeSinceJump = 0;
+			}
 		}
 	}
 }
