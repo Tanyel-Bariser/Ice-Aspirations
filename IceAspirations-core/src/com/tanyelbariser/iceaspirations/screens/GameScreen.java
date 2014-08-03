@@ -36,7 +36,7 @@ public class GameScreen implements Screen {
 	float backgroundWidth = background.getWidth();
 	float backgroundHeight = background.getHeight();
 	private Player player;
-	public static final float ZOOM = 50f * compatibility;
+	public static final float ZOOM = 30f * compatibility;
 	private Sprite playerSprite;
 	
 	public enum State {
@@ -193,6 +193,5 @@ public class GameScreen implements Screen {
 		world.dispose();
 		physicsDebugger.dispose();
 		background.getTexture().dispose();
-		playerSprite.getTexture().dispose();
 	}
 }

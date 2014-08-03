@@ -31,9 +31,10 @@ public class Player implements ContactListener {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(0, -height / GameScreen.ZOOM / 3);
+		bodyDef.fixedRotation = true;
 
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(0.75f, 1.5f);
+		shape.setAsBox(0.5f, 1.5f);
 
 		fixDef = new FixtureDef();
 		fixDef.shape = shape;

@@ -30,10 +30,10 @@ public class Platforms {
 
 		ChainShape worldContainerShape = new ChainShape();
 
-		Vector2 topLeft = new Vector2(leftScreenEdge, 500);
+		Vector2 topLeft = new Vector2(leftScreenEdge, 5000);
 		Vector2 bottomLeft = new Vector2(leftScreenEdge, bottomScreenEdge);
 		Vector2 bottomRight = new Vector2(rightScreenEdge, bottomScreenEdge);
-		Vector2 topRight = new Vector2(rightScreenEdge, 500);
+		Vector2 topRight = new Vector2(rightScreenEdge, 5000);
 
 		worldContainerShape.createChain(new Vector2[] { topLeft, bottomLeft,
 				bottomRight, topRight });
@@ -62,7 +62,7 @@ public class Platforms {
 			PolygonShape shape = new PolygonShape();
 			Vector2 platformPosition = new Vector2(platformX, platformY);
 
-			float angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
+			float angle = MathUtils.random(0, 1) < 0.5f ? 0 : MathUtils.random(-45 * MathUtils.degreesToRadians,
 					45 * MathUtils.degreesToRadians);
 			shape.setAsBox(width / 2, height / 2, platformPosition, angle);
 
@@ -70,7 +70,7 @@ public class Platforms {
 
 			shape.dispose();
 
-			platformY += MathUtils.random(3.5f, 6);
+			platformY += MathUtils.random(3, 5);
 		}
 	}
 }
