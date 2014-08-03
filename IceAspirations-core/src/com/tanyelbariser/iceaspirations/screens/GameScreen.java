@@ -49,6 +49,7 @@ public class GameScreen implements Screen {
 	final float TIMESTEP = 1/approxFPS;
 	final int VELOCITYITERATIONS = 11;
 	final int POSITIONITERATIONS = 4;
+	private Platforms platforms;
 	
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -73,6 +74,7 @@ public class GameScreen implements Screen {
     		background.setPosition(camera.position.x - backgroundWidth/2, camera.position.y - backgroundHeight/2);
     		playerSprite.setPosition(player.body.getPosition().x - playerSprite.getWidth()/2, player.body.getPosition().y - playerSprite.getHeight()/2);
     		playerSprite.setRotation(player.body.getAngle() * MathUtils.radiansToDegrees);
+    		platforms.createPlatforms(camera.position.y + camera.viewportHeight / 2);
     		camera.update();	
 		}
 		
@@ -114,7 +116,7 @@ public class GameScreen implements Screen {
 		player = new Player(world);
 		playerSprite = player.playerSprite;
 		
-		new Platforms(world);
+		platforms = new Platforms(world);
 	}
 
 	private void pauseButtonSetUp() {
@@ -190,5 +192,7 @@ public class GameScreen implements Screen {
 		stage.dispose();
 		world.dispose();
 		physicsDebugger.dispose();
+		background.getTexture().dispose();
+		playerSprite.getTexture().dispose();
 	}
 }

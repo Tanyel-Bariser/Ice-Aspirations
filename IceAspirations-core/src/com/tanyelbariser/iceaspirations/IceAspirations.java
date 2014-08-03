@@ -76,5 +76,6 @@ public class IceAspirations extends Game {
 		music.dispose();
 		skin.dispose();
 		blue.dispose();
+		background.getTexture().dispose();
 	}
 }
