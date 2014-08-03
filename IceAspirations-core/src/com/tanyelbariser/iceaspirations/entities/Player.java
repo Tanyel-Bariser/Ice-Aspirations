@@ -25,6 +25,7 @@ public class Player implements ContactListener {
 	public Sprite playerSprite;
 	private float timeSinceJump;
 	private float angle;
+	private float slippery;
 
 	public Player(World world) {
 		world.setContactListener(this);
@@ -63,7 +64,7 @@ public class Player implements ContactListener {
 		body.setTransform(body.getPosition(), angle);
 		float accel = -Gdx.input.getAccelerometerX() * 2;
 		float y = body.getLinearVelocity().y;
-		body.setLinearVelocity(accel, y);
+		body.setLinearVelocity(accel - (slippery * 10), y);
 		timeSinceJump += delta;
 	}
 
@@ -71,22 +72,25 @@ public class Player implements ContactListener {
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 		if(contact.getWorldManifold().getPoints()[0].y < body.getPosition().y) {
 			angle = contact.getFixtureB().getBody().getAngle();
+			slippery = angle;
 			if (timeSinceJump > 0.5f) {
 				float jumpPower = 200;
 				if (Gdx.input.isTouched()) {
 					body.applyLinearImpulse(0, jumpPower, body.getWorldCenter().x,
 							body.getWorldCenter().y, true);
 					timeSinceJump = 0;
+					angle = 0f;
 				}
 			}
 		}
-		Gdx.app.log("ANGLE", String.valueOf(angle));
 	}
 
 	@Override
 	public void beginContact(Contact contact) {}
 	@Override
-	public void endContact(Contact contact) {}
+	public void endContact(Contact contact) {
+		slippery = 0;
+	}
 	@Override
 	public void preSolve(Contact contact, Manifold oldManifold) {}
 }
