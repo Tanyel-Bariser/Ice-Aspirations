@@ -2,6 +2,7 @@ package com.tanyelbariser.iceaspirations.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -31,7 +32,6 @@ public class Player implements ContactListener {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(0, -height / GameScreen.ZOOM / 3);
-		bodyDef.fixedRotation = true;
 
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.5f, 1.5f);
@@ -55,6 +55,11 @@ public class Player implements ContactListener {
 	}
 
 	public void update(float delta) {
+		if (angle > body.getAngle()) {
+			body.setTransform(body.getPosition(), angle + 1 * MathUtils.degreesToRadians);
+		} else {
+			body.setTransform(body.getPosition(), angle - 1 * MathUtils.degreesToRadians);
+		}
 		body.setTransform(body.getPosition(), angle);
 		float accel = -Gdx.input.getAccelerometerX() * 2;
 		float y = body.getLinearVelocity().y;

@@ -20,8 +20,10 @@ public class Platforms {
 	float rightScreenEdge = GameScreen.width / GameScreen.ZOOM / 2;
 	float bottomScreenEdge = -GameScreen.height / GameScreen.ZOOM / 2;
 	private boolean placeLeft = true;
-
+	World world;
+	
 	public Platforms(World world) {
+		this.world = world;
 		platformY = bottomScreenEdge;
 
 		bodyDef = new BodyDef();
@@ -59,14 +61,22 @@ public class Platforms {
 				platformX = MathUtils.random(0 + width/2, rightScreenEdge - width/2);
 			}
 			placeLeft = !placeLeft;
-			PolygonShape shape = new PolygonShape();
-			Vector2 platformPosition = new Vector2(platformX, platformY);
+			
+			bodyDef = new BodyDef();
+			bodyDef.type = BodyType.StaticBody;
+			bodyDef.position.set(platformX, platformY);
 
 			float angle = MathUtils.random(0, 1) < 0.5f ? 0 : MathUtils.random(-45 * MathUtils.degreesToRadians,
 					45 * MathUtils.degreesToRadians);
-			shape.setAsBox(width / 2, height / 2, platformPosition, angle);
+			bodyDef.angle = angle;
+			
+			Body platform = world.createBody(bodyDef);
+			
+			PolygonShape shape = new PolygonShape();
+			shape.setAsBox(width / 2, height / 2);
+			
 
-			worldContainer.createFixture(shape, 0);
+			platform.createFixture(shape, 0);
 
 			shape.dispose();
 
