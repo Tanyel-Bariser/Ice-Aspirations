@@ -47,8 +47,8 @@ public class GameScreen implements Screen {
 
 	float approxFPS = 60;
 	final float TIMESTEP = 1/approxFPS;
-	final int VELOCITYITERATIONS = 11;
-	final int POSITIONITERATIONS = 4;
+	final int VELOCITYITERATIONS = 8;
+	final int POSITIONITERATIONS = 3;
 	private Platforms platforms;
 	
 	public GameScreen(IceAspirations iceA) {

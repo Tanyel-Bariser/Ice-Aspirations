@@ -2,7 +2,6 @@ package com.tanyelbariser.iceaspirations.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -13,6 +12,8 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
@@ -23,13 +24,12 @@ public class Player implements ContactListener {
 	private FixtureDef fixDef;
 	public Body body;
 	public Sprite playerSprite;
-	private float timeSinceJump;
 	private float angle;
 	private float slippery;
 
 	public Player(World world) {
 		world.setContactListener(this);
-		
+
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(0, -height / GameScreen.ZOOM / 3);
@@ -45,7 +45,7 @@ public class Player implements ContactListener {
 
 		body = world.createBody(bodyDef);
 		body.createFixture(fixDef);
-		
+
 		shape.dispose();
 
 		playerSprite = IceAspirations.skin.getSprite("Rabbit1");
@@ -56,41 +56,48 @@ public class Player implements ContactListener {
 	}
 
 	public void update(float delta) {
-		if (angle > body.getAngle()) {
-			body.setTransform(body.getPosition(), angle + 1 * MathUtils.degreesToRadians);
-		} else {
-			body.setTransform(body.getPosition(), angle - 1 * MathUtils.degreesToRadians);
-		}
 		body.setTransform(body.getPosition(), angle);
 		float accel = -Gdx.input.getAccelerometerX() * 2;
-		float y = body.getLinearVelocity().y;
-		body.setLinearVelocity(accel - (slippery * 10), y);
-		timeSinceJump += delta;
+		body.setLinearVelocity(accel - slippery, body.getLinearVelocity().y);
 	}
 
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
-		if(contact.getWorldManifold().getPoints()[0].y < body.getPosition().y) {
+		boolean feetContact = contact.getWorldManifold().getPoints()[0].y < body
+				.getPosition().y;
+		boolean notRising = body.getLinearVelocity().y < 0;
+		if (feetContact && notRising) {
 			angle = contact.getFixtureB().getBody().getAngle();
-			slippery = angle;
-			if (timeSinceJump > 0.5f) {
-				float jumpPower = 200;
-				if (Gdx.input.isTouched()) {
-					body.applyLinearImpulse(0, jumpPower, body.getWorldCenter().x,
-							body.getWorldCenter().y, true);
-					timeSinceJump = 0;
-					angle = 0f;
-				}
+			boolean onFloatingPlatform = (angle < 0.8f && angle > 0.07f)
+					|| (angle < -0.07f && angle > -0.8f);
+			if (onFloatingPlatform) {
+				slippery = angle * 10;
+			} else {
+				slippery = angle = 0;
+			}
+			float jumpPower = 200;
+			if (Gdx.input.isTouched()) {
+				body.applyLinearImpulse(0, jumpPower, body.getWorldCenter().x,
+						body.getWorldCenter().y, true);
 			}
 		}
 	}
 
 	@Override
-	public void beginContact(Contact contact) {}
+	public void beginContact(Contact contact) {
+	}
+
 	@Override
 	public void endContact(Contact contact) {
-		slippery = 0;
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				angle = slippery = 0;
+			}
+		}, 1f);
 	}
+
 	@Override
-	public void preSolve(Contact contact, Manifold oldManifold) {}
+	public void preSolve(Contact contact, Manifold oldManifold) {
+	}
 }

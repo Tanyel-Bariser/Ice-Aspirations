@@ -24,7 +24,7 @@ public class Platforms {
 	
 	public Platforms(World world) {
 		this.world = world;
-		platformY = bottomScreenEdge;
+		platformY = bottomScreenEdge /2;
 
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
