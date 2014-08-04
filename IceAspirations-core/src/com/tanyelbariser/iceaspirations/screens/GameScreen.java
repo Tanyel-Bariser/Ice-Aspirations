@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.entities.Player;
 import com.tanyelbariser.iceaspirations.platforms.Platforms;
@@ -38,20 +40,22 @@ public class GameScreen implements Screen {
 	private Player player;
 	public static final float ZOOM = 30f * compatibility;
 	private Sprite playerSprite;
-	
+
 	public enum State {
-	    Running, Paused
+		Running, Paused
 	}
+
 	State state = State.Running;
-	
 
 	float approxFPS = 60;
-	final float TIMESTEP = 1/approxFPS;
+	final float TIMESTEP = 1 / approxFPS;
 	final int VELOCITYITERATIONS = 8;
 	final int POSITIONITERATIONS = 3;
 	private Platforms platforms;
 	private Sprite platformSprite;
-	
+
+	Array<Sprite> platformSprites = new Array<Sprite>();
+
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
 	}
@@ -60,39 +64,61 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				
-		if (state.equals(State.Running)) {
-        	world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
-        	
-        	player.update(delta);
-        	
-    		float playerY = player.body.getPosition().y;
-    		if (playerY > 0) {
-    			camera.position.y = playerY;
-    		} else {
-    			camera.position.y = 0;
-    		}
-    		background.setPosition(camera.position.x - backgroundWidth/2, camera.position.y - backgroundHeight/2);
-    		playerSprite.setPosition(player.body.getPosition().x - playerSprite.getWidth()/2, player.body.getPosition().y - playerSprite.getHeight()/2);
-    		playerSprite.setRotation(player.body.getAngle() * MathUtils.radiansToDegrees);
-    		
-    		platforms.createPlatforms(camera.position.y + camera.viewportHeight / 2, platformSprite);
 
-    		camera.update();	
+		if (state.equals(State.Running)) {
+			world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
+
+			player.update(delta);
+
+			float playerY = player.body.getPosition().y;
+			if (playerY > 0) {
+				camera.position.y = playerY;
+			} else {
+				camera.position.y = 0;
+			}
+			background.setPosition(camera.position.x - backgroundWidth / 2,
+					camera.position.y - backgroundHeight / 2);
+			playerSprite.setPosition(
+					player.body.getPosition().x - playerSprite.getWidth() / 2,
+					player.body.getPosition().y - playerSprite.getHeight() / 2);
+			playerSprite.setRotation(player.body.getAngle()
+					* MathUtils.radiansToDegrees);
+
+			platformSprite = IceAspirations.skin.getSprite("Platform5");
+			platforms.createPlatforms(camera.position.y + camera.viewportHeight
+					/ 2, platformSprite);
+
+			Array<Body> tmpBodies = new Array<Body>();
+			world.getBodies(tmpBodies);
+			for (Body body : tmpBodies) {
+				if (body.getUserData() instanceof Sprite) {
+					Sprite sprite = (Sprite) body.getUserData();
+					sprite.setSize(3f, 1f);
+					sprite.setOrigin(sprite.getWidth() / 2,
+							sprite.getHeight() / 2);
+					sprite.setPosition(body.getPosition().x - sprite.getWidth()
+							/ 2, body.getPosition().y - sprite.getHeight() / 2);
+					sprite.setRotation(body.getAngle()
+							* MathUtils.radiansToDegrees);
+					platformSprites.add(sprite);
+				}
+			}
+
+			camera.update();
 		}
-		
+
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		background.draw(batch);
 		playerSprite.draw(batch);
-		if (platformSprite instanceof Sprite) {
-			platformSprite.draw(batch);
+		for (Sprite platform : platformSprites) {
+			platform.draw(batch);
 		}
 		batch.end();
 
 		stage.act(delta);
 		stage.draw();
-			
+
 		physicsDebugger.render(world, camera.combined);
 	}
 
@@ -108,23 +134,21 @@ public class GameScreen implements Screen {
 		batch = new SpriteBatch();
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-		
-		background.setScale(1f/ZOOM * compatibility);
+
+		background.setScale(1f / ZOOM * compatibility);
 
 		pauseButtonSetUp();
 		backButtonSetUp();
-		
+
 		float gravity = -9.81f;
 		world = new World(new Vector2(0, gravity), true);
 		physicsDebugger = new Box2DDebugRenderer();
-		camera = new OrthographicCamera(width/ZOOM, height/ZOOM);
-		
+		camera = new OrthographicCamera(width / ZOOM, height / ZOOM);
+
 		player = new Player(world);
 		playerSprite = player.playerSprite;
-		
+
 		platforms = new Platforms(world);
-		platformSprite = IceAspirations.skin.getSprite("Platform5");
-		platformSprite.setSize(3f, 1f);
 	}
 
 	private void pauseButtonSetUp() {
@@ -157,8 +181,8 @@ public class GameScreen implements Screen {
 		});
 		stage.addActor(pause);
 	}
-	
-	private void backButtonSetUp() {		
+
+	private void backButtonSetUp() {
 		ImageButtonStyle imageStyle = new ImageButtonStyle();
 		imageStyle.up = IceAspirations.skin.getDrawable("Back");
 		imageStyle.down = IceAspirations.skin.getDrawable("Back");
@@ -169,7 +193,7 @@ public class GameScreen implements Screen {
 		back.setSize(backSize, backSize);
 
 		back.setPosition(0, 0);
-		
+
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

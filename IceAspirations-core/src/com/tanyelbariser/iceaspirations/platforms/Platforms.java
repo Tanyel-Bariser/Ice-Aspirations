@@ -80,7 +80,8 @@ public class Platforms {
 			platform.createFixture(shape, 0);
 
 			shape.dispose();
-			
+
+			platformSprite.setSize(3f, 1f);
 			platformSprite.setOrigin(platformSprite.getWidth() / 2,
 					platformSprite.getHeight() / 2);
 			platformSprite.setPosition(platformX - platformSprite.getWidth() / 2, platformY - platformSprite.getHeight() / 2);

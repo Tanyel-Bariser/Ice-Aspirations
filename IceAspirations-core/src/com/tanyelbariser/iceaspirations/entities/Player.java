@@ -52,7 +52,7 @@ public class Player implements ContactListener {
 		playerSprite.setSize(2.1f, 4.2f);
 		playerSprite.setOrigin(playerSprite.getWidth() / 2,
 				playerSprite.getHeight() / 2);
-		body.setUserData(playerSprite);
+//		body.setUserData(playerSprite);
 	}
 
 	public void update(float delta) {
