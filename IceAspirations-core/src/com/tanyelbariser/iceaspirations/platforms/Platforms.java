@@ -1,5 +1,6 @@
 package com.tanyelbariser.iceaspirations.platforms;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -51,11 +52,11 @@ public class Platforms {
 		worldContainerShape.dispose();
 	}
 
-	public void createPlatforms(float topEdge) {
-		while (platformY < topEdge + 10) {
+	public void createPlatforms(float topEdge, Sprite platformSprite) {
+		if (platformY < topEdge - 10) {
 			float width = 3, height = 1;			
 			float platformX = 0;
-			if (placeLeft ) {
+			if (placeLeft) {
 				platformX  = MathUtils.random(leftScreenEdge + width/2, 0 - width/2);
 			} else {
 				platformX = MathUtils.random(0 + width/2, rightScreenEdge - width/2);
@@ -79,6 +80,13 @@ public class Platforms {
 			platform.createFixture(shape, 0);
 
 			shape.dispose();
+			
+			platformSprite.setOrigin(platformSprite.getWidth() / 2,
+					platformSprite.getHeight() / 2);
+			platformSprite.setPosition(platformX - platformSprite.getWidth() / 2, platformY - platformSprite.getHeight() / 2);
+    		platformSprite.setRotation(angle * MathUtils.radiansToDegrees);
+    		
+			platform.setUserData(platformSprite);
 
 			platformY += MathUtils.random(3, 5);
 		}
