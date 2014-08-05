@@ -39,7 +39,7 @@ public class GameScreen implements Screen {
 	float backgroundHeight = background.getHeight();
 	private Player player;
 	public static final float ZOOM = 30f * compatibility;
-	private Sprite playerSprite;
+	private Sprite stand;
 
 	public enum State {
 		Running, Paused
@@ -55,6 +55,8 @@ public class GameScreen implements Screen {
 	private Sprite platformSprite;
 
 	Array<Sprite> platformSprites = new Array<Sprite>();
+	private Sprite jump;
+	private Sprite playerSprite;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -65,6 +67,12 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		if (player.standing) {
+			playerSprite = stand;
+		} else {
+			playerSprite = jump;
+		}
+		
 		if (state.equals(State.Running)) {
 			world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
 
@@ -87,22 +95,22 @@ public class GameScreen implements Screen {
 			platformSprite = IceAspirations.skin.getSprite("Platform5");
 			platforms.createPlatforms(camera.position.y + camera.viewportHeight
 					/ 2, platformSprite);
-
-			Array<Body> tmpBodies = new Array<Body>();
-			world.getBodies(tmpBodies);
-			for (Body body : tmpBodies) {
-				if (body.getUserData() instanceof Sprite) {
-					Sprite sprite = (Sprite) body.getUserData();
-					sprite.setSize(3f, 1f);
-					sprite.setOrigin(sprite.getWidth() / 2,
-							sprite.getHeight() / 2);
-					sprite.setPosition(body.getPosition().x - sprite.getWidth()
-							/ 2, body.getPosition().y - sprite.getHeight() / 2);
-					sprite.setRotation(body.getAngle()
-							* MathUtils.radiansToDegrees);
-					platformSprites.add(sprite);
-				}
-			}
+//
+//			Array<Body> tmpBodies = new Array<Body>();
+//			world.getBodies(tmpBodies);
+//			for (Body body : tmpBodies) {
+//				if (body.getUserData() instanceof Sprite) {
+//					Sprite sprite = (Sprite) body.getUserData();
+//					sprite.setSize(3f, 1f);
+//					sprite.setOrigin(sprite.getWidth() / 2,
+//							sprite.getHeight() / 2);
+//					sprite.setPosition(body.getPosition().x - sprite.getWidth()
+//							/ 2, body.getPosition().y - sprite.getHeight() / 2);
+//					sprite.setRotation(body.getAngle()
+//							* MathUtils.radiansToDegrees);
+//					platformSprites.add(sprite);
+//				}
+//			}
 
 			camera.update();
 		}
@@ -111,9 +119,9 @@ public class GameScreen implements Screen {
 		batch.begin();
 		background.draw(batch);
 		playerSprite.draw(batch);
-		for (Sprite platform : platformSprites) {
-			platform.draw(batch);
-		}
+//		for (Sprite platform : platformSprites) {
+//			platform.draw(batch);
+//		}
 		batch.end();
 
 		stage.act(delta);
@@ -146,7 +154,8 @@ public class GameScreen implements Screen {
 		camera = new OrthographicCamera(width / ZOOM, height / ZOOM);
 
 		player = new Player(world);
-		playerSprite = player.playerSprite;
+		stand = player.stand;
+		jump = player.jump;
 
 		platforms = new Platforms(world);
 	}

@@ -23,9 +23,11 @@ public class Player implements ContactListener {
 	private BodyDef bodyDef;
 	private FixtureDef fixDef;
 	public Body body;
-	public Sprite playerSprite;
+	public Sprite stand;
 	private float angle;
 	private float slippery;
+	public Sprite jump;
+	public boolean standing = true;
 
 	public Player(World world) {
 		world.setContactListener(this);
@@ -48,11 +50,14 @@ public class Player implements ContactListener {
 
 		shape.dispose();
 
-		playerSprite = IceAspirations.skin.getSprite("Rabbit1");
-		playerSprite.setSize(2.1f, 4.2f);
-		playerSprite.setOrigin(playerSprite.getWidth() / 2,
-				playerSprite.getHeight() / 2);
-//		body.setUserData(playerSprite);
+		stand = IceAspirations.skin.getSprite("Rabbit1");
+		stand.setSize(2.1f, 4.2f);
+		stand.setOrigin(stand.getWidth() / 2, stand.getHeight() / 2);
+
+		jump = IceAspirations.skin.getSprite("Rabbit5");
+		jump.setSize(2.1f, 4.2f);
+		jump.setOrigin(stand.getWidth() / 2, stand.getHeight() / 2);
+		// body.setUserData(playerSprite);
 	}
 
 	public void update(float delta) {
@@ -67,6 +72,7 @@ public class Player implements ContactListener {
 				.getPosition().y;
 		boolean notRising = body.getLinearVelocity().y < 0;
 		if (feetContact && notRising) {
+			standing = true;
 			angle = contact.getFixtureB().getBody().getAngle();
 			boolean onFloatingPlatform = (angle < 0.8f && angle > 0.07f)
 					|| (angle < -0.07f && angle > -0.8f);
@@ -79,6 +85,7 @@ public class Player implements ContactListener {
 			if (Gdx.input.isTouched()) {
 				body.applyLinearImpulse(0, jumpPower, body.getWorldCenter().x,
 						body.getWorldCenter().y, true);
+				standing = false;
 			}
 		}
 	}
@@ -93,6 +100,7 @@ public class Player implements ContactListener {
 			@Override
 			public void run() {
 				angle = slippery = 0;
+				standing = false;
 			}
 		}, 1f);
 	}
