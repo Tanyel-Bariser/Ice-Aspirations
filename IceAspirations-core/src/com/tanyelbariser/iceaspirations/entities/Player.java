@@ -61,6 +61,14 @@ public class Player implements ContactListener {
 	}
 
 	public void update(float delta) {
+		/* if (body.getLinearVelocity().y > 0) {
+		 * 		rising = true; // runs animation loop once from Rabbit1 to Rabbit4
+		 * } else {
+		 * 		rising = false; // runs animation loop once from Rabbit5 to Rabbit7
+		 * }
+		 * 		run animation loop from Rabbit8 to Rabbit1 once feetContact,
+		 * 		i.e. standing = true; ... which should override any other sprite animation
+		 */
 		body.setTransform(body.getPosition(), angle);
 		float accel = -Gdx.input.getAccelerometerX() * 2;
 		body.setLinearVelocity(accel - slippery, body.getLinearVelocity().y);
