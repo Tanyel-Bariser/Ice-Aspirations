@@ -1,6 +1,8 @@
 package com.tanyelbariser.iceaspirations.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -15,19 +17,23 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.tanyelbariser.iceaspirations.IceAspirations;
+import com.tanyelbariser.iceaspirations.platforms.Platforms;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
-public class Player implements ContactListener {
+public class Player implements ContactListener, InputProcessor {
 	final float height = Gdx.graphics.getHeight();
 	final float width = Gdx.graphics.getWidth();
 	private BodyDef bodyDef;
 	private FixtureDef fixDef;
 	public Body body;
 	public Sprite stand;
+	public Sprite jumping;
 	private float angle;
 	private float slippery;
-	public Sprite jump;
-	public boolean standing = true;
+	public final float jump = 200;
+	private float force;
+	private final float forceChange = 5000;
+	private boolean canJump;
 
 	public Player(World world) {
 		world.setContactListener(this);
@@ -54,33 +60,40 @@ public class Player implements ContactListener {
 		stand.setSize(2.1f, 4.2f);
 		stand.setOrigin(stand.getWidth() / 2, stand.getHeight() / 2);
 
-		jump = IceAspirations.skin.getSprite("Rabbit5");
-		jump.setSize(2.1f, 4.2f);
-		jump.setOrigin(stand.getWidth() / 2, stand.getHeight() / 2);
+		jumping = IceAspirations.skin.getSprite("Rabbit5");
+		jumping.setSize(2.1f, 4.2f);
+		jumping.setOrigin(stand.getWidth() / 2, stand.getHeight() / 2);
 		// body.setUserData(playerSprite);
 	}
 
 	public void update(float delta) {
-		/* if (body.getLinearVelocity().y > 0) {
-		 * 		rising = true; // runs animation loop once from Rabbit1 to Rabbit4
-		 * } else {
-		 * 		rising = false; // runs animation loop once from Rabbit5 to Rabbit7
-		 * }
-		 * 		run animation loop from Rabbit8 to Rabbit1 once feetContact,
-		 * 		i.e. standing = true; ... which should override any other sprite animation
+		/*
+		 * Using libgdx's Animation class if (body.getLinearVelocity().y > 0) {
+		 * rising = true; // runs animation loop once from Rabbit1 to Rabbit4 }
+		 * else { rising = false; // runs animation loop once from Rabbit5 to
+		 * Rabbit7 } run animation loop from Rabbit8 to Rabbit1 once feetContact
+		 * in postSolve(), which should override animation Rabbit 5 to 7 if true
+		 * ALSO boolean facingLeft = Gdx.input.getAccelerometerX() > 0; if
+		 * (facingLeft) { set PlayMode.REVERSED enum in Animation class;
 		 */
 		body.setTransform(body.getPosition(), angle);
 		float accel = -Gdx.input.getAccelerometerX() * 2;
 		body.setLinearVelocity(accel - slippery, body.getLinearVelocity().y);
+		body.applyForceToCenter(force, 0, true);
 	}
 
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
+		boolean touchLeftEdge = Platforms.LEFT_SCREEN_EDGE + 0.6f > body
+				.getPosition().x;
+		boolean touchRightEdge = Platforms.RIGHT_SCREEN_EDGE - 0.6f < body
+				.getPosition().x;
 		boolean feetContact = contact.getWorldManifold().getPoints()[0].y < body
 				.getPosition().y;
 		boolean notRising = body.getLinearVelocity().y < 0;
-		if (feetContact && notRising) {
-			standing = true;
+		if (touchLeftEdge || touchRightEdge) {
+			canJump = false;
+		} else if (feetContact && notRising) {
 			angle = contact.getFixtureB().getBody().getAngle();
 			boolean onFloatingPlatform = (angle < 0.8f && angle > 0.07f)
 					|| (angle < -0.07f && angle > -0.8f);
@@ -89,17 +102,8 @@ public class Player implements ContactListener {
 			} else {
 				slippery = angle = 0;
 			}
-			float jumpPower = 200;
-			if (Gdx.input.isTouched()) {
-				body.applyLinearImpulse(0, jumpPower, body.getWorldCenter().x,
-						body.getWorldCenter().y, true);
-				standing = false;
-			}
+			canJump = true;
 		}
-	}
-
-	@Override
-	public void beginContact(Contact contact) {
 	}
 
 	@Override
@@ -108,12 +112,79 @@ public class Player implements ContactListener {
 			@Override
 			public void run() {
 				angle = slippery = 0;
-				standing = false;
+				canJump = false;
 			}
 		}, 1f);
 	}
 
 	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if (canJump) {
+			body.applyLinearImpulse(0, jump, body.getWorldCenter().x,
+					body.getWorldCenter().y, true);
+			canJump = false;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		switch (keycode) {
+		case Keys.LEFT:
+			force -= forceChange + slippery * 10;
+			break;
+		case Keys.RIGHT:
+			force += forceChange + slippery * 10;
+			break;
+		case Keys.SPACE:
+			if (canJump) {
+				body.applyLinearImpulse(0, jump, body.getWorldCenter().x,
+						body.getWorldCenter().y, true);
+				canJump = false;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		if (keycode == Keys.LEFT || keycode == Keys.RIGHT) {
+			force = 0;
+		}
+		return false;
+	}
+
+	// UNUSED METHODS FROM INTERFACES
+	@Override
+	public void beginContact(Contact contact) {
+	}
+
+	@Override
 	public void preSolve(Contact contact, Manifold oldManifold) {
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		return false;
 	}
 }

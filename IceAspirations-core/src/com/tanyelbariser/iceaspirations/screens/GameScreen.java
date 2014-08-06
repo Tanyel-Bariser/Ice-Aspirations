@@ -55,7 +55,7 @@ public class GameScreen implements Screen {
 	private Sprite platformSprite;
 
 	Array<Sprite> platformSprites = new Array<Sprite>();
-	private Sprite jump;
+	private Sprite jumping;
 	private Sprite playerSprite;
 
 	public GameScreen(IceAspirations iceA) {
@@ -67,10 +67,10 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		if (player.standing) {
-			playerSprite = stand;
+		if (player.body.getLinearVelocity().y > 2) {
+			playerSprite = jumping;
 		} else {
-			playerSprite = jump;
+			playerSprite = stand;
 		}
 		
 		if (state.equals(State.Running)) {
@@ -95,7 +95,7 @@ public class GameScreen implements Screen {
 			platformSprite = IceAspirations.skin.getSprite("Platform5");
 			platforms.createPlatforms(camera.position.y + camera.viewportHeight
 					/ 2, platformSprite);
-//
+
 //			Array<Body> tmpBodies = new Array<Body>();
 //			world.getBodies(tmpBodies);
 //			for (Body body : tmpBodies) {
@@ -154,8 +154,9 @@ public class GameScreen implements Screen {
 		camera = new OrthographicCamera(width / ZOOM, height / ZOOM);
 
 		player = new Player(world);
+		Gdx.input.setInputProcessor(player);
 		stand = player.stand;
-		jump = player.jump;
+		jumping = player.jumping;
 
 		platforms = new Platforms(world);
 	}

@@ -17,8 +17,8 @@ public class Platforms {
 	private FixtureDef fixDef;
 	private float platformY;
 	private Body worldContainer;
-	float leftScreenEdge = -GameScreen.width / GameScreen.ZOOM / 2;
-	float rightScreenEdge = GameScreen.width / GameScreen.ZOOM / 2;
+	public static final float LEFT_SCREEN_EDGE = -GameScreen.width / GameScreen.ZOOM / 2;
+	public static final float RIGHT_SCREEN_EDGE = GameScreen.width / GameScreen.ZOOM / 2;
 	float bottomScreenEdge = -GameScreen.height / GameScreen.ZOOM / 2;
 	private boolean placeLeft = true;
 	World world;
@@ -33,10 +33,10 @@ public class Platforms {
 
 		ChainShape worldContainerShape = new ChainShape();
 
-		Vector2 topLeft = new Vector2(leftScreenEdge, 5000);
-		Vector2 bottomLeft = new Vector2(leftScreenEdge, bottomScreenEdge);
-		Vector2 bottomRight = new Vector2(rightScreenEdge, bottomScreenEdge);
-		Vector2 topRight = new Vector2(rightScreenEdge, 5000);
+		Vector2 topLeft = new Vector2(LEFT_SCREEN_EDGE, 5000);
+		Vector2 bottomLeft = new Vector2(LEFT_SCREEN_EDGE, bottomScreenEdge);
+		Vector2 bottomRight = new Vector2(RIGHT_SCREEN_EDGE, bottomScreenEdge);
+		Vector2 topRight = new Vector2(RIGHT_SCREEN_EDGE, 5000);
 
 		worldContainerShape.createChain(new Vector2[] { topLeft, bottomLeft,
 				bottomRight, topRight });
@@ -57,9 +57,9 @@ public class Platforms {
 			float width = 3, height = 1;			
 			float platformX = 0;
 			if (placeLeft) {
-				platformX  = MathUtils.random(leftScreenEdge + width/2, 0 - width/2);
+				platformX  = MathUtils.random(LEFT_SCREEN_EDGE + width/2, 0 - width/2);
 			} else {
-				platformX = MathUtils.random(0 + width/2, rightScreenEdge - width/2);
+				platformX = MathUtils.random(0 + width/2, RIGHT_SCREEN_EDGE - width/2);
 			}
 			placeLeft = !placeLeft;
 			
@@ -67,7 +67,7 @@ public class Platforms {
 			bodyDef.type = BodyType.StaticBody;
 			bodyDef.position.set(platformX, platformY);
 
-			float angle = MathUtils.random(0, 1) < 0.5f ? 0 : MathUtils.random(-45 * MathUtils.degreesToRadians,
+			float angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
 					45 * MathUtils.degreesToRadians);
 			bodyDef.angle = angle;
 			
@@ -76,7 +76,6 @@ public class Platforms {
 			PolygonShape shape = new PolygonShape();
 			shape.setAsBox(width / 2, height / 2);
 			
-
 			platform.createFixture(shape, 0);
 
 			shape.dispose();
