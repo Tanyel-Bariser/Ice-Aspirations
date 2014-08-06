@@ -32,7 +32,7 @@ public class Player implements ContactListener, InputProcessor {
 	private float slippery;
 	public final float jump = 200;
 	private float force;
-	private final float forceChange = 5000;
+	private final float forceChange = 3000;
 	private boolean canJump;
 
 	public Player(World world) {

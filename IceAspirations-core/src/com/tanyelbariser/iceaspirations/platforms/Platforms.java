@@ -53,7 +53,7 @@ public class Platforms {
 	}
 
 	public void createPlatforms(float topEdge, Sprite platformSprite) {
-		if (platformY < topEdge - 10) {
+		if (platformY < topEdge + 3) {
 			float width = 3, height = 1;			
 			float platformX = 0;
 			if (placeLeft) {
