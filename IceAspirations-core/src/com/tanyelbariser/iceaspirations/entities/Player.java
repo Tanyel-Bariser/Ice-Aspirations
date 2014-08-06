@@ -90,10 +90,9 @@ public class Player implements ContactListener, InputProcessor {
 				.getPosition().x;
 		boolean feetContact = contact.getWorldManifold().getPoints()[0].y < body
 				.getPosition().y;
-		boolean notRising = body.getLinearVelocity().y < 0;
 		if (touchLeftEdge || touchRightEdge) {
 			canJump = false;
-		} else if (feetContact && notRising) {
+		} else if (feetContact) {
 			angle = contact.getFixtureB().getBody().getAngle();
 			boolean onFloatingPlatform = (angle < 0.8f && angle > 0.07f)
 					|| (angle < -0.07f && angle > -0.8f);

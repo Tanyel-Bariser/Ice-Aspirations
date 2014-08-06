@@ -96,44 +96,45 @@ public class GameScreen implements Screen {
 			platforms.createPlatforms(camera.position.y + camera.viewportHeight
 					/ 2, platformSprite);
 
-			Array<Body> tmpBodies = new Array<Body>();
-			world.getBodies(tmpBodies);
-			for (Body body : tmpBodies) {
-				if (body.getUserData() instanceof Sprite) {
-					Sprite sprite = (Sprite) body.getUserData();
-					sprite.setSize(3f, 1f);
-					sprite.setOrigin(sprite.getWidth() / 2,
-							sprite.getHeight() / 2);
-					sprite.setPosition(body.getPosition().x - sprite.getWidth()
-							/ 2, body.getPosition().y - sprite.getHeight() / 2);
-					sprite.setRotation(body.getAngle()
-							* MathUtils.radiansToDegrees);
-					platformSprites.add(sprite);
+			platformSprites.clear();
+			Array<Body> tempBodies = new Array<Body>();
+			world.getBodies(tempBodies);
+			for (Body body : tempBodies) {
+				if (body.getPosition().y < camera.position.y
+						+ camera.viewportHeight / 2 + 2
+						&& body.getPosition().y > camera.position.y
+								- camera.viewportHeight / 2 - 2) {
+					if (body.getUserData() instanceof Sprite) {
+						Sprite sprite = (Sprite) body.getUserData();
+						sprite.setSize(3f, 1f);
+						sprite.setOrigin(sprite.getWidth() / 2,
+								sprite.getHeight() / 2);
+						sprite.setPosition(
+								body.getPosition().x - sprite.getWidth() / 2,
+								body.getPosition().y - sprite.getHeight() / 2);
+						sprite.setRotation(body.getAngle()
+								* MathUtils.radiansToDegrees);
+						platformSprites.add(sprite);
+					}
 				}
 			}
 
 			camera.update();
 		}
 
-				
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		background.draw(batch);
 		playerSprite.draw(batch);
-		int numOfPlatforms = platformSprites.size;
-		for (int i = 0; i < numOfPlatforms; i++) {
-			if (platformSprites.get(i).getY() < camera.position.y + camera.viewportHeight / 2 + 3
-					&& platformSprites.get(i).getY() > camera.position.y
-							- camera.viewportHeight / 2 - 3) {
-				platformSprites.get(i).draw(batch);
-			}
+		for ( Sprite platform : platformSprites) {
+			platform.draw(batch);
 		}
 		batch.end();
 
 		stage.act(delta);
 		stage.draw();
 
-		physicsDebugger.render(world, camera.combined);
+//		physicsDebugger.render(world, camera.combined);
 	}
 
 	@Override

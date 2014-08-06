@@ -19,13 +19,13 @@ public class Platforms {
 	private Body worldContainer;
 	public static final float LEFT_SCREEN_EDGE = -GameScreen.width / GameScreen.ZOOM / 2;
 	public static final float RIGHT_SCREEN_EDGE = GameScreen.width / GameScreen.ZOOM / 2;
-	float bottomScreenEdge = -GameScreen.height / GameScreen.ZOOM / 2;
+	public static final float BOTTOM_SCREEN_EDGE = -GameScreen.height / GameScreen.ZOOM / 2;
 	private boolean placeLeft = true;
 	World world;
 	
 	public Platforms(World world) {
 		this.world = world;
-		platformY = bottomScreenEdge /2;
+		platformY = BOTTOM_SCREEN_EDGE / 3;
 
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
@@ -34,8 +34,8 @@ public class Platforms {
 		ChainShape worldContainerShape = new ChainShape();
 
 		Vector2 topLeft = new Vector2(LEFT_SCREEN_EDGE, 5000);
-		Vector2 bottomLeft = new Vector2(LEFT_SCREEN_EDGE, bottomScreenEdge);
-		Vector2 bottomRight = new Vector2(RIGHT_SCREEN_EDGE, bottomScreenEdge);
+		Vector2 bottomLeft = new Vector2(LEFT_SCREEN_EDGE, BOTTOM_SCREEN_EDGE);
+		Vector2 bottomRight = new Vector2(RIGHT_SCREEN_EDGE, BOTTOM_SCREEN_EDGE);
 		Vector2 topRight = new Vector2(RIGHT_SCREEN_EDGE, 5000);
 
 		worldContainerShape.createChain(new Vector2[] { topLeft, bottomLeft,
@@ -53,7 +53,7 @@ public class Platforms {
 	}
 
 	public void createPlatforms(float topEdge, Sprite platformSprite) {
-		if (platformY < topEdge + 3) {
+		if (platformY < topEdge + 2) {
 			float width = 3, height = 1;			
 			float platformX = 0;
 			if (placeLeft) {
