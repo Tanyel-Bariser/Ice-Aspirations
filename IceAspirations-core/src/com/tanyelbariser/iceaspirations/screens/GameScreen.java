@@ -134,7 +134,7 @@ public class GameScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-//		physicsDebugger.render(world, camera.combined);
+		physicsDebugger.render(world, camera.combined);
 	}
 
 	@Override

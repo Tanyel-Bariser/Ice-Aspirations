@@ -57,9 +57,9 @@ public class Platforms {
 			float width = 3, height = 1;			
 			float platformX = 0;
 			if (placeLeft) {
-				platformX  = MathUtils.random(LEFT_SCREEN_EDGE + width/2, 0 - width/2);
+				platformX  = MathUtils.random(LEFT_SCREEN_EDGE + width, 0 - width);
 			} else {
-				platformX = MathUtils.random(0 + width/2, RIGHT_SCREEN_EDGE - width/2);
+				platformX = MathUtils.random(0 + width, RIGHT_SCREEN_EDGE - width);
 			}
 			placeLeft = !placeLeft;
 			

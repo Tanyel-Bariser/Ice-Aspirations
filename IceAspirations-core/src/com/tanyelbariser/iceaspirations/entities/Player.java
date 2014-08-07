@@ -107,13 +107,14 @@ public class Player implements ContactListener, InputProcessor {
 
 	@Override
 	public void endContact(Contact contact) {
+		//Delay in resetting slippery allows smoother sliding on platforms
+		// & continue moving in the same direction after contact, i.e. inertia
 		Timer.schedule(new Task() {
 			@Override
 			public void run() {
-				angle = slippery = 0;
-				canJump = false;
+				slippery = 0;
 			}
-		}, 1f);
+		}, 1);
 	}
 
 	@Override
@@ -122,6 +123,7 @@ public class Player implements ContactListener, InputProcessor {
 			body.applyLinearImpulse(0, jump, body.getWorldCenter().x,
 					body.getWorldCenter().y, true);
 			canJump = false;
+			angle = 0;
 		}
 		return false;
 	}
@@ -140,6 +142,7 @@ public class Player implements ContactListener, InputProcessor {
 				body.applyLinearImpulse(0, jump, body.getWorldCenter().x,
 						body.getWorldCenter().y, true);
 				canJump = false;
+				angle = 0;
 			}
 		}
 		return false;
