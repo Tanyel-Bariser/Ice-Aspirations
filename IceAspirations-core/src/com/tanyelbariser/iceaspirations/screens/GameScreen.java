@@ -69,36 +69,38 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		if (player.body.getLinearVelocity().y > 2) {
-			playerSprite = jumping;
-		} else {
-			playerSprite = stand;
-		}
-
 		if (state.equals(State.Running)) {
 			world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
-
-			player.update(delta);
-
-			float playerY = player.body.getPosition().y;
-			if (playerY > 0) {
-				camera.position.y = playerY;
+			
+			//Player Updates
+			if (player.body.getLinearVelocity().y > 2) {
+				playerSprite = jumping;
 			} else {
-				camera.position.y = 0;
+				playerSprite = stand;
 			}
-			background.setPosition(camera.position.x - backgroundWidth / 2,
-					camera.position.y - backgroundHeight / 2);
+			player.update(delta);
 			playerSprite.setPosition(
 					player.body.getPosition().x - playerSprite.getWidth() / 2,
 					player.body.getPosition().y - playerSprite.getHeight() / 2);
 			playerSprite.setRotation(player.body.getAngle()
 					* MathUtils.radiansToDegrees);
 
+			//Set camera position based on player position
+			float playerY = player.body.getPosition().y;
+			if (playerY > 0) {
+				camera.position.y = playerY;
+			} else {
+				camera.position.y = 0;
+			}
+
+			//Position background at camera's position
+			background.setPosition(camera.position.x - backgroundWidth / 2,
+					camera.position.y - backgroundHeight / 2);
+
+			//Reposition platform if out of screen
 			float topScreenEdge = camera.position.y + camera.viewportHeight / 2;
 			float bottomScreenEdge = camera.position.y - camera.viewportHeight
 					/ 2;
-
 			// Repositions platform if out of camera/screen view
 			Body bottomPlatform = platformArray.get(0);
 			float bottomPlatformY = bottomPlatform.getPosition().y;
@@ -166,6 +168,16 @@ public class GameScreen implements Screen {
 
 		platformArray = PlatformsFactory.createPlatforms(world);
 
+		//Match sprite position to platform
+		for (Body platform : platformArray) {
+			Sprite sprite = (Sprite) platform.getUserData();
+			sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+			sprite.setPosition(
+					platform.getPosition().x - sprite.getWidth() / 2,
+					platform.getPosition().y - sprite.getHeight() / 2);
+			sprite.setRotation(platform.getAngle() * MathUtils.radiansToDegrees);
+			platformSprites.add(sprite);
+		}
 	}
 
 	private void pauseButtonSetUp() {
