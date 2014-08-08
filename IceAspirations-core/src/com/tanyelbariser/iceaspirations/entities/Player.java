@@ -30,9 +30,9 @@ public class Player implements ContactListener, InputProcessor {
 	public Sprite jumping;
 	private float angle;
 	private float slippery;
-	public final float jump = 200;
+	public final float jump = 400;
 	private float force;
-	private final float forceChange = 3000;
+	private final float forceChange = 5500;
 	private boolean canJump;
 
 	public Player(World world) {
@@ -43,7 +43,7 @@ public class Player implements ContactListener, InputProcessor {
 		bodyDef.position.set(0, -height / GameScreen.ZOOM / 3);
 
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(0.5f, 1.5f);
+		shape.setAsBox(0.94f, 1.5f);
 
 		fixDef = new FixtureDef();
 		fixDef.shape = shape;
@@ -57,12 +57,12 @@ public class Player implements ContactListener, InputProcessor {
 		shape.dispose();
 
 		stand = IceAspirations.skin.getSprite("Rabbit1");
-		stand.setSize(2.1f, 4.2f);
+		stand.setSize(2.9f, 4.2f);
 		stand.setOrigin(stand.getWidth() / 2, stand.getHeight() / 2);
 
 		jumping = IceAspirations.skin.getSprite("Rabbit5");
-		jumping.setSize(2.1f, 4.2f);
-		jumping.setOrigin(stand.getWidth() / 2, stand.getHeight() / 2);
+		jumping.setSize(2.3f, 4.2f);
+		jumping.setOrigin(jumping.getWidth() / 2, jumping.getHeight() / 2);
 		// body.setUserData(playerSprite);
 	}
 
@@ -113,6 +113,7 @@ public class Player implements ContactListener, InputProcessor {
 			@Override
 			public void run() {
 				slippery = 0;
+				canJump = false;
 			}
 		}, 1);
 	}

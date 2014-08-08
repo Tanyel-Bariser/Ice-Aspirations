@@ -1,6 +1,9 @@
 package com.tanyelbariser.iceaspirations.screens;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,6 +24,7 @@ import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.entities.Player;
 import com.tanyelbariser.iceaspirations.platforms.Platforms;
+import com.tanyelbariser.iceaspirations.platforms.PlatformsFactory;
 
 public class GameScreen implements Screen {
 	IceAspirations iceA;
@@ -57,6 +61,7 @@ public class GameScreen implements Screen {
 	Array<Sprite> platformSprites = new Array<Sprite>();
 	private Sprite jumping;
 	private Sprite playerSprite;
+	private ArrayList<Body> platformArray;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -134,7 +139,7 @@ public class GameScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-		physicsDebugger.render(world, camera.combined);
+//		physicsDebugger.render(world, camera.combined);
 	}
 
 	@Override
@@ -161,11 +166,16 @@ public class GameScreen implements Screen {
 		camera = new OrthographicCamera(width / ZOOM, height / ZOOM);
 
 		player = new Player(world);
-		Gdx.input.setInputProcessor(player);
+		Gdx.input.setInputProcessor(new InputMultiplexer(stage, player));
 		stand = player.stand;
 		jumping = player.jumping;
 
 		platforms = new Platforms(world);
+		
+		platformArray = PlatformsFactory.createPlatforms(world);
+		
+		
+		
 	}
 
 	private void pauseButtonSetUp() {
