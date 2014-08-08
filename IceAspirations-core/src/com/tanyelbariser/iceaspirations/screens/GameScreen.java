@@ -56,8 +56,6 @@ public class GameScreen implements Screen {
 	final int VELOCITYITERATIONS = 8;
 	final int POSITIONITERATIONS = 3;
 	private Platforms platforms;
-	private Sprite platformSprite;
-
 	Array<Sprite> platformSprites = new Array<Sprite>();
 	private Sprite jumping;
 	private Sprite playerSprite;
@@ -97,31 +95,25 @@ public class GameScreen implements Screen {
 			playerSprite.setRotation(player.body.getAngle()
 					* MathUtils.radiansToDegrees);
 
-			platformSprite = IceAspirations.skin.getSprite("Platform4");
-			platforms.createPlatforms(camera.position.y + camera.viewportHeight
-					/ 2, platformSprite);
+			float topScreenEdge = camera.position.y + camera.viewportHeight / 2;
+			float bottomScreenEdge = camera.position.y - camera.viewportHeight
+					/ 2;
 
-			platformSprites.clear();
-			Array<Body> tempBodies = new Array<Body>();
-			world.getBodies(tempBodies);
-			for (Body body : tempBodies) {
-				if (body.getPosition().y < camera.position.y
-						+ camera.viewportHeight / 2 + 2
-						&& body.getPosition().y > camera.position.y
-								- camera.viewportHeight / 2 - 2) {
-					if (body.getUserData() instanceof Sprite) {
-						Sprite sprite = (Sprite) body.getUserData();
-						sprite.setSize(3f, 1f);
-						sprite.setOrigin(sprite.getWidth() / 2,
-								sprite.getHeight() / 2);
-						sprite.setPosition(
-								body.getPosition().x - sprite.getWidth() / 2,
-								body.getPosition().y - sprite.getHeight() / 2);
-						sprite.setRotation(body.getAngle()
-								* MathUtils.radiansToDegrees);
-						platformSprites.add(sprite);
-					}
-				}
+			// Repositions platform if out of camera/screen view
+			Body bottomPlatform = platformArray.get(0);
+			float bottomPlatformY = bottomPlatform.getPosition().y;
+			// Replace platformArray.size() with a constant for performance
+			Body topPlatform = platformArray.get(platformArray.size() - 1);
+			float topPlatformY = topPlatform.getPosition().y;
+			if (bottomPlatformY < bottomScreenEdge - 2) {
+				platforms.repositionAbove(platformArray.remove(0),
+						bottomPlatformY);
+				platformArray.add(bottomPlatform);
+			} else if (topPlatformY > topScreenEdge + 2) {
+				platforms.repositionBelow(
+						platformArray.remove(platformArray.size() - 1),
+						topPlatformY);
+				platformArray.add(0, topPlatform);
 			}
 
 			camera.update();
@@ -131,7 +123,7 @@ public class GameScreen implements Screen {
 		batch.begin();
 		background.draw(batch);
 		playerSprite.draw(batch);
-		for ( Sprite platform : platformSprites) {
+		for (Sprite platform : platformSprites) {
 			platform.draw(batch);
 		}
 		batch.end();
@@ -139,7 +131,7 @@ public class GameScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-//		physicsDebugger.render(world, camera.combined);
+		physicsDebugger.render(world, camera.combined);
 	}
 
 	@Override
@@ -171,11 +163,9 @@ public class GameScreen implements Screen {
 		jumping = player.jumping;
 
 		platforms = new Platforms(world);
-		
+
 		platformArray = PlatformsFactory.createPlatforms(world);
-		
-		
-		
+
 	}
 
 	private void pauseButtonSetUp() {

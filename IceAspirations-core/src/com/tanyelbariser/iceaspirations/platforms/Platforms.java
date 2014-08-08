@@ -91,4 +91,12 @@ public class Platforms {
 			platformY += MathUtils.random(3, 5);
 		}
 	}
+
+	public void repositionAbove(Body platform, float platformY) {
+		
+	}
+
+	public void repositionBelow(Body platform, float platformY) {
+				
+	}
 }

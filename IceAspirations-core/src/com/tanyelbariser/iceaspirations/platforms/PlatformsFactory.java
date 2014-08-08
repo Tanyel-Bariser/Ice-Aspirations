@@ -19,7 +19,7 @@ public class PlatformsFactory {
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(0, Platforms.BOTTOM_SCREEN_EDGE);
+		bodyDef.position.set(0, Platforms.BOTTOM_SCREEN_EDGE+3);
 
 		float angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
 				45 * MathUtils.degreesToRadians);
@@ -28,7 +28,7 @@ public class PlatformsFactory {
 		Body platform = world.createBody(bodyDef);
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(3 / 2, 1 / 2);
+		shape.setAsBox(4 / 2, 2 / 2);
 		
 		platform.createFixture(shape, 0);
 
@@ -36,12 +36,11 @@ public class PlatformsFactory {
 		
 		Sprite sprite = IceAspirations.skin.getSprite("Platform4");
 
-		sprite.setSize(3f, 1f);
-		sprite.setOrigin(sprite.getWidth() / 2,
-				sprite.getHeight() / 2);
-		sprite.setPosition(0, Platforms.BOTTOM_SCREEN_EDGE - 5);
-		
-		platform.setUserData(sprite);
+		sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+		sprite.setPosition(platform.getPosition().x - sprite.getWidth()
+				/ 2, platform.getPosition().y - sprite.getHeight() / 2);
+		sprite.setRotation(platform.getAngle()
+				* MathUtils.radiansToDegrees);
 
 		platforms.add(platform);
 		

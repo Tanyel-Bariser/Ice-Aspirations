@@ -84,9 +84,9 @@ public class Player implements ContactListener, InputProcessor {
 
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
-		boolean touchLeftEdge = Platforms.LEFT_SCREEN_EDGE + 0.6f > body
+		boolean touchLeftEdge = Platforms.LEFT_SCREEN_EDGE + 0.96f > body
 				.getPosition().x;
-		boolean touchRightEdge = Platforms.RIGHT_SCREEN_EDGE - 0.6f < body
+		boolean touchRightEdge = Platforms.RIGHT_SCREEN_EDGE - 0.96f < body
 				.getPosition().x;
 		boolean feetContact = contact.getWorldManifold().getPoints()[0].y < body
 				.getPosition().y;
