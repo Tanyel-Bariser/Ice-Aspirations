@@ -20,8 +20,8 @@ public class Platforms {
 	public static final float BOTTOM_SCREEN_EDGE = -GameScreen.height
 			/ GameScreen.ZOOM / 2;
 	private boolean placeLeft = true;
-	float widestPlatform = 8;
 	private float bottomPlatformY;
+	private final float DISTANCE_BETWEEN_PLATFORMS = 10;
 
 	public Platforms(World world) {
 		topPlatformY = BOTTOM_SCREEN_EDGE / 3;
@@ -52,29 +52,31 @@ public class Platforms {
 	}
 
 	public void repositionAbove(Body platform, float topScreenEdge) {
-		if (topPlatformY < topScreenEdge + 2) {
+		if (topPlatformY < topScreenEdge + 14) {
 			bottomPlatformY = platform.getPosition().y;
 			repositionPlatform(platform, topPlatformY);
-			topPlatformY += MathUtils.random(5, 8);
+			topPlatformY += DISTANCE_BETWEEN_PLATFORMS;
 		}
 	}
 
 	public void repositionBelow(Body platform, float bottomScreenEdge) {
-		if (bottomPlatformY > bottomScreenEdge - 2) {
+		if (bottomPlatformY > bottomScreenEdge - 14 && bottomPlatformY > BOTTOM_SCREEN_EDGE / 3) {
 			topPlatformY = platform.getPosition().y;
 			repositionPlatform(platform, bottomPlatformY);
-			bottomPlatformY -= MathUtils.random(5, 8);
+			bottomPlatformY -= DISTANCE_BETWEEN_PLATFORMS;
 		}
 	}
 	
 	private void repositionPlatform(Body platform, float positionY) {
 		float platformX;
+		Sprite sprite = (Sprite) platform.getUserData();
+		float width = sprite.getWidth();
 		if (placeLeft) {
-			platformX = MathUtils.random(LEFT_SCREEN_EDGE + widestPlatform/2,
-					0 - widestPlatform/2);
+			platformX = MathUtils.random(LEFT_SCREEN_EDGE + width/2,
+					0 - width/4);
 		} else {
-			platformX = MathUtils.random(0 + widestPlatform/2,
-					RIGHT_SCREEN_EDGE - widestPlatform/2);
+			platformX = MathUtils.random(0 + width/4,
+					RIGHT_SCREEN_EDGE - width*2);
 		}
 		placeLeft = !placeLeft;
 
@@ -82,7 +84,6 @@ public class Platforms {
 				45 * MathUtils.degreesToRadians);
 		platform.setTransform(platformX, positionY, angle);
 
-		Sprite sprite = (Sprite) platform.getUserData();
 		sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
 		sprite.setPosition(
 				platform.getPosition().x - sprite.getWidth() / 2,

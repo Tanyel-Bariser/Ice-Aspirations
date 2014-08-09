@@ -49,8 +49,8 @@ public class GameScreen implements Screen {
 
 	State state = State.Running;
 
-	float approxFPS = 60;
-	final float TIMESTEP = 1 / approxFPS;
+	float approxFPS = 60.0f;
+	final float TIMESTEP = 1.0f / approxFPS;
 	final int VELOCITYITERATIONS = 8;
 	final int POSITIONITERATIONS = 3;
 	private Platforms platforms;
@@ -68,15 +68,34 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if (state.equals(State.Running)) {
+			Gdx.app.log("FRAMES PER SECOND", String.valueOf(1/delta));
+			// adjustedDelta rounds delta to nearest whole or half, i.e. 60FPS = 1,
+			// 45FPS = 1.5, 30FPS = 2, etc. for a consistent delta per device
+			float adjustedDelta = Math.round(Math.round(60 * delta) * 2) / 2.0f;
+			
+			if (adjustedDelta > 1) {
+				// Appropriate adjustment of gravity for slower devices.
+				world.setGravity(new Vector2(0, -9.81f * adjustedDelta * adjustedDelta));
+			} else {
+				world.setGravity(new Vector2(0, -9.81f * adjustedDelta));
+			}
+
 			world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
 
 			// Player Updates
+			if (player.body.getPosition().x > Platforms.RIGHT_SCREEN_EDGE) {
+				player.body.setTransform(Platforms.RIGHT_SCREEN_EDGE - 0.5f,
+						player.body.getPosition().y, 0);
+			} else if (player.body.getPosition().x < Platforms.LEFT_SCREEN_EDGE) {
+				player.body.setTransform(Platforms.LEFT_SCREEN_EDGE + 0.5f,
+						player.body.getPosition().y, 0);
+			}
 			if (player.body.getLinearVelocity().y > 2) {
 				playerSprite = jumping;
 			} else {
 				playerSprite = stand;
 			}
-			player.update(delta);
+			player.update(adjustedDelta);
 			playerSprite.setPosition(
 					player.body.getPosition().x - playerSprite.getWidth() / 2,
 					player.body.getPosition().y - playerSprite.getHeight() / 2);
@@ -101,10 +120,12 @@ public class GameScreen implements Screen {
 					/ 2;
 
 			for (Body platform : platformArray) {
-				if (platform.getPosition().y < bottomScreenEdge - 2) {
+				if (platform.getPosition().y < bottomScreenEdge - 14) {
 					platforms.repositionAbove(platform, topScreenEdge);
-				} else if (platform.getPosition().y > topScreenEdge + 2) {
+					continue;
+				} else if (platform.getPosition().y > topScreenEdge + 14) {
 					platforms.repositionBelow(platform, bottomScreenEdge);
+					continue;
 				}
 			}
 
@@ -123,7 +144,7 @@ public class GameScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-		physicsDebugger.render(world, camera.combined);
+		// physicsDebugger.render(world, camera.combined);
 	}
 
 	@Override

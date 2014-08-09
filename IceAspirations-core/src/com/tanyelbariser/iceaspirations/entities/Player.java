@@ -30,10 +30,12 @@ public class Player implements ContactListener, InputProcessor {
 	public Sprite jumping;
 	private float angle;
 	private float slippery;
-	public final float jump = 600;
+	public final float jump = 300;
 	private float force;
-	private final float forceChange = 5500;
+	private final float forceChange = 5000;
 	private boolean canJump;
+	private float down;
+	private float myDelta;
 
 	public Player(World world) {
 		world.setContactListener(this);
@@ -43,7 +45,7 @@ public class Player implements ContactListener, InputProcessor {
 		bodyDef.position.set(0, -height / GameScreen.ZOOM / 3);
 
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(0.94f, 1.5f);
+		shape.setAsBox(0.5f, 1.5f);
 
 		fixDef = new FixtureDef();
 		fixDef.shape = shape;
@@ -76,17 +78,18 @@ public class Player implements ContactListener, InputProcessor {
 		 * ALSO boolean facingLeft = Gdx.input.getAccelerometerX() > 0; if
 		 * (facingLeft) { set PlayMode.REVERSED enum in Animation class;
 		 */
+		myDelta = delta;
 		body.setTransform(body.getPosition(), angle);
 		float accel = -Gdx.input.getAccelerometerX() * 2;
-		body.setLinearVelocity(accel - slippery, body.getLinearVelocity().y);
-		body.applyForceToCenter(force, 0, true);
+		body.setLinearVelocity((accel - slippery) * delta, body.getLinearVelocity().y + down * delta);
+		body.applyForceToCenter(force  * delta, down, true);
 	}
 
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
-		boolean touchLeftEdge = Platforms.LEFT_SCREEN_EDGE + 0.96f > body
+		boolean touchLeftEdge = Platforms.LEFT_SCREEN_EDGE + 0.6f > body
 				.getPosition().x;
-		boolean touchRightEdge = Platforms.RIGHT_SCREEN_EDGE - 0.96f < body
+		boolean touchRightEdge = Platforms.RIGHT_SCREEN_EDGE - 0.6f < body
 				.getPosition().x;
 		boolean feetContact = contact.getWorldManifold().getPoints()[0].y < body
 				.getPosition().y;
@@ -97,7 +100,8 @@ public class Player implements ContactListener, InputProcessor {
 			boolean onFloatingPlatform = (angle < 0.8f && angle > 0.07f)
 					|| (angle < -0.07f && angle > -0.8f);
 			if (onFloatingPlatform) {
-				slippery = angle * 10;
+				slippery = angle * 15;
+				down = -1;
 			} else {
 				slippery = angle = 0;
 			}
@@ -107,6 +111,7 @@ public class Player implements ContactListener, InputProcessor {
 
 	@Override
 	public void endContact(Contact contact) {
+		down = 0;
 		//Delay in resetting slippery allows smoother sliding on platforms
 		// & continue moving in the same direction after contact, i.e. inertia
 		Timer.schedule(new Task() {
@@ -121,7 +126,8 @@ public class Player implements ContactListener, InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (canJump) {
-			body.applyLinearImpulse(0, jump, body.getWorldCenter().x,
+			down = 0;
+			body.applyLinearImpulse(0, jump * myDelta, body.getWorldCenter().x,
 					body.getWorldCenter().y, true);
 			canJump = false;
 			angle = 0;
@@ -140,7 +146,7 @@ public class Player implements ContactListener, InputProcessor {
 			break;
 		case Keys.SPACE:
 			if (canJump) {
-				body.applyLinearImpulse(0, jump, body.getWorldCenter().x,
+				body.applyLinearImpulse(0, jump * myDelta, body.getWorldCenter().x,
 						body.getWorldCenter().y, true);
 				canJump = false;
 				angle = 0;
