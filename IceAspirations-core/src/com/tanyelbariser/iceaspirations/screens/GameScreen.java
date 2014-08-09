@@ -1,7 +1,5 @@
 package com.tanyelbariser.iceaspirations.screens;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -59,7 +57,9 @@ public class GameScreen implements Screen {
 	Array<Sprite> platformSprites = new Array<Sprite>();
 	private Sprite jumping;
 	private Sprite playerSprite;
-	private ArrayList<Body> platformArray;
+	private Array<Body> platformArray;
+	private Body bottomPlatform;
+	private Body topPlatform;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -71,8 +71,8 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if (state.equals(State.Running)) {
 			world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
-			
-			//Player Updates
+
+			// Player Updates
 			if (player.body.getLinearVelocity().y > 2) {
 				playerSprite = jumping;
 			} else {
@@ -85,7 +85,7 @@ public class GameScreen implements Screen {
 			playerSprite.setRotation(player.body.getAngle()
 					* MathUtils.radiansToDegrees);
 
-			//Set camera position based on player position
+			// Set camera position based on player position
 			float playerY = player.body.getPosition().y;
 			if (playerY > 0) {
 				camera.position.y = playerY;
@@ -93,29 +93,21 @@ public class GameScreen implements Screen {
 				camera.position.y = 0;
 			}
 
-			//Position background at camera's position
+			// Position background at camera's position
 			background.setPosition(camera.position.x - backgroundWidth / 2,
 					camera.position.y - backgroundHeight / 2);
 
-			//Reposition platform if out of screen
+			// Repositions platform if out of camera/screen view
 			float topScreenEdge = camera.position.y + camera.viewportHeight / 2;
 			float bottomScreenEdge = camera.position.y - camera.viewportHeight
 					/ 2;
-			// Repositions platform if out of camera/screen view
-			Body bottomPlatform = platformArray.get(0);
-			float bottomPlatformY = bottomPlatform.getPosition().y;
-			// Replace platformArray.size() with a constant for performance
-			Body topPlatform = platformArray.get(platformArray.size() - 1);
-			float topPlatformY = topPlatform.getPosition().y;
-			if (bottomPlatformY < bottomScreenEdge - 2) {
-				platforms.repositionAbove(platformArray.remove(0),
-						bottomPlatformY);
-				platformArray.add(bottomPlatform);
-			} else if (topPlatformY > topScreenEdge + 2) {
-				platforms.repositionBelow(
-						platformArray.remove(platformArray.size() - 1),
-						topPlatformY);
-				platformArray.add(0, topPlatform);
+
+			for (Body platform : platformArray) {
+				if (platform.getPosition().y < bottomScreenEdge - 2) {
+					platforms.repositionAbove(platform, topScreenEdge);
+				} else if (platform.getPosition().y > topScreenEdge + 2) {
+					platforms.repositionBelow(platform, bottomScreenEdge);
+				}
 			}
 
 			camera.update();
@@ -167,8 +159,9 @@ public class GameScreen implements Screen {
 		platforms = new Platforms(world);
 
 		platformArray = PlatformsFactory.createPlatforms(world);
+		platformArray.ordered = false;
 
-		//Match sprite position to platform
+		// Match sprite position to platform
 		for (Body platform : platformArray) {
 			Sprite sprite = (Sprite) platform.getUserData();
 			sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);

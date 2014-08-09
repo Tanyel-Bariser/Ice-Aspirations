@@ -1,7 +1,5 @@
 package com.tanyelbariser.iceaspirations.platforms;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -9,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 
 public class PlatformsFactory {
@@ -18,8 +17,8 @@ public class PlatformsFactory {
 	private static Sprite sprite;
 	private static PolygonShape shape;
 
-	public static ArrayList<Body> createPlatforms(World world) {
-		ArrayList<Body> platforms = new ArrayList<Body>();
+	public static Array<Body> createPlatforms(World world) {
+		Array<Body> platforms = new Array<Body>();
 		
 		platforms.add(createPlatform1(world));
 		platforms.add(createPlatform2(world));
@@ -37,7 +36,7 @@ public class PlatformsFactory {
 	private static Body createPlatform1(World world) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE + 3);
+		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 5);
 		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
 				45 * MathUtils.degreesToRadians);
 		platform = world.createBody(bodyDef);
@@ -60,7 +59,7 @@ public class PlatformsFactory {
 	private static Body createPlatform2(World world) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE + 8);
+		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 5);
 		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
 				45 * MathUtils.degreesToRadians);
 		platform = world.createBody(bodyDef);
@@ -83,7 +82,7 @@ public class PlatformsFactory {
 	private static Body createPlatform3(World world) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(-5, Platforms.BOTTOM_SCREEN_EDGE + 8);
+		bodyDef.position.set(-5, Platforms.BOTTOM_SCREEN_EDGE - 5);
 		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
 				45 * MathUtils.degreesToRadians);
 		platform = world.createBody(bodyDef);
@@ -106,7 +105,7 @@ public class PlatformsFactory {
 	private static Body createPlatform4(World world) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(-5, Platforms.BOTTOM_SCREEN_EDGE + 3);
+		bodyDef.position.set(-5, Platforms.BOTTOM_SCREEN_EDGE - 5);
 		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
 				45 * MathUtils.degreesToRadians);
 		platform = world.createBody(bodyDef);
@@ -129,7 +128,7 @@ public class PlatformsFactory {
 	private static Body createPlatform5(World world) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE + 13);
+		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 5);
 		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
 				45 * MathUtils.degreesToRadians);
 		platform = world.createBody(bodyDef);
@@ -152,7 +151,7 @@ public class PlatformsFactory {
 	private static Body createPlatform6(World world) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(-5, Platforms.BOTTOM_SCREEN_EDGE + 13);
+		bodyDef.position.set(-5, Platforms.BOTTOM_SCREEN_EDGE - 5);
 		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
 				45 * MathUtils.degreesToRadians);
 		platform = world.createBody(bodyDef);
@@ -175,7 +174,7 @@ public class PlatformsFactory {
 	private static Body createPlatform7(World world) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(-5, Platforms.BOTTOM_SCREEN_EDGE + 18);
+		bodyDef.position.set(-5, Platforms.BOTTOM_SCREEN_EDGE - 5);
 		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
 				45 * MathUtils.degreesToRadians);
 		platform = world.createBody(bodyDef);
@@ -198,7 +197,7 @@ public class PlatformsFactory {
 	private static Body createPlatform8(World world) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE + 18);
+		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 5);
 		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
 				45 * MathUtils.degreesToRadians);
 		platform = world.createBody(bodyDef);
@@ -221,7 +220,7 @@ public class PlatformsFactory {
 	private static Body createPlatform9(World world) {
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE + 23);
+		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 5);
 		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
 				45 * MathUtils.degreesToRadians);
 		platform = world.createBody(bodyDef);
