@@ -30,7 +30,7 @@ public class Player implements ContactListener, InputProcessor {
 	public Sprite jumping;
 	private float angle;
 	private float slippery;
-	public final float jump = 400;
+	public final float jump = 600;
 	private float force;
 	private final float forceChange = 5500;
 	private boolean canJump;

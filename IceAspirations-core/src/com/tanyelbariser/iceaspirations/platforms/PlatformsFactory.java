@@ -44,7 +44,7 @@ public class PlatformsFactory {
 		float width = 4;
 		float height = 2;
 		shape = new PolygonShape();
-		shape.setAsBox(width / 2, height / 2);
+		shape.setAsBox(width / 2, height / 2.2f);
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
@@ -67,7 +67,7 @@ public class PlatformsFactory {
 		float width = 4;
 		float height = 2;
 		shape = new PolygonShape();
-		shape.setAsBox(width / 2, height / 2);
+		shape.setAsBox(width / 2, height / 2.2f);
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
@@ -90,7 +90,7 @@ public class PlatformsFactory {
 		float width = 4;
 		float height = 2;
 		shape = new PolygonShape();
-		shape.setAsBox(width / 2, height / 2);
+		shape.setAsBox(width / 2, height / 2.2f);
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
@@ -113,7 +113,7 @@ public class PlatformsFactory {
 		float width = 4;
 		float height = 2;
 		shape = new PolygonShape();
-		shape.setAsBox(width / 2, height / 2);
+		shape.setAsBox(width / 2, height / 2.2f);
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
@@ -136,7 +136,7 @@ public class PlatformsFactory {
 		float width = 8;
 		float height = 1.8f;
 		shape = new PolygonShape();
-		shape.setAsBox(width / 2, height / 4);
+		shape.setAsBox(width / 2, height / 2.5f);
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
@@ -159,7 +159,7 @@ public class PlatformsFactory {
 		float width = 4;
 		float height = 2;
 		shape = new PolygonShape();
-		shape.setAsBox(width / 2, height / 2);
+		shape.setAsBox(width / 2, height / 2.2f);
 		platform.createFixture(shape, 0);
 		shape.dispose();
 

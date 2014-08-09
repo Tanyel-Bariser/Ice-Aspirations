@@ -60,11 +60,11 @@ public class Platforms {
 			float widestPlatform = 8;
 			float platformX;
 			if (placeLeft) {
-				platformX = MathUtils.random(LEFT_SCREEN_EDGE + widestPlatform,
-						0 - widestPlatform);
+				platformX = MathUtils.random(LEFT_SCREEN_EDGE + widestPlatform/2,
+						0);
 			} else {
-				platformX = MathUtils.random(0 + widestPlatform,
-						RIGHT_SCREEN_EDGE - widestPlatform);
+				platformX = MathUtils.random(0,
+						RIGHT_SCREEN_EDGE - widestPlatform/2);
 			}
 			placeLeft = !placeLeft;
 
