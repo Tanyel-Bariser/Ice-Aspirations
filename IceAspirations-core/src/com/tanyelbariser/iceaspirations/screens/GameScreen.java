@@ -58,8 +58,6 @@ public class GameScreen implements Screen {
 	private Sprite jumping;
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
-	private Body bottomPlatform;
-	private Body topPlatform;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;

@@ -8,15 +8,11 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
 public class Platforms {
-	private BodyDef bodyDef;
-	private FixtureDef fixDef;
-	private float platformY;
-	private Body worldContainer;
+	private float topPlatformY;
 	public static final float LEFT_SCREEN_EDGE = -GameScreen.width
 			/ GameScreen.ZOOM / 2;
 	public static final float RIGHT_SCREEN_EDGE = GameScreen.width
@@ -24,13 +20,13 @@ public class Platforms {
 	public static final float BOTTOM_SCREEN_EDGE = -GameScreen.height
 			/ GameScreen.ZOOM / 2;
 	private boolean placeLeft = true;
-	World world;
+	float widestPlatform = 8;
+	private float bottomPlatformY;
 
 	public Platforms(World world) {
-		this.world = world;
-		platformY = BOTTOM_SCREEN_EDGE / 3;
+		topPlatformY = BOTTOM_SCREEN_EDGE / 3;
 
-		bodyDef = new BodyDef();
+		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(0, 0);
 
@@ -44,46 +40,53 @@ public class Platforms {
 		worldContainerShape.createChain(new Vector2[] { topLeft, bottomLeft,
 				bottomRight, topRight });
 
-		fixDef = new FixtureDef();
+		FixtureDef fixDef = new FixtureDef();
 		fixDef.shape = worldContainerShape;
 		fixDef.friction = 0f;
 		fixDef.restitution = 0;
 
-		worldContainer = world.createBody(bodyDef);
+		Body worldContainer = world.createBody(bodyDef);
 		worldContainer.createFixture(fixDef);
 
 		worldContainerShape.dispose();
 	}
 
 	public void repositionAbove(Body platform, float topScreenEdge) {
-		if (platformY < topScreenEdge + 20) {
-			float widestPlatform = 8;
-			float platformX;
-			if (placeLeft) {
-				platformX = MathUtils.random(LEFT_SCREEN_EDGE + widestPlatform/2,
-						0);
-			} else {
-				platformX = MathUtils.random(0,
-						RIGHT_SCREEN_EDGE - widestPlatform/2);
-			}
-			placeLeft = !placeLeft;
-
-			float angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
-					45 * MathUtils.degreesToRadians);
-			platform.setTransform(platformX, platformY, angle);
-
-			Sprite sprite = (Sprite) platform.getUserData();
-			sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
-			sprite.setPosition(
-					platform.getPosition().x - sprite.getWidth() / 2,
-					platform.getPosition().y - sprite.getHeight() / 2);
-			sprite.setRotation(platform.getAngle() * MathUtils.radiansToDegrees);
-
-			platformY += MathUtils.random(5, 8);
+		if (topPlatformY < topScreenEdge + 2) {
+			bottomPlatformY = platform.getPosition().y;
+			repositionPlatform(platform, topPlatformY);
+			topPlatformY += MathUtils.random(5, 8);
 		}
 	}
 
 	public void repositionBelow(Body platform, float bottomScreenEdge) {
+		if (bottomPlatformY > bottomScreenEdge - 2) {
+			topPlatformY = platform.getPosition().y;
+			repositionPlatform(platform, bottomPlatformY);
+			bottomPlatformY -= MathUtils.random(5, 8);
+		}
+	}
+	
+	private void repositionPlatform(Body platform, float positionY) {
+		float platformX;
+		if (placeLeft) {
+			platformX = MathUtils.random(LEFT_SCREEN_EDGE + widestPlatform/2,
+					0 - widestPlatform/2);
+		} else {
+			platformX = MathUtils.random(0 + widestPlatform/2,
+					RIGHT_SCREEN_EDGE - widestPlatform/2);
+		}
+		placeLeft = !placeLeft;
 
+		float angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
+				45 * MathUtils.degreesToRadians);
+		platform.setTransform(platformX, positionY, angle);
+
+		Sprite sprite = (Sprite) platform.getUserData();
+		sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+		sprite.setPosition(
+				platform.getPosition().x - sprite.getWidth() / 2,
+				platform.getPosition().y - sprite.getHeight() / 2);
+		sprite.setRotation(platform.getAngle() * MathUtils.radiansToDegrees);
 	}
 }
