@@ -79,6 +79,20 @@ public class GameScreen implements Screen {
 
 			world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
 
+			// Repositions platform if out of camera/screen view
+			float topScreenEdge = camera.position.y + camera.viewportHeight / 2;
+			float bottomScreenEdge = camera.position.y - camera.viewportHeight
+					/ 2;
+			for (Body platform : platformArray) {
+				if (platform.getPosition().y < bottomScreenEdge - 14) {
+					platforms.repositionAbove(platform, topScreenEdge);
+					continue;
+				} else if (platform.getPosition().y > topScreenEdge + 14) {
+					platforms.repositionBelow(platform, bottomScreenEdge);
+					continue;
+				}
+			}
+
 			// Player Updates
 			if (player.body.getPosition().x > Platforms.RIGHT_SCREEN_EDGE) {
 				player.body.setTransform(Platforms.RIGHT_SCREEN_EDGE - 0.5f,
@@ -101,7 +115,12 @@ public class GameScreen implements Screen {
 
 			// Set camera position based on player position
 			float playerY = player.body.getPosition().y;
-			if (playerY > 0) {
+			float highSpeed = 40;
+			if (player.body.getLinearVelocity().y > highSpeed) {
+				// High speed lag
+			} else if (playerY > camera.position.y + 0.5f) {
+				camera.position.y += 0.3f;
+			} else if (playerY > 0) {
 				camera.position.y = playerY;
 			} else {
 				camera.position.y = 0;
@@ -110,21 +129,6 @@ public class GameScreen implements Screen {
 			// Position background at camera's position
 			background.setPosition(camera.position.x - backgroundWidth / 2,
 					camera.position.y - backgroundHeight / 2);
-
-			// Repositions platform if out of camera/screen view
-			float topScreenEdge = camera.position.y + camera.viewportHeight / 2;
-			float bottomScreenEdge = camera.position.y - camera.viewportHeight
-					/ 2;
-
-			for (Body platform : platformArray) {
-				if (platform.getPosition().y < bottomScreenEdge - 14) {
-					platforms.repositionAbove(platform, topScreenEdge);
-					continue;
-				} else if (platform.getPosition().y > topScreenEdge + 14) {
-					platforms.repositionBelow(platform, bottomScreenEdge);
-					continue;
-				}
-			}
 
 			camera.update();
 		}
