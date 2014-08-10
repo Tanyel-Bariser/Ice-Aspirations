@@ -105,9 +105,13 @@ public class GameScreen implements Screen {
 						player.body.getPosition().y, 0);
 			}
 			frameTime += delta;
-			if (player.body.getLinearVelocity().y > 0) {
+			if (player.body.getLinearVelocity().y > 2) {
 				Animation jumpAnimation = player.getjumpAnimation();
-				playerSprite = (Sprite)jumpAnimation.getKeyFrame(frameTime, false);
+				playerSprite = (Sprite) jumpAnimation.getKeyFrame(frameTime,
+						false);
+			} else if (player.body.getLinearVelocity().y < -4 & !player.isStanding()) {
+				playerSprite = player.getFallingSprite();
+				frameTime = 0;
 			} else {
 				playerSprite = stand;
 				frameTime = 0;

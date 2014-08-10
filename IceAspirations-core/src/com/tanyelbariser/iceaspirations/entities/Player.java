@@ -38,6 +38,8 @@ public class Player implements ContactListener, InputProcessor {
 	private float down;
 	private float myDelta;
 	private Animation jumpAnimation;
+	private Sprite fallingSprite;
+	private boolean standing;
 
 	public Player(World world) {
 		world.setContactListener(this);
@@ -61,16 +63,24 @@ public class Player implements ContactListener, InputProcessor {
 		shape.dispose();
 		createAnimations();
 	}
-	
+
 	public Animation getjumpAnimation() {
 		return jumpAnimation;
 	}
-	
+
+	public Sprite getFallingSprite() {
+		return fallingSprite;
+	}
+
+	public boolean isStanding() {
+		return standing;
+	}
+
 	private void createAnimations() {
 		stand = IceAspirations.skin.getSprite("Rabbit1");
 		stand.setSize(2.9f, 4.2f);
 		stand.setOrigin(stand.getWidth() / 2, stand.getHeight() / 2);
-		
+
 		Sprite rabbit2 = IceAspirations.skin.getSprite("Rabbit2");
 		rabbit2.setSize(2.9f, 4.2f);
 		rabbit2.setOrigin(rabbit2.getWidth() / 2, rabbit2.getHeight() / 2);
@@ -78,20 +88,26 @@ public class Player implements ContactListener, InputProcessor {
 		Sprite rabbit3 = IceAspirations.skin.getSprite("Rabbit3");
 		rabbit3.setSize(2.3f, 4.2f);
 		rabbit3.setOrigin(rabbit3.getWidth() / 2, rabbit3.getHeight() / 2);
-		
+
 		Sprite rabbit4 = IceAspirations.skin.getSprite("Rabbit4");
 		rabbit4.setSize(2.3f, 4.2f);
 		rabbit4.setOrigin(rabbit4.getWidth() / 2, rabbit4.getHeight() / 2);
-		
+
 		jumping = IceAspirations.skin.getSprite("Rabbit5");
 		jumping.setSize(2.3f, 4.2f);
 		jumping.setOrigin(jumping.getWidth() / 2, jumping.getHeight() / 2);
-		
-		Sprite [] jumpSprites = new Sprite[]{stand, rabbit2, rabbit3, rabbit4, jumping};
-		
+
+		Sprite[] jumpSprites = new Sprite[] { stand, rabbit2, rabbit3, rabbit4,
+				jumping };
+
 		jumpAnimation = new Animation(0.10f, jumpSprites);
+
+		fallingSprite = IceAspirations.skin.getSprite("Rabbit7");
+		fallingSprite.setSize(3, 4.2f);
+		fallingSprite.setOrigin(fallingSprite.getWidth() / 2,
+				fallingSprite.getHeight() / 2);
 	}
-	
+
 	public void update(float delta) {
 		/*
 		 * Using libgdx's Animation class if (body.getLinearVelocity().y > 0) {
@@ -105,8 +121,9 @@ public class Player implements ContactListener, InputProcessor {
 		myDelta = delta;
 		body.setTransform(body.getPosition(), angle);
 		float accel = -Gdx.input.getAccelerometerX() * 2;
-		body.setLinearVelocity((accel - slippery) * delta, body.getLinearVelocity().y + down * delta);
-		body.applyForceToCenter(force  * delta, down, true);
+		body.setLinearVelocity((accel - slippery) * delta,
+				body.getLinearVelocity().y + down * delta);
+		body.applyForceToCenter(force * delta, down, true);
 	}
 
 	@Override
@@ -119,6 +136,7 @@ public class Player implements ContactListener, InputProcessor {
 				.getPosition().y;
 		if (touchLeftEdge || touchRightEdge) {
 			canJump = false;
+			down = 0;
 		} else if (feetContact) {
 			angle = contact.getFixtureB().getBody().getAngle();
 			boolean onFloatingPlatform = (angle < 0.8f && angle > 0.07f)
@@ -126,6 +144,7 @@ public class Player implements ContactListener, InputProcessor {
 			if (onFloatingPlatform) {
 				slippery = angle * 15;
 				down = -1.5f;
+				standing = true;
 			} else {
 				slippery = angle = 0;
 			}
@@ -136,25 +155,26 @@ public class Player implements ContactListener, InputProcessor {
 	@Override
 	public void endContact(Contact contact) {
 		down = 0;
-		//Delay in resetting slippery allows smoother sliding on platforms
-		// & continue moving in the same direction after contact, i.e. inertia
+		standing = false;
+		// Delay in resetting slippery causes player to jump off platform at an
+		// angle perpendicular to the platform & allows smoother sliding on
+		// platforms & continued movement in the same direction after contact.
 		Timer.schedule(new Task() {
 			@Override
 			public void run() {
 				slippery = 0;
 				canJump = false;
 			}
-		}, 1);
+		}, 0.5f);
 	}
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (canJump) {
-			down = 0;
+			down = angle = 0;
 			body.applyLinearImpulse(0, jump * myDelta, body.getWorldCenter().x,
 					body.getWorldCenter().y, true);
-			canJump = false;
-			angle = 0;
+			canJump = standing = false;
 		}
 		return false;
 	}
@@ -170,10 +190,10 @@ public class Player implements ContactListener, InputProcessor {
 			break;
 		case Keys.SPACE:
 			if (canJump) {
-				body.applyLinearImpulse(0, jump * myDelta, body.getWorldCenter().x,
-						body.getWorldCenter().y, true);
-				canJump = false;
-				angle = 0;
+				down = angle = 0;
+				body.applyLinearImpulse(0, jump * myDelta,
+						body.getWorldCenter().x, body.getWorldCenter().y, true);
+				canJump = standing = false;
 			}
 		}
 		return false;
