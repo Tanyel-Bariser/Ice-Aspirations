@@ -3,6 +3,7 @@ package com.tanyelbariser.iceaspirations.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,7 +18,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.IceAspirations;
@@ -26,20 +29,20 @@ import com.tanyelbariser.iceaspirations.platforms.Platforms;
 import com.tanyelbariser.iceaspirations.platforms.PlatformsFactory;
 
 public class GameScreen implements Screen {
-	IceAspirations iceA;
-	SpriteBatch batch;
-	Stage stage;
+	private IceAspirations iceA;
+	private SpriteBatch batch;
+	private Stage stage;
 	ImageButton pause, back;
 	static float phoneWidth = 768;
-	public static float width = Gdx.graphics.getWidth();
-	public static float height = Gdx.graphics.getHeight();
-	static float compatibility = width / phoneWidth;
+	public static final float WIDTH = Gdx.graphics.getWidth();
+	public static final float HEIGHT = Gdx.graphics.getHeight();
+	private static float compatibility = WIDTH / phoneWidth;
 	private World world;
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer physicsDebugger;
 	private final Sprite background = new Sprite(new Texture("Background.png"));
-	float backgroundWidth = background.getWidth();
-	float backgroundHeight = background.getHeight();
+	private float backgroundWidth = background.getWidth();
+	private float backgroundHeight = background.getHeight();
 	private Player player;
 	public static final float ZOOM = 30f * compatibility;
 	private Sprite stand;
@@ -56,10 +59,11 @@ public class GameScreen implements Screen {
 	final int POSITIONITERATIONS = 3;
 	private Platforms platforms;
 	Array<Sprite> platformSprites = new Array<Sprite>();
-	private Sprite jumping;
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
 	private float frameTime;
+	private float allotedTime = 60;
+	private Label timeLeft;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -70,7 +74,12 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if (state.equals(State.Running)) {
-			Gdx.app.log("FRAMES PER SECOND", String.valueOf(1 / delta));
+			allotedTime -= delta;
+			timeLeft.setText(String.valueOf(Math.round(allotedTime)));
+			if (allotedTime < 0) {
+				iceA.setScreen(new MainScreen(iceA));
+			}
+
 			// adjustedDelta is delta rounded to nearest whole or half, i.e.
 			// 60FPS = 1, 45FPS = 1.5, 30FPS = 2, etc. for a consistent delta
 			// per device
@@ -97,35 +106,38 @@ public class GameScreen implements Screen {
 
 			// Player Updates
 			player.update(adjustedDelta);
-			if (player.body.getPosition().x > Platforms.RIGHT_SCREEN_EDGE) {
-				player.body.setTransform(Platforms.RIGHT_SCREEN_EDGE - 0.5f,
-						player.body.getPosition().y, 0);
-			} else if (player.body.getPosition().x < Platforms.LEFT_SCREEN_EDGE) {
-				player.body.setTransform(Platforms.LEFT_SCREEN_EDGE + 0.5f,
-						player.body.getPosition().y, 0);
+			if (player.getBody().getPosition().x > Platforms.RIGHT_SCREEN_EDGE) {
+				player.getBody().setTransform(
+						Platforms.RIGHT_SCREEN_EDGE - 0.5f,
+						player.getBody().getPosition().y, 0);
+			} else if (player.getBody().getPosition().x < Platforms.LEFT_SCREEN_EDGE) {
+				player.getBody().setTransform(
+						Platforms.LEFT_SCREEN_EDGE + 0.5f,
+						player.getBody().getPosition().y, 0);
 			}
 			frameTime += delta;
-			if (player.body.getLinearVelocity().y > 2) {
+			if (player.getBody().getLinearVelocity().y > 2) {
 				Animation jumpAnimation = player.getjumpAnimation();
 				playerSprite = (Sprite) jumpAnimation.getKeyFrame(frameTime,
 						false);
-			} else if (player.body.getLinearVelocity().y < -4 & !player.isStanding()) {
+			} else if (player.getBody().getLinearVelocity().y < -4
+					& !player.isStanding()) {
 				playerSprite = player.getFallingSprite();
 				frameTime = 0;
 			} else {
 				playerSprite = stand;
 				frameTime = 0;
 			}
-			playerSprite.setPosition(
-					player.body.getPosition().x - playerSprite.getWidth() / 2,
-					player.body.getPosition().y - playerSprite.getHeight() / 2);
-			playerSprite.setRotation(player.body.getAngle()
+			playerSprite.setPosition(player.getBody().getPosition().x
+					- playerSprite.getWidth() / 2, player.getBody()
+					.getPosition().y - playerSprite.getHeight() / 2);
+			playerSprite.setRotation(player.getBody().getAngle()
 					* MathUtils.radiansToDegrees);
 
 			// Set camera position based on player position
-			float playerY = player.body.getPosition().y;
+			float playerY = player.getBody().getPosition().y;
 			float highSpeed = 80;
-			if (player.body.getLinearVelocity().y > highSpeed) {
+			if (player.getBody().getLinearVelocity().y > highSpeed) {
 				// High speed lag
 			} else if (playerY > topScreenEdge) {
 				camera.position.y += 1f;
@@ -182,12 +194,11 @@ public class GameScreen implements Screen {
 		float gravity = -9.81f;
 		world = new World(new Vector2(0, gravity), true);
 		physicsDebugger = new Box2DDebugRenderer();
-		camera = new OrthographicCamera(width / ZOOM, height / ZOOM);
+		camera = new OrthographicCamera(WIDTH / ZOOM, HEIGHT / ZOOM);
 
 		player = new Player(world);
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, player));
-		stand = player.stand;
-		jumping = player.jumping;
+		stand = player.getStandSprite();
 
 		platforms = new Platforms(world);
 
@@ -204,6 +215,13 @@ public class GameScreen implements Screen {
 			sprite.setRotation(platform.getAngle() * MathUtils.radiansToDegrees);
 			platformSprites.add(sprite);
 		}
+
+		// Create Label to show remaining game time
+		LabelStyle style = new LabelStyle(IceAspirations.blue, Color.BLUE);
+		timeLeft = new Label("60", style);
+		timeLeft.setPosition(timeLeft.getWidth() / 10,
+				HEIGHT - timeLeft.getHeight() / 1.5f);
+		stage.addActor(timeLeft);
 	}
 
 	private void pauseButtonSetUp() {
@@ -214,10 +232,10 @@ public class GameScreen implements Screen {
 
 		pause = new ImageButton(imageStyle);
 
-		float pauseSize = width / 6;
+		float pauseSize = WIDTH / 6;
 		pause.setSize(pauseSize, pauseSize);
 
-		pause.setPosition(width - pauseSize, height - pauseSize);
+		pause.setPosition(WIDTH - pauseSize, HEIGHT - pauseSize);
 
 		pause.addListener(new ClickListener() {
 			@Override
@@ -244,7 +262,7 @@ public class GameScreen implements Screen {
 
 		back = new ImageButton(imageStyle);
 
-		float backSize = width / 6;
+		float backSize = WIDTH / 6;
 		back.setSize(backSize, backSize);
 
 		back.setPosition(0, 0);

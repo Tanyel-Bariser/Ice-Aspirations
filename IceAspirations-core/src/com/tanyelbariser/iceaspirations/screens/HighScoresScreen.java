@@ -17,15 +17,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 
 public class HighScoresScreen implements Screen {
-	IceAspirations iceA;
-	SpriteBatch batch;
-	Stage stage;
-	Table table;
-	LabelStyle style;
-	Label heading;
-	ImageButton back;
-	float width = Gdx.graphics.getWidth();
-	float height = Gdx.graphics.getHeight();
+	private IceAspirations iceA;
+	private SpriteBatch batch;
+	private Stage stage;
+	private Table table;
+	private LabelStyle style;
+	private Label heading;
+	private ImageButton back;
+	private float width = Gdx.graphics.getWidth();
+	private float height = Gdx.graphics.getHeight();
 
 	public HighScoresScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -52,12 +52,13 @@ public class HighScoresScreen implements Screen {
 	public void show() {
 		batch = new SpriteBatch();
 
+		String newHighScore = String.valueOf(0);
 		Preferences prefs = Gdx.app.getPreferences("IceAspirations");
-		prefs.putString("HighScore1", "0");
-		prefs.putString("HighScore2", "0");
-		prefs.putString("HighScore3", "0");
-		prefs.putString("HighScore4", "0");
-		prefs.putString("HighScore5", "0");
+		prefs.putString("HighScore1", newHighScore);
+		prefs.putString("HighScore2", newHighScore);
+		prefs.putString("HighScore3", newHighScore);
+		prefs.putString("HighScore4", newHighScore);
+		prefs.putString("HighScore5", newHighScore);
 		
 		prefs.flush();
 		

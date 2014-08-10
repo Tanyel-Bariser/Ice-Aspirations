@@ -26,12 +26,12 @@ public class Player implements ContactListener, InputProcessor {
 	final float width = Gdx.graphics.getWidth();
 	private BodyDef bodyDef;
 	private FixtureDef fixDef;
-	public Body body;
-	public Sprite stand;
-	public Sprite jumping;
+	private Body body;
+	private Sprite standSprite;
 	private float angle;
 	private float slippery;
-	public final float jump = 300; // * 2 when eats carrot
+	private final float jump = 300; // * 2 when eats carrot or * 1.2 if 2*delta
+									// in hyper mode
 	private float force;
 	private final float forceChange = 5000;
 	private boolean canJump;
@@ -64,8 +64,16 @@ public class Player implements ContactListener, InputProcessor {
 		createAnimations();
 	}
 
+	public Body getBody() {
+		return body;
+	}
+
 	public Animation getjumpAnimation() {
 		return jumpAnimation;
+	}
+
+	public Sprite getStandSprite() {
+		return standSprite;
 	}
 
 	public Sprite getFallingSprite() {
@@ -77,9 +85,10 @@ public class Player implements ContactListener, InputProcessor {
 	}
 
 	private void createAnimations() {
-		stand = IceAspirations.skin.getSprite("Rabbit1");
-		stand.setSize(2.9f, 4.2f);
-		stand.setOrigin(stand.getWidth() / 2, stand.getHeight() / 2);
+		standSprite = IceAspirations.skin.getSprite("Rabbit1");
+		standSprite.setSize(2.9f, 4.2f);
+		standSprite.setOrigin(standSprite.getWidth() / 2,
+				standSprite.getHeight() / 2);
 
 		Sprite rabbit2 = IceAspirations.skin.getSprite("Rabbit2");
 		rabbit2.setSize(2.9f, 4.2f);
@@ -93,12 +102,12 @@ public class Player implements ContactListener, InputProcessor {
 		rabbit4.setSize(2.3f, 4.2f);
 		rabbit4.setOrigin(rabbit4.getWidth() / 2, rabbit4.getHeight() / 2);
 
-		jumping = IceAspirations.skin.getSprite("Rabbit5");
-		jumping.setSize(2.3f, 4.2f);
-		jumping.setOrigin(jumping.getWidth() / 2, jumping.getHeight() / 2);
+		Sprite rabbit5 = IceAspirations.skin.getSprite("Rabbit5");
+		rabbit5.setSize(2.3f, 4.2f);
+		rabbit5.setOrigin(rabbit5.getWidth() / 2, rabbit5.getHeight() / 2);
 
-		Sprite[] jumpSprites = new Sprite[] { stand, rabbit2, rabbit3, rabbit4,
-				jumping };
+		Sprite[] jumpSprites = new Sprite[] { standSprite, rabbit2, rabbit3,
+				rabbit4, rabbit5 };
 
 		jumpAnimation = new Animation(0.10f, jumpSprites);
 

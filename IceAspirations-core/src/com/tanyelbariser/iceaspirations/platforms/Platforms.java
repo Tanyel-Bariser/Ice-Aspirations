@@ -13,11 +13,11 @@ import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
 public class Platforms {
 	private float topPlatformY;
-	public static final float LEFT_SCREEN_EDGE = -GameScreen.width
+	public static final float LEFT_SCREEN_EDGE = -GameScreen.WIDTH
 			/ GameScreen.ZOOM / 2;
-	public static final float RIGHT_SCREEN_EDGE = GameScreen.width
+	public static final float RIGHT_SCREEN_EDGE = GameScreen.WIDTH
 			/ GameScreen.ZOOM / 2;
-	public static final float BOTTOM_SCREEN_EDGE = -GameScreen.height
+	public static final float BOTTOM_SCREEN_EDGE = -GameScreen.HEIGHT
 			/ GameScreen.ZOOM / 2;
 	private boolean placeLeft = true;
 	private float bottomPlatformY;
