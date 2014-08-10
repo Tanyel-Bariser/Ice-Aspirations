@@ -68,17 +68,14 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if (state.equals(State.Running)) {
-			Gdx.app.log("FRAMES PER SECOND", String.valueOf(1/delta));
-			// adjustedDelta rounds delta to nearest whole or half, i.e. 60FPS = 1,
-			// 45FPS = 1.5, 30FPS = 2, etc. for a consistent delta per device
-			float adjustedDelta = Math.round(Math.round(60 * delta) * 2) / 2.0f;
-			
-			if (adjustedDelta > 1) {
-				// Appropriate adjustment of gravity for slower devices.
-				world.setGravity(new Vector2(0, -9.81f * adjustedDelta * adjustedDelta));
-			} else {
-				world.setGravity(new Vector2(0, -9.81f * adjustedDelta));
-			}
+			Gdx.app.log("FRAMES PER SECOND", String.valueOf(1 / delta));
+			// adjustedDelta is delta rounded to nearest whole or half, i.e.
+			// 60FPS = 1, 45FPS = 1.5, 30FPS = 2, etc. for a consistent delta
+			// per device
+			float adjustedDelta = Math.round(Math.round(approxFPS * delta) * 2) / 2.0f;
+
+			world.setGravity(new Vector2(0, -9.81f * adjustedDelta
+					* adjustedDelta));
 
 			world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
 

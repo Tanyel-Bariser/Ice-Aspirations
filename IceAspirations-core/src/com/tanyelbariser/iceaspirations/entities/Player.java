@@ -101,7 +101,7 @@ public class Player implements ContactListener, InputProcessor {
 					|| (angle < -0.07f && angle > -0.8f);
 			if (onFloatingPlatform) {
 				slippery = angle * 15;
-				down = -1;
+				down = -1.5f;
 			} else {
 				slippery = angle = 0;
 			}
