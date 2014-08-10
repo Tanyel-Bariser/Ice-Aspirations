@@ -1,8 +1,9 @@
 package com.tanyelbariser.iceaspirations.entities;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -30,12 +31,13 @@ public class Player implements ContactListener, InputProcessor {
 	public Sprite jumping;
 	private float angle;
 	private float slippery;
-	public final float jump = 300;
+	public final float jump = 300; // * 2 when eats carrot
 	private float force;
 	private final float forceChange = 5000;
 	private boolean canJump;
 	private float down;
 	private float myDelta;
+	private Animation jumpAnimation;
 
 	public Player(World world) {
 		world.setContactListener(this);
@@ -57,17 +59,39 @@ public class Player implements ContactListener, InputProcessor {
 		body.createFixture(fixDef);
 
 		shape.dispose();
-
+		createAnimations();
+	}
+	
+	public Animation getjumpAnimation() {
+		return jumpAnimation;
+	}
+	
+	private void createAnimations() {
 		stand = IceAspirations.skin.getSprite("Rabbit1");
 		stand.setSize(2.9f, 4.2f);
 		stand.setOrigin(stand.getWidth() / 2, stand.getHeight() / 2);
+		
+		Sprite rabbit2 = IceAspirations.skin.getSprite("Rabbit2");
+		rabbit2.setSize(2.9f, 4.2f);
+		rabbit2.setOrigin(rabbit2.getWidth() / 2, rabbit2.getHeight() / 2);
 
+		Sprite rabbit3 = IceAspirations.skin.getSprite("Rabbit3");
+		rabbit3.setSize(2.3f, 4.2f);
+		rabbit3.setOrigin(rabbit3.getWidth() / 2, rabbit3.getHeight() / 2);
+		
+		Sprite rabbit4 = IceAspirations.skin.getSprite("Rabbit4");
+		rabbit4.setSize(2.3f, 4.2f);
+		rabbit4.setOrigin(rabbit4.getWidth() / 2, rabbit4.getHeight() / 2);
+		
 		jumping = IceAspirations.skin.getSprite("Rabbit5");
 		jumping.setSize(2.3f, 4.2f);
 		jumping.setOrigin(jumping.getWidth() / 2, jumping.getHeight() / 2);
-		// body.setUserData(playerSprite);
+		
+		Sprite [] jumpSprites = new Sprite[]{stand, rabbit2, rabbit3, rabbit4, jumping};
+		
+		jumpAnimation = new Animation(0.10f, jumpSprites);
 	}
-
+	
 	public void update(float delta) {
 		/*
 		 * Using libgdx's Animation class if (body.getLinearVelocity().y > 0) {

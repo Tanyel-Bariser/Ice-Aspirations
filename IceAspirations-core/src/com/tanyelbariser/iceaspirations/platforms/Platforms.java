@@ -76,7 +76,7 @@ public class Platforms {
 					0 - width/4);
 		} else {
 			platformX = MathUtils.random(0 + width/4,
-					RIGHT_SCREEN_EDGE - width*2);
+					RIGHT_SCREEN_EDGE - width/2);
 		}
 		placeLeft = !placeLeft;
 

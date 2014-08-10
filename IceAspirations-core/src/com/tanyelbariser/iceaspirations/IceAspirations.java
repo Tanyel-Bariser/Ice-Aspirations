@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.tanyelbariser.iceaspirations.screens.MainScreen;
+import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
 public class IceAspirations extends Game {
 	public static Music music;
@@ -28,14 +28,14 @@ public class IceAspirations extends Game {
 		blue = new BitmapFont(Gdx.files.internal("blue.fnt"), false);
 		background = new Sprite(new Texture("Background.png"));
 		muteButtonSetup();
-		setScreen(new MainScreen(this));
+		setScreen(new GameScreen(this));
 		musicSetup();
 	}
 
 	private void musicSetup() {
 		music = Gdx.audio.newMusic(Gdx.files.internal("Rise of spirit.mp3"));
 		music.setLooping(true);
-		music.play();
+//		music.play();
 		music.setVolume(0.2f);
 	}
 	

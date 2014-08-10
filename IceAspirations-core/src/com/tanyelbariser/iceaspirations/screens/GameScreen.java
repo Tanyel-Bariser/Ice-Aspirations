@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -58,6 +59,7 @@ public class GameScreen implements Screen {
 	private Sprite jumping;
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
+	private float frameTime;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -94,6 +96,7 @@ public class GameScreen implements Screen {
 			}
 
 			// Player Updates
+			player.update(adjustedDelta);
 			if (player.body.getPosition().x > Platforms.RIGHT_SCREEN_EDGE) {
 				player.body.setTransform(Platforms.RIGHT_SCREEN_EDGE - 0.5f,
 						player.body.getPosition().y, 0);
@@ -101,12 +104,14 @@ public class GameScreen implements Screen {
 				player.body.setTransform(Platforms.LEFT_SCREEN_EDGE + 0.5f,
 						player.body.getPosition().y, 0);
 			}
-			if (player.body.getLinearVelocity().y > 2) {
-				playerSprite = jumping;
+			frameTime += delta;
+			if (player.body.getLinearVelocity().y > 0) {
+				Animation jumpAnimation = player.getjumpAnimation();
+				playerSprite = (Sprite)jumpAnimation.getKeyFrame(frameTime, false);
 			} else {
 				playerSprite = stand;
+				frameTime = 0;
 			}
-			player.update(adjustedDelta);
 			playerSprite.setPosition(
 					player.body.getPosition().x - playerSprite.getWidth() / 2,
 					player.body.getPosition().y - playerSprite.getHeight() / 2);
@@ -115,10 +120,14 @@ public class GameScreen implements Screen {
 
 			// Set camera position based on player position
 			float playerY = player.body.getPosition().y;
-			float highSpeed = 40;
+			float highSpeed = 80;
 			if (player.body.getLinearVelocity().y > highSpeed) {
 				// High speed lag
-			} else if (playerY > camera.position.y + 0.5f) {
+			} else if (playerY > topScreenEdge) {
+				camera.position.y += 1f;
+			} else if (playerY > camera.position.y + 2f) {
+				camera.position.y += 0.8f;
+			} else if (playerY > camera.position.y + 1f) {
 				camera.position.y += 0.3f;
 			} else if (playerY > 0) {
 				camera.position.y = playerY;
