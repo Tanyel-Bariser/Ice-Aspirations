@@ -66,6 +66,7 @@ public class Player implements ContactListener, InputProcessor {
 
 		shape.dispose();
 		createAnimations();
+		Gdx.input.setCatchBackKey(true);
 	}
 
 	public Body getBody() {
@@ -215,6 +216,9 @@ public class Player implements ContactListener, InputProcessor {
 						body.getWorldCenter().x, body.getWorldCenter().y, true);
 				canJump = standing = false;
 			}
+		case Keys.BACK:
+			// Do nothing
+	        return false;
 		}
 		return false;
 	}

@@ -17,6 +17,7 @@ import com.tanyelbariser.iceaspirations.screens.MainScreen;
 
 public class IceAspirations extends Game {
 	private static Music music;
+	private static Music timeOutMusic;
 	private static Skin skin;
 	private static BitmapFont blue;
 	private static ImageButton soundButton;
@@ -37,8 +38,12 @@ public class IceAspirations extends Game {
 	private void musicSetup() {
 		music = Gdx.audio.newMusic(Gdx.files.internal("Rise of spirit.mp3"));
 		music.setLooping(true);
-		// music.play();
+		music.play();
 		music.setVolume(0.2f);
+		timeOutMusic = Gdx.audio.newMusic(Gdx.files
+				.internal("Time Running Out.mp3"));
+		timeOutMusic.setLooping(false);
+		timeOutMusic.setVolume(0.2f);
 	}
 
 	private void muteButtonSetup() {
@@ -113,5 +118,8 @@ public class IceAspirations extends Game {
 
 	public static Music getMusic() {
 		return music;
+	}
+	public static Music getTimeOutMusic() {
+		return timeOutMusic;
 	}
 }

@@ -3,6 +3,7 @@ package com.tanyelbariser.iceaspirations.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -65,7 +66,7 @@ public class GameScreen implements Screen {
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
 	private float frameTime;
-	private float allotedTime = 10;
+	private float allotedTime = 15;
 	private Label timeLeft;
 	private int maxHeight;
 
@@ -88,6 +89,15 @@ public class GameScreen implements Screen {
 					+ String.valueOf(Math.round(allotedTime)));
 			if (allotedTime < 0) {
 				iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
+			} else if (allotedTime < 11) {
+				if (IceAspirations.getMusic().isPlaying()) {
+					IceAspirations.getMusic().stop();
+				}
+				if (!IceAspirations.getTimeOutMusic().isPlaying()) {
+					IceAspirations.getTimeOutMusic().play();
+				}
+			} else if (!IceAspirations.getMusic().isPlaying()) {
+				IceAspirations.getMusic().play();
 			}
 
 			// adjustedDelta is delta rounded to nearest whole or half, i.e.

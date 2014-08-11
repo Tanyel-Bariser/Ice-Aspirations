@@ -22,11 +22,16 @@ public class GameOverScreen implements Screen {
 	private Stage stage;
 	private final float WIDTH = Gdx.graphics.getWidth();
 	private final float HEIGHT = Gdx.graphics.getHeight();
-	private ImageButton back;
 
 	public GameOverScreen(IceAspirations iceA, int maxHeight) {
 		this.iceA = iceA;
 		this.maxHeight = maxHeight;
+		if (IceAspirations.getTimeOutMusic().isPlaying()) {
+			IceAspirations.getTimeOutMusic().stop();
+		}
+		if (!IceAspirations.getMusic().isPlaying()) {
+			IceAspirations.getMusic().play();
+		}
 	}
 
 	@Override
@@ -56,7 +61,7 @@ public class GameOverScreen implements Screen {
 
 		// Create Label to show remaining game time
 		BitmapFont blue = IceAspirations.getBlue();
-		blue.setScale(1);
+		blue.setScale(WIDTH / 768 * 2.5f);
 		LabelStyle style = new LabelStyle(blue, Color.BLUE);
 		Label gameOver = new Label("GAME OVER\nScore: " + String.valueOf(maxHeight), style);
 		gameOver.setPosition(WIDTH /2 - gameOver.getWidth() / 2,
@@ -72,7 +77,7 @@ public class GameOverScreen implements Screen {
 		imageStyle.up = skin.getDrawable("Back");
 		imageStyle.down = skin.getDrawable("Back");
 
-		back = new ImageButton(imageStyle);
+		ImageButton back = new ImageButton(imageStyle);
 
 		float backSize = WIDTH / 6;
 		back.setSize(backSize, backSize);
@@ -108,8 +113,7 @@ public class GameOverScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
+		stage.dispose();
 	}
 
 }
