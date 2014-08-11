@@ -4,25 +4,27 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 
 public class MainScreen implements Screen {
-	IceAspirations iceA;
-	SpriteBatch batch;
-	Sprite background, title;
+	private IceAspirations iceA;
+	private SpriteBatch batch;
+	private Sprite title;
 	
-	Stage stage;
-	ImageTextButtonStyle style;
-	ImageTextButton play, highscores, quit;
-	float width = Gdx.graphics.getWidth();
-	float height = Gdx.graphics.getHeight();
+	private Stage stage;
+	private ImageTextButtonStyle style;
+	private ImageTextButton play, highscores, quit;
+	private float width = Gdx.graphics.getWidth();
+	private float height = Gdx.graphics.getHeight();
 
 	public MainScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -41,12 +43,14 @@ public class MainScreen implements Screen {
 		title.setPosition(titleX, titleY);
 		title.setScale(width / 768);
 
-		IceAspirations.blue.setScale(width / 300);
+		BitmapFont blue = IceAspirations.getBlue();
+		blue.setScale(width / 300);
 		style = new ImageTextButtonStyle();
-		style.font = IceAspirations.blue;
+		style.font = blue;
 
-		IceAspirations.soundButton.setPosition(0, 0);
-		stage.addActor(IceAspirations.soundButton);
+		ImageButton soundButton = IceAspirations.getSoundButton();
+		soundButton.setPosition(0, 0);
+		stage.addActor(soundButton);
 		
 		playButtonSetUp();
 		highscoreButtonSetUp();
@@ -111,7 +115,7 @@ public class MainScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		batch.begin();
-		IceAspirations.background.draw(batch);
+		IceAspirations.getBackground().draw(batch);
 		title.draw(batch);
 		batch.end();
 

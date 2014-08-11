@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.IceAspirations;
@@ -41,7 +42,7 @@ public class HighScoresScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.begin();
-		IceAspirations.background.draw(batch);
+		IceAspirations.getBackground().draw(batch);
 		batch.end();
 
 		stage.act(delta);
@@ -92,7 +93,7 @@ public class HighScoresScreen implements Screen {
 		String score4 = "4) " + prefs.getString("HighScore3");
 		String score5 = "5) " + prefs.getString("HighScore4");
 
-		style = new LabelStyle(IceAspirations.blue, Color.BLUE);
+		style = new LabelStyle(IceAspirations.getBlue(), Color.BLUE);
 		heading = new Label("High Scores", style);
 
 		Label points1 = new Label(score1, style);
@@ -120,8 +121,9 @@ public class HighScoresScreen implements Screen {
 
 	private void backButtonSetUp() {
 		ImageButtonStyle imageStyle = new ImageButtonStyle();
-		imageStyle.up = IceAspirations.skin.getDrawable("Back");
-		imageStyle.down = IceAspirations.skin.getDrawable("Back");
+		Skin skin = IceAspirations.getSkin();
+		imageStyle.up = skin.getDrawable("Back");
+		imageStyle.down = skin.getDrawable("Back");
 
 		back = new ImageButton(imageStyle);
 

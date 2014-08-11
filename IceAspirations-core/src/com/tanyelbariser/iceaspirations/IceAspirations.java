@@ -16,11 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.screens.MainScreen;
 
 public class IceAspirations extends Game {
-	public static Music music;
-	public static Skin skin;
-	public static BitmapFont blue;
-	public static ImageButton soundButton;
-	public static Sprite background;
+	private static Music music;
+	private static Skin skin;
+	private static BitmapFont blue;
+	private static ImageButton soundButton;
+	private static Sprite background;
 	private Screen nextScreen;
 
 	@Override
@@ -93,5 +93,25 @@ public class IceAspirations extends Game {
 			setScreen(nextScreen);
 			nextScreen = null;
 		}
+	}
+
+	public static Sprite getBackground() {
+		return background;
+	}
+
+	public static BitmapFont getBlue() {
+		return blue;
+	}
+
+	public static Skin getSkin() {
+		return skin;
+	}
+
+	public static ImageButton getSoundButton() {
+		return soundButton;
+	}
+
+	public static Music getMusic() {
+		return music;
 	}
 }

@@ -3,6 +3,7 @@ package com.tanyelbariser.iceaspirations.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.tanyelbariser.iceaspirations.IceAspirations;
@@ -40,6 +42,8 @@ public class Player implements ContactListener, InputProcessor {
 	private Animation jumpAnimation;
 	private Sprite fallingSprite;
 	private boolean standing;
+	private Sound jumpSound = Gdx.audio.newSound(Gdx.files
+			.internal("Jumping.wav"));
 
 	public Player(World world) {
 		world.setContactListener(this);
@@ -85,24 +89,25 @@ public class Player implements ContactListener, InputProcessor {
 	}
 
 	private void createAnimations() {
-		standSprite = IceAspirations.skin.getSprite("Rabbit1");
+		Skin skin = IceAspirations.getSkin();
+		standSprite = skin.getSprite("Rabbit1");
 		standSprite.setSize(2.9f, 4.2f);
 		standSprite.setOrigin(standSprite.getWidth() / 2,
 				standSprite.getHeight() / 2);
 
-		Sprite rabbit2 = IceAspirations.skin.getSprite("Rabbit2");
+		Sprite rabbit2 = skin.getSprite("Rabbit2");
 		rabbit2.setSize(2.9f, 4.2f);
 		rabbit2.setOrigin(rabbit2.getWidth() / 2, rabbit2.getHeight() / 2);
 
-		Sprite rabbit3 = IceAspirations.skin.getSprite("Rabbit3");
+		Sprite rabbit3 = skin.getSprite("Rabbit3");
 		rabbit3.setSize(2.3f, 4.2f);
 		rabbit3.setOrigin(rabbit3.getWidth() / 2, rabbit3.getHeight() / 2);
 
-		Sprite rabbit4 = IceAspirations.skin.getSprite("Rabbit4");
+		Sprite rabbit4 = skin.getSprite("Rabbit4");
 		rabbit4.setSize(2.3f, 4.2f);
 		rabbit4.setOrigin(rabbit4.getWidth() / 2, rabbit4.getHeight() / 2);
 
-		Sprite rabbit5 = IceAspirations.skin.getSprite("Rabbit5");
+		Sprite rabbit5 = skin.getSprite("Rabbit5");
 		rabbit5.setSize(2.3f, 4.2f);
 		rabbit5.setOrigin(rabbit5.getWidth() / 2, rabbit5.getHeight() / 2);
 
@@ -111,7 +116,7 @@ public class Player implements ContactListener, InputProcessor {
 
 		jumpAnimation = new Animation(0.10f, jumpSprites);
 
-		fallingSprite = IceAspirations.skin.getSprite("Rabbit7");
+		fallingSprite = skin.getSprite("Rabbit7");
 		fallingSprite.setSize(3, 4.2f);
 		fallingSprite.setOrigin(fallingSprite.getWidth() / 2,
 				fallingSprite.getHeight() / 2);
@@ -180,6 +185,9 @@ public class Player implements ContactListener, InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (canJump) {
+			if (IceAspirations.getMusic().isPlaying()) {
+				jumpSound.play(0.1f, 0.8f, 0);
+			}
 			down = angle = 0;
 			body.applyLinearImpulse(0, jump * myDelta, body.getWorldCenter().x,
 					body.getWorldCenter().y, true);
@@ -199,6 +207,9 @@ public class Player implements ContactListener, InputProcessor {
 			break;
 		case Keys.SPACE:
 			if (canJump) {
+				if (IceAspirations.getMusic().isPlaying()) {
+					jumpSound.play(0.1f, 0.8f, 0);
+				}
 				down = angle = 0;
 				body.applyLinearImpulse(0, jump * myDelta,
 						body.getWorldCenter().x, body.getWorldCenter().y, true);

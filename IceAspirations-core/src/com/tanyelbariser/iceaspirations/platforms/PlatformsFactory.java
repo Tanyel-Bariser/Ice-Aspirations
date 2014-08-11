@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 
@@ -16,6 +17,7 @@ public class PlatformsFactory {
 	private static Body platform;
 	private static Sprite sprite;
 	private static PolygonShape shape;
+	private static Skin skin = IceAspirations.getSkin();
 
 	public static Array<Body> createPlatforms(World world) {
 		Array<Body> platforms = new Array<Body>();
@@ -48,7 +50,7 @@ public class PlatformsFactory {
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
-		sprite = IceAspirations.skin.getSprite("Platform1");
+		sprite = skin.getSprite("Platform1");
 		sprite.setSize(width, height);
 
 		platform.setUserData(sprite);
@@ -71,7 +73,7 @@ public class PlatformsFactory {
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
-		sprite = IceAspirations.skin.getSprite("Platform2");
+		sprite = skin.getSprite("Platform2");
 		sprite.setSize(width, height);
 
 		platform.setUserData(sprite);
@@ -94,7 +96,7 @@ public class PlatformsFactory {
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
-		sprite = IceAspirations.skin.getSprite("Platform3");
+		sprite = skin.getSprite("Platform3");
 		sprite.setSize(width, height);
 
 		platform.setUserData(sprite);
@@ -117,7 +119,7 @@ public class PlatformsFactory {
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
-		sprite = IceAspirations.skin.getSprite("Platform4");
+		sprite = skin.getSprite("Platform4");
 		sprite.setSize(width, height);
 
 		platform.setUserData(sprite);
@@ -140,7 +142,7 @@ public class PlatformsFactory {
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
-		sprite = IceAspirations.skin.getSprite("Platform5");
+		sprite = skin.getSprite("Platform5");
 		sprite.setSize(width, height);
 
 		platform.setUserData(sprite);
@@ -163,7 +165,7 @@ public class PlatformsFactory {
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
-		sprite = IceAspirations.skin.getSprite("Platform6");
+		sprite = skin.getSprite("Platform6");
 		sprite.setSize(width, height);
 
 		platform.setUserData(sprite);
@@ -186,7 +188,7 @@ public class PlatformsFactory {
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
-		sprite = IceAspirations.skin.getSprite("Platform7");
+		sprite = skin.getSprite("Platform7");
 		sprite.setSize(width, height);
 
 		platform.setUserData(sprite);
@@ -209,7 +211,7 @@ public class PlatformsFactory {
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
-		sprite = IceAspirations.skin.getSprite("Platform8");
+		sprite = skin.getSprite("Platform8");
 		sprite.setSize(width, height);
 
 		platform.setUserData(sprite);
@@ -232,7 +234,7 @@ public class PlatformsFactory {
 		platform.createFixture(shape, 0);
 		shape.dispose();
 
-		sprite = IceAspirations.skin.getSprite("Platform9");
+		sprite = skin.getSprite("Platform9");
 		sprite.setSize(width, height);
 
 		platform.setUserData(sprite);

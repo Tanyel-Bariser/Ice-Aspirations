@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.IceAspirations;
@@ -33,6 +34,7 @@ public class GameScreen implements Screen {
 	private IceAspirations iceA;
 	private SpriteBatch batch;
 	private Stage stage;
+	private Skin skin = IceAspirations.getSkin();
 	private ImageButton pause, back;
 	private static float phoneWidth = 768;
 	public static final float WIDTH = Gdx.graphics.getWidth();
@@ -225,7 +227,7 @@ public class GameScreen implements Screen {
 		}
 
 		// Create Label to show remaining game time
-		BitmapFont blue = IceAspirations.blue;
+		BitmapFont blue = IceAspirations.getBlue();
 		blue.setScale(0.5f);
 		LabelStyle style = new LabelStyle(blue, Color.BLUE);
 		timeLeft = new Label("60", style);
@@ -236,8 +238,8 @@ public class GameScreen implements Screen {
 
 	private void pauseButtonSetUp() {
 		ImageButtonStyle imageStyle = new ImageButtonStyle();
-		imageStyle.up = IceAspirations.skin.getDrawable("Pause");
-		imageStyle.down = IceAspirations.skin.getDrawable("Play");
+		imageStyle.up = skin.getDrawable("Pause");
+		imageStyle.down = skin.getDrawable("Play");
 		imageStyle.checked = imageStyle.down;
 
 		pause = new ImageButton(imageStyle);
@@ -267,8 +269,8 @@ public class GameScreen implements Screen {
 
 	private void backButtonSetUp() {
 		ImageButtonStyle imageStyle = new ImageButtonStyle();
-		imageStyle.up = IceAspirations.skin.getDrawable("Back");
-		imageStyle.down = IceAspirations.skin.getDrawable("Back");
+		imageStyle.up = skin.getDrawable("Back");
+		imageStyle.down = skin.getDrawable("Back");
 
 		back = new ImageButton(imageStyle);
 

@@ -30,7 +30,7 @@ public class GameOverScreen implements Screen {
 
 		SpriteBatch batch = new SpriteBatch();
 		batch.begin();
-		IceAspirations.background.draw(batch);
+		IceAspirations.getBackground().draw(batch);
 		batch.end();
 
 		stage.act(delta);
@@ -52,7 +52,7 @@ public class GameOverScreen implements Screen {
 		stage = new Stage();
 
 		// Create Label to show remaining game time
-		BitmapFont blue = IceAspirations.blue;
+		BitmapFont blue = IceAspirations.getBlue();
 		blue.setScale(1);
 		LabelStyle style = new LabelStyle(blue, Color.BLUE);
 		Label gameOver = new Label("GAME OVER\nScore: " + String.valueOf(maxHeight), style);
