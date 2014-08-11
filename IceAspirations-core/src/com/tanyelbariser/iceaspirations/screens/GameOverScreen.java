@@ -6,9 +6,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 
 public class GameOverScreen implements Screen {
@@ -17,6 +22,7 @@ public class GameOverScreen implements Screen {
 	private Stage stage;
 	private final float WIDTH = Gdx.graphics.getWidth();
 	private final float HEIGHT = Gdx.graphics.getHeight();
+	private ImageButton back;
 
 	public GameOverScreen(IceAspirations iceA, int maxHeight) {
 		this.iceA = iceA;
@@ -35,10 +41,6 @@ public class GameOverScreen implements Screen {
 
 		stage.act(delta);
 		stage.draw();
-		
-		if (Gdx.input.isTouched()) {
-			iceA.setScreen(new HighScoresScreen(iceA, maxHeight));
-		}
 	}
 
 	@Override
@@ -50,6 +52,7 @@ public class GameOverScreen implements Screen {
 	@Override
 	public void show() {
 		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
 
 		// Create Label to show remaining game time
 		BitmapFont blue = IceAspirations.getBlue();
@@ -59,7 +62,30 @@ public class GameOverScreen implements Screen {
 		gameOver.setPosition(WIDTH /2 - gameOver.getWidth() / 2,
 				HEIGHT / 2- gameOver.getHeight() / 2);
 		stage.addActor(gameOver);
+		
+		backButtonSetUp();
 
+	}
+	private void backButtonSetUp() {
+		ImageButtonStyle imageStyle = new ImageButtonStyle();
+		Skin skin = IceAspirations.getSkin();
+		imageStyle.up = skin.getDrawable("Back");
+		imageStyle.down = skin.getDrawable("Back");
+
+		back = new ImageButton(imageStyle);
+
+		float backSize = WIDTH / 6;
+		back.setSize(backSize, backSize);
+
+		back.setPosition(0, 0);
+
+		back.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				iceA.setScreen(new HighScoresScreen(iceA, maxHeight));
+			}
+		});
+		stage.addActor(back);
 	}
 
 	@Override
