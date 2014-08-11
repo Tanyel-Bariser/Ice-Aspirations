@@ -26,9 +26,12 @@ public class HighScoresScreen implements Screen {
 	private ImageButton back;
 	private float width = Gdx.graphics.getWidth();
 	private float height = Gdx.graphics.getHeight();
+	private int[] highScores = new int[] { 5, 4, 3, 2, 1 };
+	private int maxHeight = 0;
 
-	public HighScoresScreen(IceAspirations iceA) {
+	public HighScoresScreen(IceAspirations iceA, int maxHeight) {
 		this.iceA = iceA;
+		this.maxHeight = maxHeight;
 	}
 
 	@Override
@@ -48,20 +51,37 @@ public class HighScoresScreen implements Screen {
 	public void resize(int width, int height) {
 	}
 
+	private void newScore(int newScore) {
+		for (int i = 0; i < 5; i++) {
+			if (highScores[i] < newScore) {
+				for (int j = 4; j > i; j--)
+					highScores[j] = highScores[j - 1];
+				highScores[i] = newScore;
+				break;
+			}
+		}
+	}
+
 	@Override
 	public void show() {
 		batch = new SpriteBatch();
+		
+		newScore(maxHeight);
 
-		String newHighScore = String.valueOf(0);
+		String highScore1 = String.valueOf(highScores[0]);
+		String highScore2 = String.valueOf(highScores[1]);
+		String highScore3 = String.valueOf(highScores[2]);
+		String highScore4 = String.valueOf(highScores[3]);
+		String highScore5 = String.valueOf(highScores[4]);
 		Preferences prefs = Gdx.app.getPreferences("IceAspirations");
-		prefs.putString("HighScore1", newHighScore);
-		prefs.putString("HighScore2", newHighScore);
-		prefs.putString("HighScore3", newHighScore);
-		prefs.putString("HighScore4", newHighScore);
-		prefs.putString("HighScore5", newHighScore);
-		
+		prefs.putString("HighScore1", highScore1);
+		prefs.putString("HighScore2", highScore2);
+		prefs.putString("HighScore3", highScore3);
+		prefs.putString("HighScore4", highScore4);
+		prefs.putString("HighScore5", highScore5);
+
 		prefs.flush();
-		
+
 		String score1 = "1) " + prefs.getString("HighScore1");
 		String score2 = "2) " + prefs.getString("HighScore2");
 		String score3 = "3) " + prefs.getString("HighScore3");

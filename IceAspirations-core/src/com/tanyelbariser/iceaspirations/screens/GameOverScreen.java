@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -12,12 +13,14 @@ import com.tanyelbariser.iceaspirations.IceAspirations;
 
 public class GameOverScreen implements Screen {
 	private IceAspirations iceA;
+	private int maxHeight = 0;
 	private Stage stage;
 	private final float WIDTH = Gdx.graphics.getWidth();
 	private final float HEIGHT = Gdx.graphics.getHeight();
 
-	public GameOverScreen(IceAspirations iceA) {
+	public GameOverScreen(IceAspirations iceA, int maxHeight) {
 		this.iceA = iceA;
+		this.maxHeight = maxHeight;
 	}
 
 	@Override
@@ -34,7 +37,7 @@ public class GameOverScreen implements Screen {
 		stage.draw();
 		
 		if (Gdx.input.isTouched()) {
-			iceA.setScreen(new MainScreen(iceA));
+			iceA.setScreen(new HighScoresScreen(iceA, maxHeight));
 		}
 	}
 
@@ -49,8 +52,10 @@ public class GameOverScreen implements Screen {
 		stage = new Stage();
 
 		// Create Label to show remaining game time
-		LabelStyle style = new LabelStyle(IceAspirations.blue, Color.BLUE);
-		Label gameOver = new Label("GAME OVER", style);
+		BitmapFont blue = IceAspirations.blue;
+		blue.setScale(1);
+		LabelStyle style = new LabelStyle(blue, Color.BLUE);
+		Label gameOver = new Label("GAME OVER\nScore: " + String.valueOf(maxHeight), style);
 		gameOver.setPosition(WIDTH /2 - gameOver.getWidth() / 2,
 				HEIGHT / 2- gameOver.getHeight() / 2);
 		stage.addActor(gameOver);

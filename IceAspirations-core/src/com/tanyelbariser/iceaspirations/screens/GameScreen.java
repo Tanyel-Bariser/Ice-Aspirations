@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -18,8 +19,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -62,8 +63,9 @@ public class GameScreen implements Screen {
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
 	private float frameTime;
-	private float allotedTime = 1;
+	private float allotedTime = 10;
 	private Label timeLeft;
+	private int maxHeight;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -74,10 +76,16 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if (state.equals(State.Running)) {
+			if (camera.position.y > maxHeight) {
+				maxHeight = (int) camera.position.y;
+			}
+
 			allotedTime -= delta;
-			timeLeft.setText(String.valueOf(Math.round(allotedTime)));
+			timeLeft.setText("Score: " + String.valueOf(maxHeight)
+					+ "\nTime Limit: "
+					+ String.valueOf(Math.round(allotedTime)));
 			if (allotedTime < 0) {
-				iceA.setNextScreen(new GameOverScreen(iceA));
+				iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
 			}
 
 			// adjustedDelta is delta rounded to nearest whole or half, i.e.
@@ -217,10 +225,12 @@ public class GameScreen implements Screen {
 		}
 
 		// Create Label to show remaining game time
-		LabelStyle style = new LabelStyle(IceAspirations.blue, Color.BLUE);
+		BitmapFont blue = IceAspirations.blue;
+		blue.setScale(0.5f);
+		LabelStyle style = new LabelStyle(blue, Color.BLUE);
 		timeLeft = new Label("60", style);
 		timeLeft.setPosition(timeLeft.getWidth() / 10,
-				HEIGHT - timeLeft.getHeight() / 1.5f);
+				HEIGHT - timeLeft.getHeight() * 1.2f);
 		stage.addActor(timeLeft);
 	}
 
