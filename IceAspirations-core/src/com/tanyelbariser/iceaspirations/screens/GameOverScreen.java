@@ -61,7 +61,6 @@ public class GameOverScreen implements Screen {
 
 		// Create Label to show remaining game time
 		BitmapFont blue = IceAspirations.getBlue();
-		blue.setScale(WIDTH / 768 * 2.5f);
 		LabelStyle style = new LabelStyle(blue, Color.BLUE);
 		Label gameOver = new Label("GAME OVER\nScore: " + String.valueOf(maxHeight), style);
 		gameOver.setPosition(WIDTH /2 - gameOver.getWidth() / 2,

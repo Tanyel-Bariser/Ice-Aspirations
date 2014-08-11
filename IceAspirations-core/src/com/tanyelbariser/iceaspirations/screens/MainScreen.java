@@ -22,7 +22,7 @@ public class MainScreen implements Screen {
 	
 	private Stage stage;
 	private ImageTextButtonStyle style;
-	private ImageTextButton play, highscores, quit;
+	private ImageTextButton play, highscores, exit;
 	private float width = Gdx.graphics.getWidth();
 	private float height = Gdx.graphics.getHeight();
 
@@ -54,7 +54,7 @@ public class MainScreen implements Screen {
 		
 		playButtonSetUp();
 		highscoreButtonSetUp();
-		quitButtonSetup();
+		exitButtonSetup();
 	}
 
 	// Button to transition to game screen
@@ -90,19 +90,19 @@ public class MainScreen implements Screen {
 	}
 
 	// Button to exit game
-	private void quitButtonSetup() {
-		quit = new ImageTextButton("Quit", style);
+	private void exitButtonSetup() {
+		exit = new ImageTextButton("Exit", style);
 		
-		float x = width / 2 - quit.getWidth() / 2;
-		float y = height / 2 - quit.getHeight() * 2;
-		quit.setPosition(x, y);
+		float x = width / 2 - exit.getWidth() / 2;
+		float y = height / 2 - exit.getHeight() * 2;
+		exit.setPosition(x, y);
 		
-		quit.addListener(new ClickListener() {
+		exit.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				Gdx.app.exit();
 			}
 		});
-		stage.addActor(quit);
+		stage.addActor(exit);
 	}
 
 	@Override

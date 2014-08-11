@@ -3,7 +3,6 @@ package com.tanyelbariser.iceaspirations.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,6 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -36,7 +37,7 @@ public class GameScreen implements Screen {
 	private SpriteBatch batch;
 	private Stage stage;
 	private Skin skin = IceAspirations.getSkin();
-	private ImageButton pause, back;
+	private ImageButton pause;
 	private static float phoneWidth = 768;
 	public static final float WIDTH = Gdx.graphics.getWidth();
 	public static final float HEIGHT = Gdx.graphics.getHeight();
@@ -69,6 +70,8 @@ public class GameScreen implements Screen {
 	private float allotedTime = 15;
 	private Label timeLeft;
 	private int maxHeight;
+	private ImageTextButton quit;
+	private BitmapFont blue;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -87,18 +90,6 @@ public class GameScreen implements Screen {
 			timeLeft.setText("Score: " + String.valueOf(maxHeight)
 					+ "\nTime Limit: "
 					+ String.valueOf(Math.round(allotedTime)));
-			if (allotedTime < 0) {
-				iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
-			} else if (allotedTime < 11) {
-				if (IceAspirations.getMusic().isPlaying()) {
-					IceAspirations.getMusic().stop();
-				}
-				if (!IceAspirations.getTimeOutMusic().isPlaying()) {
-					IceAspirations.getTimeOutMusic().play();
-				}
-			} else if (!IceAspirations.getMusic().isPlaying()) {
-				IceAspirations.getMusic().play();
-			}
 
 			// adjustedDelta is delta rounded to nearest whole or half, i.e.
 			// 60FPS = 1, 45FPS = 1.5, 30FPS = 2, etc. for a consistent delta
@@ -148,6 +139,11 @@ public class GameScreen implements Screen {
 				playerSprite = stand;
 				frameTime = 0;
 			}
+
+			if (player.getBody().getLinearVelocity().x < 0
+					&& playerSprite.isFlipX()) {
+				playerSprite.flip(true, false);
+			}
 			playerSprite.setPosition(player.getBody().getPosition().x
 					- playerSprite.getWidth() / 2, player.getBody()
 					.getPosition().y - playerSprite.getHeight() / 2);
@@ -176,6 +172,18 @@ public class GameScreen implements Screen {
 					camera.position.y - backgroundHeight / 2);
 
 			camera.update();
+		}
+		if (allotedTime < 0) {
+			iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
+		} else if (allotedTime < 11) {
+			if (IceAspirations.getMusic().isPlaying()) {
+				IceAspirations.getMusic().stop();
+			}
+			if (!IceAspirations.getTimeOutMusic().isPlaying()) {
+				IceAspirations.getTimeOutMusic().play();
+			}
+		} else if (!IceAspirations.getMusic().isPlaying()) {
+			IceAspirations.getMusic().play();
 		}
 
 		batch.setProjectionMatrix(camera.combined);
@@ -209,7 +217,7 @@ public class GameScreen implements Screen {
 		background.setScale(1f / ZOOM * compatibility);
 
 		pauseButtonSetUp();
-		backButtonSetUp();
+		quitButtonSetUp();
 
 		float gravity = -9.81f;
 		world = new World(new Vector2(0, gravity), true);
@@ -237,8 +245,7 @@ public class GameScreen implements Screen {
 		}
 
 		// Create Label to show remaining game time
-		BitmapFont blue = IceAspirations.getBlue();
-		blue.setScale(0.5f);
+		blue = IceAspirations.getBlue();
 		LabelStyle style = new LabelStyle(blue, Color.BLUE);
 		timeLeft = new Label("60", style);
 		timeLeft.setPosition(timeLeft.getWidth() / 10,
@@ -266,32 +273,37 @@ public class GameScreen implements Screen {
 				if (checked) {
 					pause.setChecked(true);
 					pause();
-					stage.addActor(back);
+					stage.addActor(quit);
 				} else {
 					pause.setChecked(false);
 					resume();
-					back.remove();
+					quit.remove();
 				}
 			}
 		});
 		stage.addActor(pause);
 	}
 
-	private void backButtonSetUp() {
-		ImageButtonStyle imageStyle = new ImageButtonStyle();
-		imageStyle.up = skin.getDrawable("Back");
-		imageStyle.down = skin.getDrawable("Back");
+	// Button to quit current game
+	private void quitButtonSetUp() {
+		ImageTextButtonStyle style = new ImageTextButtonStyle();
+		blue = IceAspirations.getBlue();
+		blue.setScale(WIDTH / 300);
+		style.font = blue;
+		quit = new ImageTextButton("Quit", style);
 
-		back = new ImageButton(imageStyle);
+		float x = WIDTH / 2 - quit.getWidth() / 2;
+		float y = HEIGHT / 2 - quit.getHeight() / 2;
+		quit.setPosition(x, y);
 
-		float backSize = WIDTH / 6;
-		back.setSize(backSize, backSize);
-
-		back.setPosition(0, 0);
-
-		back.addListener(new ClickListener() {
-			@Override
+		quit.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
+				if (IceAspirations.getTimeOutMusic().isPlaying()) {
+					IceAspirations.getTimeOutMusic().stop();
+				}
+				if (!IceAspirations.getMusic().isPlaying()) {
+					IceAspirations.getMusic().play();
+				}
 				iceA.setScreen(new MainScreen(iceA));
 			}
 		});
