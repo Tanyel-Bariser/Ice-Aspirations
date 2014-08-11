@@ -2,6 +2,7 @@ package com.tanyelbariser.iceaspirations;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -20,7 +21,8 @@ public class IceAspirations extends Game {
 	public static BitmapFont blue;
 	public static ImageButton soundButton;
 	public static Sprite background;
-	
+	private Screen nextScreen;
+
 	@Override
 	public void create() {
 		TextureAtlas atlas = new TextureAtlas("Atlas.atlas");
@@ -35,14 +37,13 @@ public class IceAspirations extends Game {
 	private void musicSetup() {
 		music = Gdx.audio.newMusic(Gdx.files.internal("Rise of spirit.mp3"));
 		music.setLooping(true);
-//		music.play();
+		// music.play();
 		music.setVolume(0.2f);
 	}
-	
+
 	private void muteButtonSetup() {
 		TextureAtlas atlas = new TextureAtlas("Atlas.atlas");
 		Skin skin = new Skin(atlas);
-		
 
 		ImageButtonStyle imageStyle = new ImageButtonStyle();
 		imageStyle.up = skin.getDrawable("Unmute");
@@ -68,7 +69,7 @@ public class IceAspirations extends Game {
 			}
 		});
 	}
-	
+
 	@Override
 	public void dispose() {
 		super.dispose();
@@ -76,5 +77,21 @@ public class IceAspirations extends Game {
 		skin.dispose();
 		blue.dispose();
 		background.getTexture().dispose();
+	}
+
+	// nextScreen field & Override in render() & setNextScreen() methods are a
+	// fix to overcome a bug that prevents switching screens in render() method
+	// of GameScreen after allotted time runs out.
+	public void setNextScreen(Screen nextScreen) {
+		this.nextScreen = nextScreen;
+	}
+
+	@Override
+	public void render() {
+		super.render();
+		if (nextScreen != null) {
+			setScreen(nextScreen);
+			nextScreen = null;
+		}
 	}
 }

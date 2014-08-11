@@ -32,8 +32,8 @@ public class GameScreen implements Screen {
 	private IceAspirations iceA;
 	private SpriteBatch batch;
 	private Stage stage;
-	ImageButton pause, back;
-	static float phoneWidth = 768;
+	private ImageButton pause, back;
+	private static float phoneWidth = 768;
 	public static final float WIDTH = Gdx.graphics.getWidth();
 	public static final float HEIGHT = Gdx.graphics.getHeight();
 	private static float compatibility = WIDTH / phoneWidth;
@@ -53,16 +53,16 @@ public class GameScreen implements Screen {
 
 	State state = State.Running;
 
-	float approxFPS = 60.0f;
-	final float TIMESTEP = 1.0f / approxFPS;
-	final int VELOCITYITERATIONS = 8;
-	final int POSITIONITERATIONS = 3;
+	private float approxFPS = 60.0f;
+	private final float TIMESTEP = 1.0f / approxFPS;
+	private final int VELOCITYITERATIONS = 8;
+	private final int POSITIONITERATIONS = 3;
 	private Platforms platforms;
-	Array<Sprite> platformSprites = new Array<Sprite>();
+	private Array<Sprite> platformSprites = new Array<Sprite>();
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
 	private float frameTime;
-	private float allotedTime = 60;
+	private float allotedTime = 1;
 	private Label timeLeft;
 
 	public GameScreen(IceAspirations iceA) {
@@ -77,7 +77,7 @@ public class GameScreen implements Screen {
 			allotedTime -= delta;
 			timeLeft.setText(String.valueOf(Math.round(allotedTime)));
 			if (allotedTime < 0) {
-				iceA.setScreen(new MainScreen(iceA));
+				iceA.setNextScreen(new GameOverScreen(iceA));
 			}
 
 			// adjustedDelta is delta rounded to nearest whole or half, i.e.
