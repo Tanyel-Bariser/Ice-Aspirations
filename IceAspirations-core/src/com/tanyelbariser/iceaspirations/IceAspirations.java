@@ -14,8 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
+import com.tanyelbariser.iceaspirations.screens.ScreenManager;
 
 public class IceAspirations extends Game {
+	public static ScreenManager screenManager = null;
 	public static Music music;
 	public static Skin skin;
 	public static BitmapFont blue;
@@ -25,6 +27,7 @@ public class IceAspirations extends Game {
 
 	@Override
 	public void create() {
+		screenManager = new ScreenManager(this);
 		TextureAtlas atlas = new TextureAtlas("Atlas.atlas");
 		skin = new Skin(atlas);
 		blue = new BitmapFont(Gdx.files.internal("blue.fnt"), false);

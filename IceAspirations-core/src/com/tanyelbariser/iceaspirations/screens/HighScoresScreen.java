@@ -51,7 +51,7 @@ public class HighScoresScreen implements Screen {
 	public void resize(int width, int height) {
 	}
 
-	private void newScore(int newScore) {
+	public void newScore(int newScore) {
 		for (int i = 0; i < 5; i++) {
 			if (highScores[i] < newScore) {
 				for (int j = 4; j > i; j--)

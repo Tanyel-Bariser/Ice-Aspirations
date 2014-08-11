@@ -37,7 +37,9 @@ public class GameOverScreen implements Screen {
 		stage.draw();
 		
 		if (Gdx.input.isTouched()) {
-			iceA.setScreen(new HighScoresScreen(iceA, maxHeight));
+			HighScoresScreen highScoresScreen = IceAspirations.screenManager.getHighScoresScreen();
+			highScoresScreen.newScore(maxHeight);
+			iceA.setScreen(highScoresScreen);
 		}
 	}
 
