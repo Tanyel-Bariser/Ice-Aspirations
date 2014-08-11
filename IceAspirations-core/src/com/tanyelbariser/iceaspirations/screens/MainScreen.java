@@ -79,7 +79,7 @@ public class MainScreen implements Screen {
 
 		highscores.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				iceA.setScreen(IceAspirations.screenManager.getHighScoresScreen());
+				iceA.setScreen(new HighScoresScreen(iceA, 0));
 			}
 		});
 		stage.addActor(highscores);

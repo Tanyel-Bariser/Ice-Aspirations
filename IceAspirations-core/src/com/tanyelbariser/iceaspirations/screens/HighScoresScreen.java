@@ -26,8 +26,9 @@ public class HighScoresScreen implements Screen {
 	private ImageButton back;
 	private float width = Gdx.graphics.getWidth();
 	private float height = Gdx.graphics.getHeight();
-	private int[] highScores = new int[] { 5, 4, 3, 2, 1 };
+	private int[] highScores = new int[5];
 	private int maxHeight = 0;
+	private Preferences prefs;
 
 	public HighScoresScreen(IceAspirations iceA, int maxHeight) {
 		this.iceA = iceA;
@@ -60,33 +61,36 @@ public class HighScoresScreen implements Screen {
 				break;
 			}
 		}
+		for (int i = 0; i < 5; i++) {
+			String key ="HighScore" + String.valueOf(i);
+			String value = String.valueOf(highScores[i]);
+			prefs.putString(key, value);
+		}
+		prefs.flush();
 	}
 
 	@Override
 	public void show() {
 		batch = new SpriteBatch();
+
+		prefs = Gdx.app.getPreferences("IceAspirations");
+		for (int i = 0; i < 5; i++) {
+			String key = "HighScore" + String.valueOf(i);
+			if (prefs.contains(key)) {
+				String value = prefs.getString(key);
+				highScores[i] = Integer.parseInt(value);
+			} else {
+				prefs.putInteger(key, 0);
+			}
+		}
 		
 		newScore(maxHeight);
 
-		String highScore1 = String.valueOf(highScores[0]);
-		String highScore2 = String.valueOf(highScores[1]);
-		String highScore3 = String.valueOf(highScores[2]);
-		String highScore4 = String.valueOf(highScores[3]);
-		String highScore5 = String.valueOf(highScores[4]);
-		Preferences prefs = Gdx.app.getPreferences("IceAspirations");
-		prefs.putString("HighScore1", highScore1);
-		prefs.putString("HighScore2", highScore2);
-		prefs.putString("HighScore3", highScore3);
-		prefs.putString("HighScore4", highScore4);
-		prefs.putString("HighScore5", highScore5);
-
-		prefs.flush();
-
-		String score1 = "1) " + prefs.getString("HighScore1");
-		String score2 = "2) " + prefs.getString("HighScore2");
-		String score3 = "3) " + prefs.getString("HighScore3");
-		String score4 = "4) " + prefs.getString("HighScore4");
-		String score5 = "5) " + prefs.getString("HighScore5");
+		String score1 = "1) " + prefs.getString("HighScore0");
+		String score2 = "2) " + prefs.getString("HighScore1");
+		String score3 = "3) " + prefs.getString("HighScore2");
+		String score4 = "4) " + prefs.getString("HighScore3");
+		String score5 = "5) " + prefs.getString("HighScore4");
 
 		style = new LabelStyle(IceAspirations.blue, Color.BLUE);
 		heading = new Label("High Scores", style);
