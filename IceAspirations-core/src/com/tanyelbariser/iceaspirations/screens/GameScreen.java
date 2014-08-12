@@ -72,13 +72,14 @@ public class GameScreen implements Screen {
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
 	private float frameTime;
-	private float allotedTime = 15;
+	private float allotedTime = 60;
 	private Label timeLeft;
 	private int maxHeight;
 	private ImageTextButton quit;
 	private BitmapFont blue;
 	private LabelStyle yellowStyle;
 	private Body boulder;
+	private Sprite boulderSprite;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -121,12 +122,13 @@ public class GameScreen implements Screen {
 					continue;
 				}
 			}
-			
-			//Reposition boulder if below camera
+
+			// Reposition boulder if below camera
 			if (boulder.getPosition().y < bottomScreenEdge - 10) {
-				boulder.setTransform(0, topScreenEdge+10, 0);
-				boulder.applyLinearImpulse(0, 100 * adjustedDelta, boulder.getWorldCenter().x,
-						boulder.getWorldCenter().y, true);
+				boulder.setTransform(0, topScreenEdge + 10, 0);
+				boulder.applyLinearImpulse(0, 100 * adjustedDelta,
+						boulder.getWorldCenter().x, boulder.getWorldCenter().y,
+						true);
 			}
 
 			// Player Updates
@@ -173,6 +175,13 @@ public class GameScreen implements Screen {
 					- playerSprite.getWidth() / 2, player.getBody()
 					.getPosition().y - playerSprite.getHeight() / 2);
 			playerSprite.setRotation(player.getBody().getAngle()
+					* MathUtils.radiansToDegrees);
+
+			// Set Snow Boulder position
+			boulderSprite.setPosition(
+					boulder.getPosition().x - boulderSprite.getWidth() / 2,
+					boulder.getPosition().y - boulderSprite.getHeight() / 2);
+			boulderSprite.setRotation(boulder.getAngle()
 					* MathUtils.radiansToDegrees);
 
 			// Set camera position based on player position
@@ -224,6 +233,7 @@ public class GameScreen implements Screen {
 		batch.begin();
 		background.draw(batch);
 		playerSprite.draw(batch);
+		boulderSprite.draw(batch);
 		for (Sprite platform : platformSprites) {
 			platform.draw(batch);
 		}
@@ -232,7 +242,7 @@ public class GameScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-		 physicsDebugger.render(world, camera.combined);
+//		physicsDebugger.render(world, camera.combined);
 	}
 
 	@Override
@@ -278,7 +288,7 @@ public class GameScreen implements Screen {
 		}
 
 		createSnowBoulder();
-		
+
 		// Create Label to show remaining game time
 		BitmapFont yellow = new BitmapFont(Gdx.files.internal("yellow.fnt"),
 				false);
@@ -289,26 +299,31 @@ public class GameScreen implements Screen {
 		timeLeft.setScale(HEIGHT);
 		stage.addActor(timeLeft);
 	}
-	
+
 	private void createSnowBoulder() {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(0, HEIGHT/10);
-		
+		bodyDef.position.set(0, HEIGHT / 10);
+
 		CircleShape shape = new CircleShape();
 		shape.setRadius(2.5f);
-		
+
 		FixtureDef fixDef = new FixtureDef();
 		fixDef.shape = shape;
 		fixDef.density = 3f;
 		fixDef.friction = 1f;
 		fixDef.restitution = 0f;
-		
+
 		boulder = world.createBody(bodyDef);
 		Fixture fixture = boulder.createFixture(fixDef);
 		fixture.setUserData("boulder");
-		
+
 		shape.dispose();
+
+		boulderSprite = new Sprite(new Texture("Boulder.png"));
+		boulderSprite.setSize(5f, 5f);
+		boulderSprite.setOrigin(boulderSprite.getWidth() / 2,
+				boulderSprite.getHeight() / 2);
 	}
 
 	// For some reason pause button suddenly doesn't work on desktop, but still
