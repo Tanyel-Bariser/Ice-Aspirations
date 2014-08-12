@@ -14,7 +14,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -73,6 +78,7 @@ public class GameScreen implements Screen {
 	private ImageTextButton quit;
 	private BitmapFont blue;
 	private LabelStyle yellowStyle;
+	private Body boulder;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -114,6 +120,13 @@ public class GameScreen implements Screen {
 					platforms.repositionBelow(platform, bottomScreenEdge);
 					continue;
 				}
+			}
+			
+			//Reposition boulder if below camera
+			if (boulder.getPosition().y < bottomScreenEdge - 10) {
+				boulder.setTransform(0, topScreenEdge+10, 0);
+				boulder.applyLinearImpulse(0, 100 * adjustedDelta, boulder.getWorldCenter().x,
+						boulder.getWorldCenter().y, true);
 			}
 
 			// Player Updates
@@ -219,7 +232,7 @@ public class GameScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-		// physicsDebugger.render(world, camera.combined);
+		 physicsDebugger.render(world, camera.combined);
 	}
 
 	@Override
@@ -264,6 +277,8 @@ public class GameScreen implements Screen {
 			platformSprites.add(sprite);
 		}
 
+		createSnowBoulder();
+		
 		// Create Label to show remaining game time
 		BitmapFont yellow = new BitmapFont(Gdx.files.internal("yellow.fnt"),
 				false);
@@ -274,9 +289,30 @@ public class GameScreen implements Screen {
 		timeLeft.setScale(HEIGHT);
 		stage.addActor(timeLeft);
 	}
+	
+	private void createSnowBoulder() {
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.position.set(0, HEIGHT/10);
+		
+		CircleShape shape = new CircleShape();
+		shape.setRadius(2.5f);
+		
+		FixtureDef fixDef = new FixtureDef();
+		fixDef.shape = shape;
+		fixDef.density = 3f;
+		fixDef.friction = 1f;
+		fixDef.restitution = 0f;
+		
+		boulder = world.createBody(bodyDef);
+		Fixture fixture = boulder.createFixture(fixDef);
+		fixture.setUserData("boulder");
+		
+		shape.dispose();
+	}
 
 	// For some reason pause button suddenly doesn't work on desktop, but still
-	// works on Android. Don't bother trying to fix this yet as I'll redo this
+	// works on Android. Don't bother trying to fix this yet as I'll re-do this
 	// with an AssetManger, which may fix it.
 	private void pauseButtonSetUp() {
 		ImageButtonStyle imageStyle = new ImageButtonStyle();
