@@ -67,7 +67,7 @@ public class GameScreen implements Screen {
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
 	private float frameTime;
-	private float allotedTime = 15;
+	private float allotedTime = 60;
 	private Label timeLeft;
 	private int maxHeight;
 	private ImageTextButton quit;
@@ -140,10 +140,20 @@ public class GameScreen implements Screen {
 				frameTime = 0;
 			}
 
-			if (player.getBody().getLinearVelocity().x < 0
-					&& playerSprite.isFlipX()) {
+			boolean facingLeft = player.getFacingLeft()
+					&& playerSprite.isFlipX();
+			boolean facingRight = !player.getFacingLeft()
+					&& !playerSprite.isFlipX();
+			if (facingLeft) {
+				// if the user is moving the player left and the playerSprite is
+				// facing left then do nothing
+			} else if (facingRight) {
+				// if the user is moving the player right and the playerSprite is
+				// facing right then do nothing
+			} else {// else flip player because he's facing the wrong way
 				playerSprite.flip(true, false);
 			}
+
 			playerSprite.setPosition(player.getBody().getPosition().x
 					- playerSprite.getWidth() / 2, player.getBody()
 					.getPosition().y - playerSprite.getHeight() / 2);

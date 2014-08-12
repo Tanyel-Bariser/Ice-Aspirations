@@ -44,6 +44,7 @@ public class Player implements ContactListener, InputProcessor {
 	private boolean standing;
 	private Sound jumpSound = Gdx.audio.newSound(Gdx.files
 			.internal("Jumping.wav"));
+	private boolean facingLeft = false;
 
 	public Player(World world) {
 		world.setContactListener(this);
@@ -87,6 +88,10 @@ public class Player implements ContactListener, InputProcessor {
 
 	public boolean isStanding() {
 		return standing;
+	}
+
+	public boolean getFacingLeft() {
+		return facingLeft;
 	}
 
 	private void createAnimations() {
@@ -139,6 +144,11 @@ public class Player implements ContactListener, InputProcessor {
 		body.setLinearVelocity((accel - slippery) * delta,
 				body.getLinearVelocity().y + down * delta);
 		body.applyForceToCenter(force * delta, down, true);
+		if (accel < 0 || force < 0) {
+			facingLeft = true;
+		} else {
+			facingLeft = false;
+		}
 	}
 
 	@Override
@@ -218,7 +228,7 @@ public class Player implements ContactListener, InputProcessor {
 			}
 		case Keys.BACK:
 			// Do nothing
-	        return false;
+			return false;
 		}
 		return false;
 	}
