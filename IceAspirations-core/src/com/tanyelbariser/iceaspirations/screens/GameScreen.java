@@ -67,11 +67,12 @@ public class GameScreen implements Screen {
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
 	private float frameTime;
-	private float allotedTime = 60;
+	private float allotedTime = 15;
 	private Label timeLeft;
 	private int maxHeight;
 	private ImageTextButton quit;
 	private BitmapFont blue;
+	private LabelStyle yellowStyle;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -191,9 +192,17 @@ public class GameScreen implements Screen {
 			}
 			if (!IceAspirations.getTimeOutMusic().isPlaying()) {
 				IceAspirations.getTimeOutMusic().play();
+				BitmapFont red = new BitmapFont(Gdx.files.internal("red.fnt"), false);
+				LabelStyle redStyle = new LabelStyle(red, Color.RED);
+				timeLeft.setStyle(redStyle);
+				timeLeft.setPosition(timeLeft.getWidth() / 10,
+						HEIGHT - timeLeft.getHeight() * 2);
 			}
 		} else if (!IceAspirations.getMusic().isPlaying()) {
 			IceAspirations.getMusic().play();
+			timeLeft.setStyle(yellowStyle);
+			timeLeft.setPosition(timeLeft.getWidth() / 10,
+					HEIGHT - timeLeft.getHeight() * 1.5f);
 		}
 
 		batch.setProjectionMatrix(camera.combined);
@@ -255,11 +264,12 @@ public class GameScreen implements Screen {
 		}
 
 		// Create Label to show remaining game time
-		blue = IceAspirations.getBlue();
-		LabelStyle style = new LabelStyle(blue, Color.BLUE);
-		timeLeft = new Label("60", style);
+		BitmapFont yellow = new BitmapFont(Gdx.files.internal("yellow.fnt"), false);
+		yellowStyle = new LabelStyle(yellow, Color.YELLOW);
+		timeLeft = new Label("60", yellowStyle);
 		timeLeft.setPosition(timeLeft.getWidth() / 10,
-				HEIGHT - timeLeft.getHeight() * 1.2f);
+				HEIGHT - timeLeft.getHeight() * 1.5f);
+		timeLeft.setScale(HEIGHT);
 		stage.addActor(timeLeft);
 	}
 
