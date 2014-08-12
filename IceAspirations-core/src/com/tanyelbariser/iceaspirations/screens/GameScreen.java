@@ -149,7 +149,8 @@ public class GameScreen implements Screen {
 				// if the user is moving the player left and the playerSprite is
 				// facing left then do nothing
 			} else if (facingRight) {
-				// if the user is moving the player right and the playerSprite is
+				// if the user is moving the player right and the playerSprite
+				// is
 				// facing right then do nothing
 			} else {// else flip player because he's facing the wrong way
 				playerSprite.flip(true, false);
@@ -192,11 +193,12 @@ public class GameScreen implements Screen {
 			}
 			if (!IceAspirations.getTimeOutMusic().isPlaying()) {
 				IceAspirations.getTimeOutMusic().play();
-				BitmapFont red = new BitmapFont(Gdx.files.internal("red.fnt"), false);
+				BitmapFont red = new BitmapFont(Gdx.files.internal("red.fnt"),
+						false);
 				LabelStyle redStyle = new LabelStyle(red, Color.RED);
 				timeLeft.setStyle(redStyle);
-				timeLeft.setPosition(timeLeft.getWidth() / 10,
-						HEIGHT - timeLeft.getHeight() * 2);
+				timeLeft.setPosition(timeLeft.getWidth() / 10, HEIGHT
+						- timeLeft.getHeight() * 2);
 			}
 		} else if (!IceAspirations.getMusic().isPlaying()) {
 			IceAspirations.getMusic().play();
@@ -231,7 +233,6 @@ public class GameScreen implements Screen {
 	public void show() {
 		batch = new SpriteBatch();
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
 
 		background.setScale(1f / ZOOM * compatibility);
 
@@ -264,7 +265,8 @@ public class GameScreen implements Screen {
 		}
 
 		// Create Label to show remaining game time
-		BitmapFont yellow = new BitmapFont(Gdx.files.internal("yellow.fnt"), false);
+		BitmapFont yellow = new BitmapFont(Gdx.files.internal("yellow.fnt"),
+				false);
 		yellowStyle = new LabelStyle(yellow, Color.YELLOW);
 		timeLeft = new Label("60", yellowStyle);
 		timeLeft.setPosition(timeLeft.getWidth() / 10,
@@ -273,6 +275,9 @@ public class GameScreen implements Screen {
 		stage.addActor(timeLeft);
 	}
 
+	// For some reason pause button suddenly doesn't work on desktop, but still
+	// works on Android. Don't bother trying to fix this yet as I'll redo this
+	// with an AssetManger, which may fix it.
 	private void pauseButtonSetUp() {
 		ImageButtonStyle imageStyle = new ImageButtonStyle();
 		imageStyle.up = skin.getDrawable("Pause");

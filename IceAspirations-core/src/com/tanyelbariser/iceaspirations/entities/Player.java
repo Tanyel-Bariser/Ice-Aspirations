@@ -196,7 +196,7 @@ public class Player implements ContactListener, InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (canJump) {
-			if (IceAspirations.getMusic().isPlaying()) {
+			if (IceAspirations.getMusic().isPlaying()||IceAspirations.getTimeOutMusic().isPlaying()) {
 				jumpSound.play(0.1f, 0.8f, 0);
 			}
 			down = angle = 0;
@@ -218,7 +218,7 @@ public class Player implements ContactListener, InputProcessor {
 			break;
 		case Keys.SPACE:
 			if (canJump) {
-				if (IceAspirations.getMusic().isPlaying()) {
+				if (IceAspirations.getMusic().isPlaying()||IceAspirations.getTimeOutMusic().isPlaying()) {
 					jumpSound.play(0.1f, 0.8f, 0);
 				}
 				down = angle = 0;
