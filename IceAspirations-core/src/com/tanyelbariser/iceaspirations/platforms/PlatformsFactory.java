@@ -47,7 +47,7 @@ public class PlatformsFactory {
 		float height = 2;
 		shape = new PolygonShape();
 		shape.setAsBox(width / 2, height / 2.2f);
-		platform.createFixture(shape, 0);
+		platform.createFixture(shape, 0).setUserData("platform");
 		shape.dispose();
 
 		sprite = skin.getSprite("Platform1");
@@ -70,7 +70,7 @@ public class PlatformsFactory {
 		float height = 2;
 		shape = new PolygonShape();
 		shape.setAsBox(width / 2, height / 2.2f);
-		platform.createFixture(shape, 0);
+		platform.createFixture(shape, 0).setUserData("platform");
 		shape.dispose();
 
 		sprite = skin.getSprite("Platform2");
@@ -93,7 +93,7 @@ public class PlatformsFactory {
 		float height = 2;
 		shape = new PolygonShape();
 		shape.setAsBox(width / 2, height / 2.2f);
-		platform.createFixture(shape, 0);
+		platform.createFixture(shape, 0).setUserData("platform");
 		shape.dispose();
 
 		sprite = skin.getSprite("Platform3");
@@ -116,7 +116,7 @@ public class PlatformsFactory {
 		float height = 2;
 		shape = new PolygonShape();
 		shape.setAsBox(width / 2, height / 2.2f);
-		platform.createFixture(shape, 0);
+		platform.createFixture(shape, 0).setUserData("platform");
 		shape.dispose();
 
 		sprite = skin.getSprite("Platform4");
@@ -139,7 +139,7 @@ public class PlatformsFactory {
 		float height = 1.8f;
 		shape = new PolygonShape();
 		shape.setAsBox(width / 2, height / 2.5f);
-		platform.createFixture(shape, 0);
+		platform.createFixture(shape, 0).setUserData("platform");
 		shape.dispose();
 
 		sprite = skin.getSprite("Platform5");
@@ -162,7 +162,7 @@ public class PlatformsFactory {
 		float height = 2;
 		shape = new PolygonShape();
 		shape.setAsBox(width / 2, height / 2.2f);
-		platform.createFixture(shape, 0);
+		platform.createFixture(shape, 0).setUserData("platform");
 		shape.dispose();
 
 		sprite = skin.getSprite("Platform6");
@@ -185,7 +185,7 @@ public class PlatformsFactory {
 		float height = 3;
 		shape = new PolygonShape();
 		shape.setAsBox(width / 2.5f, height / 2.5f);
-		platform.createFixture(shape, 0);
+		platform.createFixture(shape, 0).setUserData("platform");
 		shape.dispose();
 
 		sprite = skin.getSprite("Platform7");
@@ -208,7 +208,7 @@ public class PlatformsFactory {
 		float height = 3;
 		shape = new PolygonShape();
 		shape.setAsBox(width / 2.5f, height / 2.5f);
-		platform.createFixture(shape, 0);
+		platform.createFixture(shape, 0).setUserData("platform");
 		shape.dispose();
 
 		sprite = skin.getSprite("Platform8");
@@ -231,7 +231,7 @@ public class PlatformsFactory {
 		float height = 3;
 		shape = new PolygonShape();
 		shape.setAsBox(width / 2.5f, height / 2.5f);
-		platform.createFixture(shape, 0);
+		platform.createFixture(shape, 0).setUserData("platform");
 		shape.dispose();
 
 		sprite = skin.getSprite("Platform9");

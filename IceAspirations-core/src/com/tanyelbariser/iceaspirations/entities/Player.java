@@ -63,7 +63,7 @@ public class Player implements ContactListener, InputProcessor {
 		fixDef.restitution = 0f;
 
 		body = world.createBody(bodyDef);
-		body.createFixture(fixDef);
+		body.createFixture(fixDef).setUserData("player");
 
 		shape.dispose();
 		createAnimations();
@@ -159,14 +159,22 @@ public class Player implements ContactListener, InputProcessor {
 				.getPosition().x;
 		boolean feetContact = contact.getWorldManifold().getPoints()[0].y < body
 				.getPosition().y;
-		if (touchLeftEdge || touchRightEdge) {
+		boolean headContact = contact.getWorldManifold().getPoints()[0].y > body
+				.getPosition().y;
+		boolean playerContact = contact.getFixtureA().getUserData()
+				.equals("player");
+		boolean boulderContact = contact.getFixtureB().getUserData()
+				.equals("boulder");
+		boolean platformContact = contact.getFixtureB().getUserData()
+				.equals("platform");
+		if (playerContact && boulderContact && headContact) {
+			down = -20;
+		} else if (touchLeftEdge || touchRightEdge) {
 			canJump = false;
 			down = 0;
 		} else if (feetContact) {
-			angle = contact.getFixtureB().getBody().getAngle();
-			boolean onFloatingPlatform = (angle < 0.8f && angle > 0.07f)
-					|| (angle < -0.07f && angle > -0.8f);
-			if (onFloatingPlatform) {
+			if (playerContact && platformContact) {
+				angle = contact.getFixtureB().getBody().getAngle();
 				slippery = angle * 15;
 				down = -1.5f;
 				standing = true;
@@ -196,7 +204,8 @@ public class Player implements ContactListener, InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (canJump) {
-			if (IceAspirations.getMusic().isPlaying()||IceAspirations.getTimeOutMusic().isPlaying()) {
+			if (IceAspirations.getMusic().isPlaying()
+					|| IceAspirations.getTimeOutMusic().isPlaying()) {
 				jumpSound.play(0.1f, 0.8f, 0);
 			}
 			down = angle = 0;
@@ -218,7 +227,8 @@ public class Player implements ContactListener, InputProcessor {
 			break;
 		case Keys.SPACE:
 			if (canJump) {
-				if (IceAspirations.getMusic().isPlaying()||IceAspirations.getTimeOutMusic().isPlaying()) {
+				if (IceAspirations.getMusic().isPlaying()
+						|| IceAspirations.getTimeOutMusic().isPlaying()) {
 					jumpSound.play(0.1f, 0.8f, 0);
 				}
 				down = angle = 0;

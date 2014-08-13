@@ -80,6 +80,7 @@ public class GameScreen implements Screen {
 	private LabelStyle yellowStyle;
 	private Body boulder;
 	private Sprite boulderSprite;
+	private Fixture boulderFix;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -109,19 +110,9 @@ public class GameScreen implements Screen {
 
 			world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
 
-			// Repositions platform if out of camera/screen view
 			float topScreenEdge = camera.position.y + camera.viewportHeight / 2;
 			float bottomScreenEdge = camera.position.y - camera.viewportHeight
 					/ 2;
-			for (Body platform : platformArray) {
-				if (platform.getPosition().y < bottomScreenEdge - 14) {
-					platforms.repositionAbove(platform, topScreenEdge);
-					continue;
-				} else if (platform.getPosition().y > topScreenEdge + 14) {
-					platforms.repositionBelow(platform, bottomScreenEdge);
-					continue;
-				}
-			}
 
 			// Reposition boulder if below camera
 			if (boulder.getPosition().y < bottomScreenEdge - 10) {
@@ -205,6 +196,17 @@ public class GameScreen implements Screen {
 			background.setPosition(camera.position.x - backgroundWidth / 2,
 					camera.position.y - backgroundHeight / 2);
 
+			// Repositions platform if out of camera/screen view
+			for (Body platform : platformArray) {
+				if (platform.getPosition().y < bottomScreenEdge - 14) {
+					platforms.repositionAbove(platform, topScreenEdge);
+					break;
+				} else if (platform.getPosition().y > topScreenEdge + 14) {
+					platforms.repositionBelow(platform, bottomScreenEdge);
+					break;
+				}
+			}
+
 			camera.update();
 		}
 		if (allotedTime < 0) {
@@ -242,7 +244,7 @@ public class GameScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-//		physicsDebugger.render(world, camera.combined);
+		physicsDebugger.render(world, camera.combined);
 	}
 
 	@Override
@@ -315,8 +317,8 @@ public class GameScreen implements Screen {
 		fixDef.restitution = 0f;
 
 		boulder = world.createBody(bodyDef);
-		Fixture fixture = boulder.createFixture(fixDef);
-		fixture.setUserData("boulder");
+		boulderFix = boulder.createFixture(fixDef);
+		boulderFix.setUserData("boulder");
 
 		shape.dispose();
 
@@ -324,6 +326,10 @@ public class GameScreen implements Screen {
 		boulderSprite.setSize(5f, 5f);
 		boulderSprite.setOrigin(boulderSprite.getWidth() / 2,
 				boulderSprite.getHeight() / 2);
+	}
+
+	public Fixture getBoulderFix() {
+		return boulderFix;
 	}
 
 	// For some reason pause button suddenly doesn't work on desktop, but still
