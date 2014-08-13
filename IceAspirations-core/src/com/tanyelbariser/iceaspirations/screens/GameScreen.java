@@ -143,9 +143,9 @@ public class GameScreen implements Screen {
 			boolean facingRight = !player.getFacingLeft()
 					&& !playerSprite.isFlipX();
 			if (facingLeft || facingRight) {
-				// if the user is moving the player left AND the playerSprite is
-				// already facing left (same for right) then do nothing
-			} else {// else flip player because he's facing the wrong way
+				// do nothing if player is moving left AND the playerSprite is
+				// already facing left (same for right)
+			} else {
 				playerSprite.flip(true, false);
 			}
 
@@ -198,7 +198,7 @@ public class GameScreen implements Screen {
 					platforms.repositionBelow(platform, bottomScreenEdge);
 				}
 			}
-			if (((int)camera.position.y) % 100 == 0) {
+			if (((int) camera.position.y) % 100 == 0) {
 				Gdx.app.log("TAG", String.valueOf(camera.position.y));
 			}
 		}

@@ -129,24 +129,15 @@ public class Player implements ContactListener, InputProcessor {
 	}
 
 	public void update(float delta) {
-		/*
-		 * Using libgdx's Animation class if (body.getLinearVelocity().y > 0) {
-		 * rising = true; // runs animation loop once from Rabbit1 to Rabbit4 }
-		 * else { rising = false; // runs animation loop once from Rabbit5 to
-		 * Rabbit7 } run animation loop from Rabbit8 to Rabbit1 once feetContact
-		 * in postSolve(), which should override animation Rabbit 5 to 7 if true
-		 * ALSO boolean facingLeft = Gdx.input.getAccelerometerX() > 0; if
-		 * (facingLeft) { set PlayMode.REVERSED enum in Animation class;
-		 */
 		myDelta = delta;
 		body.setTransform(body.getPosition(), angle);
 		float accel = -Gdx.input.getAccelerometerX() * 2;
 		body.setLinearVelocity((accel - slippery) * delta,
 				body.getLinearVelocity().y + down * delta);
 		body.applyForceToCenter(force * delta, down, true);
-		if (accel < 0 || force < 0) {
+		if (accel < -0.3f || force < 0) {
 			facingLeft = true;
-		} else {
+		} else if (accel > 0.3f || force > 0) {
 			facingLeft = false;
 		}
 	}
@@ -177,13 +168,17 @@ public class Player implements ContactListener, InputProcessor {
 			canJump = false;
 			down = 0;
 		} else if (feetContact) {
-			if (playerContact && (platformContact || groundContact || justBoulder)) {
+			if (playerContact && (platformContact || justBoulder)) {
 				angle = contact.getFixtureB().getBody().getAngle();
 				slippery = angle * 15;
 				down = -1.5f;
 				canJump = standing = true;
 			} else {
-				slippery = angle = 0;
+				down = slippery = angle = 0;
+			}
+			if (playerContact && groundContact) {
+				down = slippery = angle = 0;
+				canJump = standing = true;
 			}
 		}
 	}
