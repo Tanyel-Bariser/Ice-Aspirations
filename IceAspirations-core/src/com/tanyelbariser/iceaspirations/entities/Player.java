@@ -161,27 +161,30 @@ public class Player implements ContactListener, InputProcessor {
 				.getPosition().y;
 		boolean headContact = contact.getWorldManifold().getPoints()[0].y > body
 				.getPosition().y;
-		boolean playerContact = contact.getFixtureA().getUserData()
-				.equals("player");
-		boolean boulderContact = contact.getFixtureB().getUserData()
-				.equals("boulder");
-		boolean platformContact = contact.getFixtureB().getUserData()
-				.equals("platform");
+		String fixA = (String) contact.getFixtureA().getUserData();
+		String fixB = (String) contact.getFixtureB().getUserData();
+
+		boolean playerContact = fixA.equals("player") || fixB.equals("player");
+		boolean boulderContact = fixA.equals("boulder")
+				|| fixB.equals("boulder");
+		boolean platformContact = fixA.equals("platform")
+				|| fixB.equals("platform");
+		boolean groundContact = fixA.equals("ground") || fixB.equals("ground");
+		boolean justBoulder = boulderContact && !(platformContact || groundContact);
 		if (playerContact && boulderContact && headContact) {
-			down = -20;
+			down = -10;
 		} else if (touchLeftEdge || touchRightEdge) {
 			canJump = false;
 			down = 0;
 		} else if (feetContact) {
-			if (playerContact && platformContact) {
+			if (playerContact && (platformContact || groundContact || justBoulder)) {
 				angle = contact.getFixtureB().getBody().getAngle();
 				slippery = angle * 15;
 				down = -1.5f;
-				standing = true;
+				canJump = standing = true;
 			} else {
 				slippery = angle = 0;
 			}
-			canJump = true;
 		}
 	}
 

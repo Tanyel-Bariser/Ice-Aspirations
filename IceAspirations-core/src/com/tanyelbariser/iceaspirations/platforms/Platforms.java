@@ -46,7 +46,7 @@ public class Platforms {
 		fixDef.restitution = 0;
 
 		Body worldContainer = world.createBody(bodyDef);
-		worldContainer.createFixture(fixDef).setUserData("ground/walls");
+		worldContainer.createFixture(fixDef).setUserData("ground");
 
 		worldContainerShape.dispose();
 	}

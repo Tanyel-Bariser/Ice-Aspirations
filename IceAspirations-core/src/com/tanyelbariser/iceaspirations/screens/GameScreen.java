@@ -114,14 +114,6 @@ public class GameScreen implements Screen {
 			float bottomScreenEdge = camera.position.y - camera.viewportHeight
 					/ 2;
 
-			// Reposition boulder if below camera
-			if (boulder.getPosition().y < bottomScreenEdge - 10) {
-				boulder.setTransform(0, topScreenEdge + 10, 0);
-				boulder.applyLinearImpulse(0, 100 * adjustedDelta,
-						boulder.getWorldCenter().x, boulder.getWorldCenter().y,
-						true);
-			}
-
 			// Player Updates
 			player.update(adjustedDelta);
 			if (player.getBody().getPosition().x > Platforms.RIGHT_SCREEN_EDGE) {
@@ -146,18 +138,13 @@ public class GameScreen implements Screen {
 				playerSprite = stand;
 				frameTime = 0;
 			}
-
 			boolean facingLeft = player.getFacingLeft()
 					&& playerSprite.isFlipX();
 			boolean facingRight = !player.getFacingLeft()
 					&& !playerSprite.isFlipX();
-			if (facingLeft) {
-				// if the user is moving the player left and the playerSprite is
-				// facing left then do nothing
-			} else if (facingRight) {
-				// if the user is moving the player right and the playerSprite
-				// is
-				// facing right then do nothing
+			if (facingLeft || facingRight) {
+				// if the user is moving the player left AND the playerSprite is
+				// already facing left (same for right) then do nothing
 			} else {// else flip player because he's facing the wrong way
 				playerSprite.flip(true, false);
 			}
@@ -166,13 +153,6 @@ public class GameScreen implements Screen {
 					- playerSprite.getWidth() / 2, player.getBody()
 					.getPosition().y - playerSprite.getHeight() / 2);
 			playerSprite.setRotation(player.getBody().getAngle()
-					* MathUtils.radiansToDegrees);
-
-			// Set Snow Boulder position
-			boulderSprite.setPosition(
-					boulder.getPosition().x - boulderSprite.getWidth() / 2,
-					boulder.getPosition().y - boulderSprite.getHeight() / 2);
-			boulderSprite.setRotation(boulder.getAngle()
 					* MathUtils.radiansToDegrees);
 
 			// Set camera position based on player position
@@ -191,6 +171,20 @@ public class GameScreen implements Screen {
 			} else {
 				camera.position.y = 0;
 			}
+			camera.update();
+
+			// Reposition boulder if below camera
+			if (boulder.getPosition().y < bottomScreenEdge - 10) {
+				boulder.setTransform(0, topScreenEdge + 10, 0);
+				boulder.applyLinearImpulse(0, 100 * adjustedDelta,
+						boulder.getWorldCenter().x, boulder.getWorldCenter().y,
+						true);
+			}
+			boulderSprite.setPosition(
+					boulder.getPosition().x - boulderSprite.getWidth() / 2,
+					boulder.getPosition().y - boulderSprite.getHeight() / 2);
+			boulderSprite.setRotation(boulder.getAngle()
+					* MathUtils.radiansToDegrees);
 
 			// Position background at camera's position
 			background.setPosition(camera.position.x - backgroundWidth / 2,
@@ -200,14 +194,13 @@ public class GameScreen implements Screen {
 			for (Body platform : platformArray) {
 				if (platform.getPosition().y < bottomScreenEdge - 14) {
 					platforms.repositionAbove(platform, topScreenEdge);
-					break;
 				} else if (platform.getPosition().y > topScreenEdge + 14) {
 					platforms.repositionBelow(platform, bottomScreenEdge);
-					break;
 				}
 			}
-
-			camera.update();
+			if (((int)camera.position.y) % 100 == 0) {
+				Gdx.app.log("TAG", String.valueOf(camera.position.y));
+			}
 		}
 		if (allotedTime < 0) {
 			iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
