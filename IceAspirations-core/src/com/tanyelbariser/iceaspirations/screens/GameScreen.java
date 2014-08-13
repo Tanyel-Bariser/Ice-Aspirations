@@ -81,6 +81,7 @@ public class GameScreen implements Screen {
 	private Body boulder;
 	private Sprite boulderSprite;
 	private Fixture boulderFix;
+	private boolean carrotMode = false;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -96,6 +97,9 @@ public class GameScreen implements Screen {
 			}
 
 			allotedTime -= delta;
+			if (carrotMode) {
+				delta *= 2;
+			}
 			timeLeft.setText("Score: " + String.valueOf(maxHeight)
 					+ "\nTime Limit: "
 					+ String.valueOf(Math.round(allotedTime)));
@@ -115,7 +119,7 @@ public class GameScreen implements Screen {
 					/ 2;
 
 			// Player Updates
-			player.update(adjustedDelta);
+			player.update(adjustedDelta, carrotMode);
 			if (player.getBody().getPosition().x > Platforms.RIGHT_SCREEN_EDGE) {
 				player.getBody().setTransform(
 						Platforms.RIGHT_SCREEN_EDGE - 0.5f,
@@ -155,13 +159,14 @@ public class GameScreen implements Screen {
 			playerSprite.setRotation(player.getBody().getAngle()
 					* MathUtils.radiansToDegrees);
 
-			// Set camera position based on player position
+			// Set camera position based on player position with
+			// high speed camera catch-up lag
 			float playerY = player.getBody().getPosition().y;
 			float highSpeed = 80;
-			if (player.getBody().getLinearVelocity().y > highSpeed) {
-				// High speed lag
+			if (player.getBody().getLinearVelocity().y > highSpeed && camera.position.y > HEIGHT) {
+				camera.position.y += 0.8f;
 			} else if (playerY > topScreenEdge) {
-				camera.position.y += 1f;
+				camera.position.y += 3f;
 			} else if (playerY > camera.position.y + 2f) {
 				camera.position.y += 0.8f;
 			} else if (playerY > camera.position.y + 1f) {
@@ -237,7 +242,7 @@ public class GameScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-		physicsDebugger.render(world, camera.combined);
+		// physicsDebugger.render(world, camera.combined);
 	}
 
 	@Override

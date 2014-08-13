@@ -32,8 +32,7 @@ public class Player implements ContactListener, InputProcessor {
 	private Sprite standSprite;
 	private float angle;
 	private float slippery;
-	private final float jump = 300; // * 2 when eats carrot or * 1.2 if 2*delta
-									// in hyper mode
+	private float jump = 300;
 	private float force;
 	private final float forceChange = 5000;
 	private boolean canJump;
@@ -45,6 +44,7 @@ public class Player implements ContactListener, InputProcessor {
 	private Sound jumpSound = Gdx.audio.newSound(Gdx.files
 			.internal("Jumping.wav"));
 	private boolean facingLeft = false;
+	private boolean carrotMode;
 
 	public Player(World world) {
 		world.setContactListener(this);
@@ -128,7 +128,11 @@ public class Player implements ContactListener, InputProcessor {
 				fallingSprite.getHeight() / 2);
 	}
 
-	public void update(float delta) {
+	public void update(float delta, boolean carrotMode) {
+		this.carrotMode = carrotMode;
+		if (carrotMode) {
+			jump = 400f;
+		}
 		myDelta = delta;
 		body.setTransform(body.getPosition(), angle);
 		float accel = -Gdx.input.getAccelerometerX() * 2;
@@ -154,17 +158,18 @@ public class Player implements ContactListener, InputProcessor {
 				.getPosition().y;
 		String fixA = (String) contact.getFixtureA().getUserData();
 		String fixB = (String) contact.getFixtureB().getUserData();
-
 		boolean playerContact = fixA.equals("player") || fixB.equals("player");
 		boolean boulderContact = fixA.equals("boulder")
 				|| fixB.equals("boulder");
 		boolean platformContact = fixA.equals("platform")
 				|| fixB.equals("platform");
 		boolean groundContact = fixA.equals("ground") || fixB.equals("ground");
-		boolean justBoulder = boulderContact && !(platformContact || groundContact);
-		if (playerContact && boulderContact && headContact) {
+		boolean justBoulder = boulderContact
+				&& !(platformContact || groundContact);
+		if (playerContact && boulderContact && headContact && !carrotMode) {
 			down = -10;
-		} else if (touchLeftEdge || touchRightEdge) {
+		} else if ((touchLeftEdge || touchRightEdge)
+				&& !(playerContact && (platformContact || boulderContact))) {
 			canJump = false;
 			down = 0;
 		} else if (feetContact) {
