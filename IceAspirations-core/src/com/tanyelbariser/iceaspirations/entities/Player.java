@@ -178,11 +178,8 @@ public class Player implements ContactListener, InputProcessor {
 				slippery = angle * 15;
 				down = -1.5f;
 				canJump = standing = true;
-			} else {
-				down = slippery = angle = 0;
-			}
-			if (playerContact && groundContact) {
-				down = slippery = angle = 0;
+			} else if (playerContact && groundContact) {
+				down = slippery = 0;
 				canJump = standing = true;
 			}
 		}

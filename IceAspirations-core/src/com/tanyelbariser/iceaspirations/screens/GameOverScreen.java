@@ -29,9 +29,6 @@ public class GameOverScreen implements Screen {
 		if (IceAspirations.getTimeOutMusic().isPlaying()) {
 			IceAspirations.getTimeOutMusic().stop();
 		}
-		if (!IceAspirations.getMusic().isPlaying()) {
-			IceAspirations.getMusic().play();
-		}
 	}
 
 	@Override

@@ -82,6 +82,7 @@ public class GameScreen implements Screen {
 	private Sprite boulderSprite;
 	private Fixture boulderFix;
 	private boolean carrotMode = false;
+	private float timeSinceBoulder = 0;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -104,13 +105,12 @@ public class GameScreen implements Screen {
 					+ "\nTime Limit: "
 					+ String.valueOf(Math.round(allotedTime)));
 
-			// adjustedDelta is delta rounded to nearest whole or half, i.e.
-			// 60FPS = 1, 45FPS = 1.5, 30FPS = 2, etc. for a consistent delta
-			// per device
+			// adjustedDelta is rounded to nearest whole or half, i.e. 60FPS = 1
+			// 45FPS = 1.5, 30FPS = 2, etc. for delta consistency per device
 			float adjustedDelta = Math.round(Math.round(approxFPS * delta) * 2) / 2.0f;
 
-			world.setGravity(new Vector2(0, -9.81f * adjustedDelta
-					* adjustedDelta));
+			float gravity = -9.81f * adjustedDelta * adjustedDelta;
+			world.setGravity(new Vector2(0, gravity));
 
 			world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
 
@@ -163,7 +163,8 @@ public class GameScreen implements Screen {
 			// high speed camera catch-up lag
 			float playerY = player.getBody().getPosition().y;
 			float highSpeed = 80;
-			if (player.getBody().getLinearVelocity().y > highSpeed && camera.position.y > HEIGHT) {
+			if (player.getBody().getLinearVelocity().y > highSpeed
+					&& camera.position.y > HEIGHT) {
 				camera.position.y += 0.8f;
 			} else if (playerY > topScreenEdge) {
 				camera.position.y += 3f;
@@ -178,12 +179,16 @@ public class GameScreen implements Screen {
 			}
 			camera.update();
 
-			// Reposition boulder if below camera
-			if (boulder.getPosition().y < bottomScreenEdge - 10) {
-				boulder.setTransform(0, topScreenEdge + 10, 0);
-				boulder.applyLinearImpulse(0, 100 * adjustedDelta,
-						boulder.getWorldCenter().x, boulder.getWorldCenter().y,
-						true);
+			// Reposition boulder
+			timeSinceBoulder  += delta;
+			if (boulder.getPosition().y < bottomScreenEdge - 10
+					&& camera.position.y > 100 && timeSinceBoulder > 10) {
+				boulder.setTransform(player.getBody().getPosition().x,
+						topScreenEdge + 10, 0);
+				timeSinceBoulder = 0;
+			}
+			if (boulder.getLinearVelocity().y > -1) {
+				boulder.setLinearVelocity(0, gravity);
 			}
 			boulderSprite.setPosition(
 					boulder.getPosition().x - boulderSprite.getWidth() / 2,
@@ -203,16 +208,10 @@ public class GameScreen implements Screen {
 					platforms.repositionBelow(platform, bottomScreenEdge);
 				}
 			}
-			if (((int) camera.position.y) % 100 == 0) {
-				Gdx.app.log("TAG", String.valueOf(camera.position.y));
-			}
 		}
 		if (allotedTime < 0) {
 			iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
 		} else if (allotedTime < 11) {
-			if (IceAspirations.getMusic().isPlaying()) {
-				IceAspirations.getMusic().stop();
-			}
 			if (!IceAspirations.getTimeOutMusic().isPlaying()) {
 				IceAspirations.getTimeOutMusic().play();
 				BitmapFont red = new BitmapFont(Gdx.files.internal("red.fnt"),
@@ -222,8 +221,7 @@ public class GameScreen implements Screen {
 				timeLeft.setPosition(timeLeft.getWidth() / 10, HEIGHT
 						- timeLeft.getHeight() * 2);
 			}
-		} else if (!IceAspirations.getMusic().isPlaying()) {
-			IceAspirations.getMusic().play();
+		} else {
 			timeLeft.setStyle(yellowStyle);
 			timeLeft.setPosition(timeLeft.getWidth() / 10,
 					HEIGHT - timeLeft.getHeight() * 1.5f);
@@ -242,7 +240,7 @@ public class GameScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-		// physicsDebugger.render(world, camera.combined);
+		 physicsDebugger.render(world, camera.combined);
 	}
 
 	@Override
@@ -287,7 +285,7 @@ public class GameScreen implements Screen {
 			platformSprites.add(sprite);
 		}
 
-		createSnowBoulder();
+		createIceBoulder();
 
 		// Create Label to show remaining game time
 		BitmapFont yellow = new BitmapFont(Gdx.files.internal("yellow.fnt"),
@@ -300,10 +298,10 @@ public class GameScreen implements Screen {
 		stage.addActor(timeLeft);
 	}
 
-	private void createSnowBoulder() {
+	private void createIceBoulder() {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(0, HEIGHT / 10);
+		bodyDef.position.set(0, -HEIGHT);
 
 		CircleShape shape = new CircleShape();
 		shape.setRadius(2.5f);
@@ -380,9 +378,6 @@ public class GameScreen implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				if (IceAspirations.getTimeOutMusic().isPlaying()) {
 					IceAspirations.getTimeOutMusic().stop();
-				}
-				if (!IceAspirations.getMusic().isPlaying()) {
-					IceAspirations.getMusic().play();
 				}
 				iceA.setScreen(new MainScreen(iceA));
 			}
