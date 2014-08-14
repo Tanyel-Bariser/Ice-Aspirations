@@ -82,7 +82,7 @@ public class GameScreen implements Screen {
 	private Sprite boulderSprite;
 	private Fixture boulderFix;
 	private boolean carrotMode = false;
-	private float timeSinceBoulder = 0;
+	private float heightLastBoulder = 0;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -180,12 +180,11 @@ public class GameScreen implements Screen {
 			camera.update();
 
 			// Reposition boulder
-			timeSinceBoulder  += delta;
 			if (boulder.getPosition().y < bottomScreenEdge - 10
-					&& camera.position.y > 100 && timeSinceBoulder > 10) {
+					&& camera.position.y > heightLastBoulder + 100) {
 				boulder.setTransform(player.getBody().getPosition().x,
 						topScreenEdge + 10, 0);
-				timeSinceBoulder = 0;
+				heightLastBoulder = camera.position.y;
 			}
 			if (boulder.getLinearVelocity().y > -1) {
 				boulder.setLinearVelocity(0, gravity);

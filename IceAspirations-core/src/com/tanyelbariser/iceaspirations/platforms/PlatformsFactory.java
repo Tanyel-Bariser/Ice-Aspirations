@@ -1,7 +1,6 @@
 package com.tanyelbariser.iceaspirations.platforms;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -12,233 +11,38 @@ import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 
 public class PlatformsFactory {
-
-	private static BodyDef bodyDef;
-	private static Body platform;
-	private static Sprite sprite;
-	private static PolygonShape shape;
-	private static Skin skin = IceAspirations.getSkin();
-
+	
 	public static Array<Body> createPlatforms(World world) {
 		Array<Body> platforms = new Array<Body>();
-
-		platforms.add(createPlatform3(world));
-		platforms.add(createPlatform7(world));
-		platforms.add(createPlatform5(world));
-		platforms.add(createPlatform6(world));
-		platforms.add(createPlatform8(world));
-		platforms.add(createPlatform1(world));
-		platforms.add(createPlatform4(world));
-		platforms.add(createPlatform9(world));
-		platforms.add(createPlatform2(world));
-		
+		platforms.add(createPlatform(world, "Platform3", 4, 2, 2, 0.91f));
+		platforms.add(createPlatform(world, "Platform7", 4, 3, 1.6f, 1.2f));
+		platforms.add(createPlatform(world, "Platform5", 8, 1.8f, 4, 0.72f));
+		platforms.add(createPlatform(world, "Platform6", 4, 2, 2, 0.91f));
+		platforms.add(createPlatform(world, "Platform8", 6, 3, 2.4f, 1.2f));
+		platforms.add(createPlatform(world, "Platform1", 4, 2, 2, 0.91f));
+		platforms.add(createPlatform(world, "Platform4", 4, 2, 2, 0.91f));
+		platforms.add(createPlatform(world, "Platform9", 3, 3, 1.2f, 1.2f));
+		platforms.add(createPlatform(world, "Platform2", 4, 2, 2, 0.91f));
 		return platforms;
 	}
-	
-	private static Body createPlatform1(World world) {
-		bodyDef = new BodyDef();
+
+	private static Body createPlatform(World world, String platformNum,
+			float width, float height, float boxWidth, float boxHeight) {
+		Skin skin = IceAspirations.getSkin();
+		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 15);
-		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
-				45 * MathUtils.degreesToRadians);
-		platform = world.createBody(bodyDef);
+		Body platform = world.createBody(bodyDef);
 
-		float width = 4;
-		float height = 2;
-		shape = new PolygonShape();
-		shape.setAsBox(width / 2, height / 2.2f);
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(boxWidth, boxHeight);
 		platform.createFixture(shape, 0).setUserData("platform");
 		shape.dispose();
 
-		sprite = skin.getSprite("Platform1");
+		Sprite sprite = skin.getSprite(platformNum);
 		sprite.setSize(width, height);
 
 		platform.setUserData(sprite);
-
-		return platform;
-	}
-
-	private static Body createPlatform2(World world) {
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 15);
-		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
-				45 * MathUtils.degreesToRadians);
-		platform = world.createBody(bodyDef);
-
-		float width = 4;
-		float height = 2;
-		shape = new PolygonShape();
-		shape.setAsBox(width / 2, height / 2.2f);
-		platform.createFixture(shape, 0).setUserData("platform");
-		shape.dispose();
-
-		sprite = skin.getSprite("Platform2");
-		sprite.setSize(width, height);
-
-		platform.setUserData(sprite);
-
-		return platform;
-	}
-	
-	private static Body createPlatform3(World world) {
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(-5, Platforms.BOTTOM_SCREEN_EDGE - 15);
-		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
-				45 * MathUtils.degreesToRadians);
-		platform = world.createBody(bodyDef);
-
-		float width = 4;
-		float height = 2;
-		shape = new PolygonShape();
-		shape.setAsBox(width / 2, height / 2.2f);
-		platform.createFixture(shape, 0).setUserData("platform");
-		shape.dispose();
-
-		sprite = skin.getSprite("Platform3");
-		sprite.setSize(width, height);
-
-		platform.setUserData(sprite);
-
-		return platform;
-	}
-
-	private static Body createPlatform4(World world) {
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(-5, Platforms.BOTTOM_SCREEN_EDGE - 15);
-		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
-				45 * MathUtils.degreesToRadians);
-		platform = world.createBody(bodyDef);
-
-		float width = 4;
-		float height = 2;
-		shape = new PolygonShape();
-		shape.setAsBox(width / 2, height / 2.2f);
-		platform.createFixture(shape, 0).setUserData("platform");
-		shape.dispose();
-
-		sprite = skin.getSprite("Platform4");
-		sprite.setSize(width, height);
-
-		platform.setUserData(sprite);
-
-		return platform;
-	}
-	
-	private static Body createPlatform5(World world) {
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 15);
-		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
-				45 * MathUtils.degreesToRadians);
-		platform = world.createBody(bodyDef);
-
-		float width = 8;
-		float height = 1.8f;
-		shape = new PolygonShape();
-		shape.setAsBox(width / 2, height / 2.5f);
-		platform.createFixture(shape, 0).setUserData("platform");
-		shape.dispose();
-
-		sprite = skin.getSprite("Platform5");
-		sprite.setSize(width, height);
-
-		platform.setUserData(sprite);
-
-		return platform;
-	}
-	
-	private static Body createPlatform6(World world) {
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(-5, Platforms.BOTTOM_SCREEN_EDGE - 15);
-		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
-				45 * MathUtils.degreesToRadians);
-		platform = world.createBody(bodyDef);
-
-		float width = 4;
-		float height = 2;
-		shape = new PolygonShape();
-		shape.setAsBox(width / 2, height / 2.2f);
-		platform.createFixture(shape, 0).setUserData("platform");
-		shape.dispose();
-
-		sprite = skin.getSprite("Platform6");
-		sprite.setSize(width, height);
-
-		platform.setUserData(sprite);
-
-		return platform;
-	}
-	
-	private static Body createPlatform7(World world) {
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(-5, Platforms.BOTTOM_SCREEN_EDGE - 15);
-		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
-				45 * MathUtils.degreesToRadians);
-		platform = world.createBody(bodyDef);
-
-		float width = 4;
-		float height = 3;
-		shape = new PolygonShape();
-		shape.setAsBox(width / 2.5f, height / 2.5f);
-		platform.createFixture(shape, 0).setUserData("platform");
-		shape.dispose();
-
-		sprite = skin.getSprite("Platform7");
-		sprite.setSize(width, height);
-
-		platform.setUserData(sprite);
-
-		return platform;
-	}
-	
-	private static Body createPlatform8(World world) {
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 15);
-		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
-				45 * MathUtils.degreesToRadians);
-		platform = world.createBody(bodyDef);
-
-		float width = 6;
-		float height = 3;
-		shape = new PolygonShape();
-		shape.setAsBox(width / 2.5f, height / 2.5f);
-		platform.createFixture(shape, 0).setUserData("platform");
-		shape.dispose();
-
-		sprite = skin.getSprite("Platform8");
-		sprite.setSize(width, height);
-
-		platform.setUserData(sprite);
-
-		return platform;
-	}
-	
-	private static Body createPlatform9(World world) {
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 15);
-		bodyDef.angle = MathUtils.random(-45 * MathUtils.degreesToRadians,
-				45 * MathUtils.degreesToRadians);
-		platform = world.createBody(bodyDef);
-
-		float width = 3;
-		float height = 3;
-		shape = new PolygonShape();
-		shape.setAsBox(width / 2.5f, height / 2.5f);
-		platform.createFixture(shape, 0).setUserData("platform");
-		shape.dispose();
-
-		sprite = skin.getSprite("Platform9");
-		sprite.setSize(width, height);
-
-		platform.setUserData(sprite);
-
 		return platform;
 	}
 }
