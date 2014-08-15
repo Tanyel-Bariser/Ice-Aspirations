@@ -31,7 +31,7 @@ public class PlatformsFactory {
 		Skin skin = IceAspirations.getSkin();
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 15);
+		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 30);
 		Body platform = world.createBody(bodyDef);
 
 		PolygonShape shape = new PolygonShape();

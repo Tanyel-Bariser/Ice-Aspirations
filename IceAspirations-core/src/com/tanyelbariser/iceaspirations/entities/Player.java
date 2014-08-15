@@ -43,6 +43,8 @@ public class Player implements ContactListener, InputProcessor {
 	private boolean standing;
 	private Sound jumpSound = Gdx.audio.newSound(Gdx.files
 			.internal("Jumping.wav"));
+	private Sound getClockSound = Gdx.audio.newSound(Gdx.files
+			.internal("Clock Pick Up.ogg"));
 	private boolean facingLeft = false;
 	private boolean carrotMode;
 	private boolean clockTouched = false;
@@ -268,6 +270,10 @@ public class Player implements ContactListener, InputProcessor {
 		boolean playerContact = fixA.equals("player") || fixB.equals("player");
 		boolean clockContact = fixA.equals("clock") || fixB.equals("clock");
 		if (playerContact && clockContact) {
+			if (IceAspirations.getMusic().isPlaying()
+					|| IceAspirations.getTimeOutMusic().isPlaying()) {
+				getClockSound.play(0.1f, 0.8f, 0);
+			}
 			clockTouched = true;
 			Gdx.app.log("TAG", "CLOCK TOUCHED");
 		}

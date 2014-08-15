@@ -52,7 +52,7 @@ public class Platforms {
 	}
 
 	public void repositionAbove(Body platform, float topScreenEdge) {
-		if (topPlatformY < topScreenEdge + 14) {
+		if (topPlatformY < topScreenEdge + 25) {
 			bottomPlatformY = platform.getPosition().y;
 			repositionPlatform(platform, topPlatformY);
 			topPlatformY += DISTANCE_BETWEEN_PLATFORMS;
@@ -60,7 +60,7 @@ public class Platforms {
 	}
 
 	public void repositionBelow(Body platform, float bottomScreenEdge) {
-		if (bottomPlatformY > bottomScreenEdge - 14 && bottomPlatformY > BOTTOM_SCREEN_EDGE / 3) {
+		if (bottomPlatformY > bottomScreenEdge - 25 && bottomPlatformY > BOTTOM_SCREEN_EDGE / 3) {
 			topPlatformY = platform.getPosition().y;
 			repositionPlatform(platform, bottomPlatformY);
 			bottomPlatformY -= DISTANCE_BETWEEN_PLATFORMS;

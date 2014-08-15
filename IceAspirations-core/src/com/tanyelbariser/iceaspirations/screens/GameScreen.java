@@ -40,6 +40,7 @@ import com.tanyelbariser.iceaspirations.platforms.PlatformsFactory;
 
 public class GameScreen implements Screen {
 	private IceAspirations iceA;
+	private final float GRAVITY = -9.81f;
 	private SpriteBatch batch;
 	private Stage stage;
 	private Skin skin = IceAspirations.getSkin();
@@ -62,12 +63,12 @@ public class GameScreen implements Screen {
 		Running, Paused
 	}
 
-	State state = State.Running;
+	private State state = State.Running;
 
 	private float approxFPS = 60.0f;
 	private final float TIMESTEP = 1.0f / approxFPS;
-	private final int VELOCITYITERATIONS = 8;
-	private final int POSITIONITERATIONS = 3;
+	private final int VELOCITYITERATIONS = 8; // Box2d manual recommends 8 & 3
+	private final int POSITIONITERATIONS = 3; // for these iterations values
 	private Platforms platforms;
 	private Array<Sprite> platformSprites = new Array<Sprite>();
 	private Sprite playerSprite;
@@ -89,6 +90,8 @@ public class GameScreen implements Screen {
 	private Body clock;
 	private Sprite clockSprite;
 	private float heightLastClock = 0;
+	private float distanceBetweenBoulders = 200;
+	private float distanceBetweenClocks = 100;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -111,7 +114,7 @@ public class GameScreen implements Screen {
 			// 45FPS = 1.5, 30FPS = 2, etc. for delta consistency per device
 			float adjustedDelta = Math.round(Math.round(approxFPS * delta) * 2) / 2.0f;
 
-			float gravity = -9.81f * adjustedDelta * adjustedDelta;
+			float gravity = GRAVITY * adjustedDelta * adjustedDelta;
 			world.setGravity(new Vector2(0, gravity));
 
 			world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
@@ -123,7 +126,7 @@ public class GameScreen implements Screen {
 			repositionCamera(topScreenEdge);
 			repositionBoulder(topScreenEdge, bottomScreenEdge, gravity);
 			repositionPlatforms(topScreenEdge, bottomScreenEdge);
-			repositionClock();
+			repositionClock(topScreenEdge);
 
 			// Position background at camera's position
 			background.setPosition(camera.position.x - backgroundWidth / 2,
@@ -197,10 +200,13 @@ public class GameScreen implements Screen {
 	private void repositionBoulder(float topScreenEdge, float bottomScreenEdge,
 			float gravity) {
 		if (boulder.getPosition().y < bottomScreenEdge - 10
-				&& camera.position.y > heightLastBoulder + 100) {
+				&& camera.position.y > heightLastBoulder + distanceBetweenBoulders) {
 			boulder.setTransform(player.getBody().getPosition().x,
 					topScreenEdge + 10, 0);
 			heightLastBoulder = camera.position.y;
+			if (distanceBetweenBoulders > 20) {
+				distanceBetweenBoulders -= 20;
+			}
 		}
 		if (boulder.getLinearVelocity().y > -1) {
 			boulder.setLinearVelocity(0, gravity);
@@ -215,33 +221,37 @@ public class GameScreen implements Screen {
 	// Repositions platform if out of camera/screen view
 	private void repositionPlatforms(float topScreenEdge, float bottomScreenEdge) {
 		for (Body platform : platformArray) {
-			if (platform.getPosition().y < bottomScreenEdge - 14) {
+			if (platform.getPosition().y < bottomScreenEdge - 25) {
 				platforms.repositionAbove(platform, topScreenEdge);
-			} else if (platform.getPosition().y > topScreenEdge + 14) {
+			} else if (platform.getPosition().y > topScreenEdge + 25) {
 				platforms.repositionBelow(platform, bottomScreenEdge);
 			}
 		}
 	}
 
 	// Reposition clock after being touched
-	private void repositionClock() {
+	private void repositionClock(float topScreenEdge) {
 		if (!player.isClockTouched()
-				&& camera.position.y > heightLastClock + 100) {
-			Body platform = platformArray.first();
-			clock.setTransform(platform.getPosition().x,
-					platform.getPosition().y + 2.5f, platform.getAngle());
-			clockSprite.setPosition(
-					clock.getPosition().x - clockSprite.getWidth() / 2,
-					clock.getPosition().y - clockSprite.getHeight() / 2);
-			clockSprite.setRotation(clock.getAngle()
-					* MathUtils.radiansToDegrees);
+				&& camera.position.y > heightLastClock + distanceBetweenClocks) {
+			for (Body platform : platformArray) {
+				if (platform.getPosition().y > topScreenEdge) {
+					clock.setTransform(platform.getPosition().x,
+							platform.getPosition().y + 2.5f,
+							platform.getAngle());
+					break;
+				}
+			}
 			heightLastClock = camera.position.y;
+			distanceBetweenClocks += 20;
 		}
 		if (player.isClockTouched()) {
 			allotedTime += 10;
 			clock.setTransform(-50, 0, 0);
 			player.setClockTouched(false);
 		}
+		clockSprite.setPosition(clock.getPosition().x - clockSprite.getWidth()
+				/ 2, clock.getPosition().y - clockSprite.getHeight() / 2);
+		clockSprite.setRotation(clock.getAngle() * MathUtils.radiansToDegrees);
 	}
 
 	private void manageTimeScore() {
@@ -251,16 +261,20 @@ public class GameScreen implements Screen {
 		if (allotedTime < 0) {
 			iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
 		} else if (allotedTime < 11) {
-			if (!IceAspirations.getTimeOutMusic().isPlaying()) {
+			if (IceAspirations.getMusic().isPlaying()
+					&& !IceAspirations.getTimeOutMusic().isPlaying()) {
 				IceAspirations.getTimeOutMusic().play();
-				BitmapFont red = new BitmapFont(Gdx.files.internal("red.fnt"),
-						false);
-				LabelStyle redStyle = new LabelStyle(red, Color.RED);
-				timeLeft.setStyle(redStyle);
-				timeLeft.setPosition(timeLeft.getWidth() / 10, HEIGHT
-						- timeLeft.getHeight() * 2);
 			}
+			BitmapFont red = new BitmapFont(Gdx.files.internal("red.fnt"),
+					false);
+			LabelStyle redStyle = new LabelStyle(red, Color.RED);
+			timeLeft.setStyle(redStyle);
+			timeLeft.setPosition(timeLeft.getWidth() / 10,
+					HEIGHT - timeLeft.getHeight() * 2);
 		} else {
+			if (IceAspirations.getTimeOutMusic().isPlaying()) {
+				IceAspirations.getTimeOutMusic().stop();
+			}
 			timeLeft.setStyle(yellowStyle);
 			timeLeft.setPosition(timeLeft.getWidth() / 10,
 					HEIGHT - timeLeft.getHeight() * 1.5f);
@@ -273,9 +287,7 @@ public class GameScreen implements Screen {
 		background.draw(batch);
 		playerSprite.draw(batch);
 		boulderSprite.draw(batch);
-		if (!player.isClockTouched()) {
-			clockSprite.draw(batch);
-		}
+		clockSprite.draw(batch);
 		for (Sprite platform : platformSprites) {
 			platform.draw(batch);
 		}
@@ -285,7 +297,7 @@ public class GameScreen implements Screen {
 		stage.draw();
 
 	}
-	
+
 	@Override
 	public void resize(int width, int height) {
 		camera.viewportWidth = width / ZOOM;
@@ -303,8 +315,7 @@ public class GameScreen implements Screen {
 		pauseButtonSetUp();
 		quitButtonSetUp();
 
-		float gravity = -9.81f;
-		world = new World(new Vector2(0, gravity), true);
+		world = new World(new Vector2(0, GRAVITY), true);
 		physicsDebugger = new Box2DDebugRenderer();
 		camera = new OrthographicCamera(WIDTH / ZOOM, HEIGHT / ZOOM);
 
