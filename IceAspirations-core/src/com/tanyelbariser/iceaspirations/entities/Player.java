@@ -45,6 +45,7 @@ public class Player implements ContactListener, InputProcessor {
 			.internal("Jumping.wav"));
 	private boolean facingLeft = false;
 	private boolean carrotMode;
+	private boolean clockTouched = false;
 
 	public Player(World world) {
 		world.setContactListener(this);
@@ -92,6 +93,14 @@ public class Player implements ContactListener, InputProcessor {
 
 	public boolean getFacingLeft() {
 		return facingLeft;
+	}
+
+	public boolean isClockTouched() {
+		return clockTouched;
+	}
+
+	public void setClockTouched(boolean clockTouched) {
+		this.clockTouched = clockTouched;
 	}
 
 	private void createAnimations() {
@@ -179,7 +188,7 @@ public class Player implements ContactListener, InputProcessor {
 				down = -1.5f;
 				canJump = standing = true;
 			} else if (playerContact && groundContact) {
-				down = slippery = 0;
+				down = angle = slippery = 0;
 				canJump = standing = true;
 			}
 		}
@@ -254,6 +263,14 @@ public class Player implements ContactListener, InputProcessor {
 	// UNUSED METHODS FROM INTERFACES
 	@Override
 	public void beginContact(Contact contact) {
+		String fixA = (String) contact.getFixtureA().getUserData();
+		String fixB = (String) contact.getFixtureB().getUserData();
+		boolean playerContact = fixA.equals("player") || fixB.equals("player");
+		boolean clockContact = fixA.equals("clock") || fixB.equals("clock");
+		if (playerContact && clockContact) {
+			clockTouched = true;
+			Gdx.app.log("TAG", "CLOCK TOUCHED");
+		}
 	}
 
 	@Override

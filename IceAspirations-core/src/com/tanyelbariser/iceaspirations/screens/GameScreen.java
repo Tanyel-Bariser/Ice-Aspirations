@@ -88,6 +88,7 @@ public class GameScreen implements Screen {
 	private BodyDef bodyDef;
 	private Body clock;
 	private Sprite clockSprite;
+	private float heightLastClock = 0;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -98,14 +99,10 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if (state.equals(State.Running)) {
-			if (camera.position.y > maxHeight) {
-				maxHeight = (int) camera.position.y;
-			}
-
-			allotedTime -= delta;
 			if (carrotMode) {
 				delta *= 2;
 			}
+			allotedTime -= delta;
 			timeLeft.setText("Score: " + String.valueOf(maxHeight)
 					+ "\nTime Limit: "
 					+ String.valueOf(Math.round(allotedTime)));
@@ -122,103 +119,134 @@ public class GameScreen implements Screen {
 			float topScreenEdge = camera.position.y + camera.viewportHeight / 2;
 			float bottomScreenEdge = camera.position.y - camera.viewportHeight
 					/ 2;
-
-			// Player Updates
-			player.update(adjustedDelta, carrotMode);
-			if (player.getBody().getPosition().x > Platforms.RIGHT_SCREEN_EDGE) {
-				player.getBody().setTransform(
-						Platforms.RIGHT_SCREEN_EDGE - 0.5f,
-						player.getBody().getPosition().y, 0);
-			} else if (player.getBody().getPosition().x < Platforms.LEFT_SCREEN_EDGE) {
-				player.getBody().setTransform(
-						Platforms.LEFT_SCREEN_EDGE + 0.5f,
-						player.getBody().getPosition().y, 0);
-			}
-			frameTime += delta;
-			if (player.getBody().getLinearVelocity().y > 2) {
-				Animation jumpAnimation = player.getjumpAnimation();
-				playerSprite = (Sprite) jumpAnimation.getKeyFrame(frameTime,
-						false);
-			} else if (player.getBody().getLinearVelocity().y < -4
-					& !player.isStanding()) {
-				playerSprite = player.getFallingSprite();
-				frameTime = 0;
-			} else {
-				playerSprite = stand;
-				frameTime = 0;
-			}
-			boolean facingLeft = player.getFacingLeft()
-					&& playerSprite.isFlipX();
-			boolean facingRight = !player.getFacingLeft()
-					&& !playerSprite.isFlipX();
-			if (facingLeft || facingRight) {
-				// do nothing if player is moving left AND the playerSprite is
-				// already facing left (same for right)
-			} else {
-				playerSprite.flip(true, false);
-			}
-
-			playerSprite.setPosition(player.getBody().getPosition().x
-					- playerSprite.getWidth() / 2, player.getBody()
-					.getPosition().y - playerSprite.getHeight() / 2);
-			playerSprite.setRotation(player.getBody().getAngle()
-					* MathUtils.radiansToDegrees);
-
-			// Set camera position based on player position with
-			// high speed camera catch-up lag
-			float playerY = player.getBody().getPosition().y;
-			float highSpeed = 80;
-			if (player.getBody().getLinearVelocity().y > highSpeed
-					&& camera.position.y > HEIGHT) {
-				camera.position.y += 0.8f;
-			} else if (playerY > topScreenEdge) {
-				camera.position.y += 3f;
-			} else if (playerY > camera.position.y + 2f) {
-				camera.position.y += 0.8f;
-			} else if (playerY > camera.position.y + 1f) {
-				camera.position.y += 0.3f;
-			} else if (playerY > 0) {
-				camera.position.y = playerY;
-			} else {
-				camera.position.y = 0;
-			}
-			camera.update();
-
-			// Reposition boulder
-			if (boulder.getPosition().y < bottomScreenEdge - 10
-					&& camera.position.y > heightLastBoulder + 100) {
-				boulder.setTransform(player.getBody().getPosition().x,
-						topScreenEdge + 10, 0);
-				heightLastBoulder = camera.position.y;
-			}
-			if (boulder.getLinearVelocity().y > -1) {
-				boulder.setLinearVelocity(0, gravity);
-			}
-			boulderSprite.setPosition(
-					boulder.getPosition().x - boulderSprite.getWidth() / 2,
-					boulder.getPosition().y - boulderSprite.getHeight() / 2);
-			boulderSprite.setRotation(boulder.getAngle()
-					* MathUtils.radiansToDegrees);
+			updatePlayer(adjustedDelta, delta);
+			repositionCamera(topScreenEdge);
+			repositionBoulder(topScreenEdge, bottomScreenEdge, gravity);
+			repositionPlatforms(topScreenEdge, bottomScreenEdge);
+			repositionClock();
 
 			// Position background at camera's position
 			background.setPosition(camera.position.x - backgroundWidth / 2,
 					camera.position.y - backgroundHeight / 2);
 
-			// Repositions platform if out of camera/screen view
-			for (Body platform : platformArray) {
-				if (platform.getPosition().y < bottomScreenEdge - 14) {
-					platforms.repositionAbove(platform, topScreenEdge);
-				} else if (platform.getPosition().y > topScreenEdge + 14) {
-					platforms.repositionBelow(platform, bottomScreenEdge);
-				}
+			manageTimeScore();
+		}
+		drawToScreen(delta);
+		// physicsDebugger.render(world, camera.combined);
+	}
+
+	private void updatePlayer(float adjustedDelta, float delta) {
+		player.update(adjustedDelta, carrotMode);
+		if (player.getBody().getPosition().x > Platforms.RIGHT_SCREEN_EDGE) {
+			player.getBody().setTransform(Platforms.RIGHT_SCREEN_EDGE - 0.5f,
+					player.getBody().getPosition().y, 0);
+		} else if (player.getBody().getPosition().x < Platforms.LEFT_SCREEN_EDGE) {
+			player.getBody().setTransform(Platforms.LEFT_SCREEN_EDGE + 0.5f,
+					player.getBody().getPosition().y, 0);
+		}
+		frameTime += delta;
+		if (player.getBody().getLinearVelocity().y > 2) {
+			Animation jumpAnimation = player.getjumpAnimation();
+			playerSprite = (Sprite) jumpAnimation.getKeyFrame(frameTime, false);
+		} else if (player.getBody().getLinearVelocity().y < -4
+				& !player.isStanding()) {
+			playerSprite = player.getFallingSprite();
+			frameTime = 0;
+		} else {
+			playerSprite = stand;
+			frameTime = 0;
+		}
+		boolean facingLeft = player.getFacingLeft() && playerSprite.isFlipX();
+		boolean facingRight = !player.getFacingLeft()
+				&& !playerSprite.isFlipX();
+		if (facingLeft || facingRight) {
+			// do nothing if player is moving left AND the playerSprite is
+			// already facing left (same for right)
+		} else {
+			playerSprite.flip(true, false);
+		}
+		playerSprite.setPosition(player.getBody().getPosition().x
+				- playerSprite.getWidth() / 2, player.getBody().getPosition().y
+				- playerSprite.getHeight() / 2);
+		playerSprite.setRotation(player.getBody().getAngle()
+				* MathUtils.radiansToDegrees);
+	}
+
+	// Set camera position based on player position with
+	// high speed camera catch-up lag
+	private void repositionCamera(float topScreenEdge) {
+		float playerY = player.getBody().getPosition().y;
+		float highSpeed = 80;
+		if (player.getBody().getLinearVelocity().y > highSpeed
+				&& camera.position.y > HEIGHT) {
+			camera.position.y += 0.8f;
+		} else if (playerY > topScreenEdge) {
+			camera.position.y += 3f;
+		} else if (playerY > camera.position.y + 2f) {
+			camera.position.y += 0.8f;
+		} else if (playerY > camera.position.y + 1f) {
+			camera.position.y += 0.3f;
+		} else if (playerY > 0) {
+			camera.position.y = playerY;
+		} else {
+			camera.position.y = 0;
+		}
+		camera.update();
+	}
+
+	private void repositionBoulder(float topScreenEdge, float bottomScreenEdge,
+			float gravity) {
+		if (boulder.getPosition().y < bottomScreenEdge - 10
+				&& camera.position.y > heightLastBoulder + 100) {
+			boulder.setTransform(player.getBody().getPosition().x,
+					topScreenEdge + 10, 0);
+			heightLastBoulder = camera.position.y;
+		}
+		if (boulder.getLinearVelocity().y > -1) {
+			boulder.setLinearVelocity(0, gravity);
+		}
+		boulderSprite.setPosition(
+				boulder.getPosition().x - boulderSprite.getWidth() / 2,
+				boulder.getPosition().y - boulderSprite.getHeight() / 2);
+		boulderSprite.setRotation(boulder.getAngle()
+				* MathUtils.radiansToDegrees);
+	}
+
+	// Repositions platform if out of camera/screen view
+	private void repositionPlatforms(float topScreenEdge, float bottomScreenEdge) {
+		for (Body platform : platformArray) {
+			if (platform.getPosition().y < bottomScreenEdge - 14) {
+				platforms.repositionAbove(platform, topScreenEdge);
+			} else if (platform.getPosition().y > topScreenEdge + 14) {
+				platforms.repositionBelow(platform, bottomScreenEdge);
 			}
+		}
+	}
+
+	// Reposition clock after being touched
+	private void repositionClock() {
+		if (!player.isClockTouched()
+				&& camera.position.y > heightLastClock + 100) {
 			Body platform = platformArray.first();
 			clock.setTransform(platform.getPosition().x,
 					platform.getPosition().y + 2.5f, platform.getAngle());
 			clockSprite.setPosition(
 					clock.getPosition().x - clockSprite.getWidth() / 2,
 					clock.getPosition().y - clockSprite.getHeight() / 2);
-			clockSprite.setRotation(clock.getAngle() * MathUtils.radiansToDegrees);
+			clockSprite.setRotation(clock.getAngle()
+					* MathUtils.radiansToDegrees);
+			heightLastClock = camera.position.y;
+		}
+		if (player.isClockTouched()) {
+			allotedTime += 10;
+			clock.setTransform(-50, 0, 0);
+			player.setClockTouched(false);
+		}
+	}
+
+	private void manageTimeScore() {
+		if (camera.position.y > maxHeight) {
+			maxHeight = (int) camera.position.y;
 		}
 		if (allotedTime < 0) {
 			iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
@@ -237,13 +265,17 @@ public class GameScreen implements Screen {
 			timeLeft.setPosition(timeLeft.getWidth() / 10,
 					HEIGHT - timeLeft.getHeight() * 1.5f);
 		}
+	}
 
+	private void drawToScreen(float delta) {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		background.draw(batch);
 		playerSprite.draw(batch);
 		boulderSprite.draw(batch);
-		clockSprite.draw(batch);
+		if (!player.isClockTouched()) {
+			clockSprite.draw(batch);
+		}
 		for (Sprite platform : platformSprites) {
 			platform.draw(batch);
 		}
@@ -252,9 +284,8 @@ public class GameScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-//		physicsDebugger.render(world, camera.combined);
 	}
-
+	
 	@Override
 	public void resize(int width, int height) {
 		camera.viewportWidth = width / ZOOM;
@@ -329,6 +360,7 @@ public class GameScreen implements Screen {
 		shape.dispose();
 
 		clockSprite = new Sprite(new Texture("Clock.png"));
+		clockSprite.setPosition(0, -HEIGHT);
 		clockSprite.setSize(2, 2);
 		clockSprite.setOrigin(clockSprite.getWidth() / 2,
 				clockSprite.getHeight() / 2);
@@ -358,10 +390,6 @@ public class GameScreen implements Screen {
 		boulderSprite.setSize(5f, 5f);
 		boulderSprite.setOrigin(boulderSprite.getWidth() / 2,
 				boulderSprite.getHeight() / 2);
-	}
-
-	public Fixture getBoulderFix() {
-		return boulderFix;
 	}
 
 	// For some reason pause button suddenly doesn't work on desktop, but still
