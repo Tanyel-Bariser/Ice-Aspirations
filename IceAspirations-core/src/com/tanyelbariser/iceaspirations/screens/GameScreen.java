@@ -20,6 +20,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -83,6 +84,10 @@ public class GameScreen implements Screen {
 	private Fixture boulderFix;
 	private boolean carrotMode = false;
 	private float heightLastBoulder = 0;
+	private FixtureDef fixDef;
+	private BodyDef bodyDef;
+	private Body clock;
+	private Sprite clockSprite;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -207,6 +212,13 @@ public class GameScreen implements Screen {
 					platforms.repositionBelow(platform, bottomScreenEdge);
 				}
 			}
+			Body platform = platformArray.first();
+			clock.setTransform(platform.getPosition().x,
+					platform.getPosition().y + 2.5f, platform.getAngle());
+			clockSprite.setPosition(
+					clock.getPosition().x - clockSprite.getWidth() / 2,
+					clock.getPosition().y - clockSprite.getHeight() / 2);
+			clockSprite.setRotation(clock.getAngle() * MathUtils.radiansToDegrees);
 		}
 		if (allotedTime < 0) {
 			iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
@@ -231,6 +243,7 @@ public class GameScreen implements Screen {
 		background.draw(batch);
 		playerSprite.draw(batch);
 		boulderSprite.draw(batch);
+		clockSprite.draw(batch);
 		for (Sprite platform : platformSprites) {
 			platform.draw(batch);
 		}
@@ -239,7 +252,7 @@ public class GameScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-		 physicsDebugger.render(world, camera.combined);
+//		physicsDebugger.render(world, camera.combined);
 	}
 
 	@Override
@@ -285,6 +298,7 @@ public class GameScreen implements Screen {
 		}
 
 		createIceBoulder();
+		createClock();
 
 		// Create Label to show remaining game time
 		BitmapFont yellow = new BitmapFont(Gdx.files.internal("yellow.fnt"),
@@ -297,15 +311,38 @@ public class GameScreen implements Screen {
 		stage.addActor(timeLeft);
 	}
 
+	private void createClock() {
+		bodyDef = new BodyDef();
+		bodyDef.type = BodyType.StaticBody;
+		bodyDef.position.set(0, -HEIGHT);
+
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(1, 1);
+
+		fixDef = new FixtureDef();
+		fixDef.shape = shape;
+		fixDef.isSensor = true;
+
+		clock = world.createBody(bodyDef);
+		clock.createFixture(fixDef).setUserData("clock");
+
+		shape.dispose();
+
+		clockSprite = new Sprite(new Texture("Clock.png"));
+		clockSprite.setSize(2, 2);
+		clockSprite.setOrigin(clockSprite.getWidth() / 2,
+				clockSprite.getHeight() / 2);
+	}
+
 	private void createIceBoulder() {
-		BodyDef bodyDef = new BodyDef();
+		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(0, -HEIGHT);
 
 		CircleShape shape = new CircleShape();
 		shape.setRadius(2.5f);
 
-		FixtureDef fixDef = new FixtureDef();
+		fixDef = new FixtureDef();
 		fixDef.shape = shape;
 		fixDef.density = 3f;
 		fixDef.friction = 1f;
