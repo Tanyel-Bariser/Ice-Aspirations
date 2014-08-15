@@ -92,6 +92,7 @@ public class GameScreen implements Screen {
 	private float heightLastClock = 0;
 	private float distanceBetweenBoulders = 200;
 	private float distanceBetweenClocks = 100;
+	private float timeDazed = 0;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -148,7 +149,17 @@ public class GameScreen implements Screen {
 					player.getBody().getPosition().y, 0);
 		}
 		frameTime += delta;
-		if (player.getBody().getLinearVelocity().y > 2) {
+		if (player.isDazed()) {		
+			playerSprite = player.getDazedSprite();
+			timeDazed += delta;
+			if (timeDazed == delta) {
+				player.playHitSound();
+			}
+			if (timeDazed > 2) {
+				player.setDazed(false);
+				timeDazed = 0;
+			}
+		} else if (player.getBody().getLinearVelocity().y > 2) {
 			Animation jumpAnimation = player.getjumpAnimation();
 			playerSprite = (Sprite) jumpAnimation.getKeyFrame(frameTime, false);
 		} else if (player.getBody().getLinearVelocity().y < -4
