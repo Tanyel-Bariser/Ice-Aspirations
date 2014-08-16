@@ -52,6 +52,9 @@ public class Player implements ContactListener, InputProcessor {
 	private boolean clockTouched = false;
 	private boolean dazed = false;
 	private boolean carrotTouched = false;
+	private Animation specialStandAnimation;
+	private Animation specialJumpAnimation;
+	private Animation specialFallAnimation;
 
 	public Player(World world) {
 		world.setContactListener(this);
@@ -73,7 +76,10 @@ public class Player implements ContactListener, InputProcessor {
 		body.createFixture(fixDef).setUserData("player");
 
 		shape.dispose();
-		createAnimations();
+		createAnimation();
+		createSpecialStandAnimation();
+		createSpecialJumpAnimation();
+		createSpecialFallAnimation();
 		Gdx.input.setCatchBackKey(true);
 	}
 
@@ -83,6 +89,18 @@ public class Player implements ContactListener, InputProcessor {
 
 	public Animation getjumpAnimation() {
 		return jumpAnimation;
+	}
+
+	public Animation getSpecialStandAnimation() {
+		return specialStandAnimation;
+	}
+
+	public Animation getSpecialJumpAnimation() {
+		return specialJumpAnimation;
+	}
+
+	public Animation getSpecialFallAnimation() {
+		return specialFallAnimation;
 	}
 
 	public Sprite getStandSprite() {
@@ -136,7 +154,7 @@ public class Player implements ContactListener, InputProcessor {
 		this.carrotTouched = carrotTouched;
 	}
 
-	private void createAnimations() {
+	private void createAnimation() {
 		Skin skin = IceAspirations.getSkin();
 		standSprite = skin.getSprite("Rabbit1");
 		standSprite.setSize(2.9f, 4.2f);
@@ -162,7 +180,7 @@ public class Player implements ContactListener, InputProcessor {
 		Sprite[] jumpSprites = new Sprite[] { standSprite, rabbit2, rabbit3,
 				rabbit4, rabbit5 };
 
-		jumpAnimation = new Animation(0.10f, jumpSprites);
+		jumpAnimation = new Animation(0.1f, jumpSprites);
 
 		fallingSprite = skin.getSprite("Rabbit6");
 		fallingSprite.setSize(3, 4.2f);
@@ -173,6 +191,70 @@ public class Player implements ContactListener, InputProcessor {
 		dazedSprite.setSize(3, 4.2f);
 		dazedSprite.setOrigin(dazedSprite.getWidth() / 2,
 				dazedSprite.getHeight() / 2);
+	}
+
+	private void createSpecialFallAnimation() {
+		Skin skin = IceAspirations.getSkin();
+		Sprite special1 = skin.getSprite("SpecialFalling1");
+		special1.setSize(2.9f, 4.2f);
+		special1.setOrigin(special1.getWidth() / 2, special1.getHeight() / 2);
+
+		Sprite special2 = skin.getSprite("SpecialFalling2");
+		special2.setSize(2.863f, 4.2f);
+		special2.setOrigin(special2.getWidth() / 2, special2.getHeight() / 2);
+
+		Sprite special3 = skin.getSprite("SpecialFalling3");
+		special3.setSize(2.9f, 4.1328f);
+		special3.setOrigin(special3.getWidth() / 2, special3.getHeight() / 2);
+
+		Sprite[] specialFallSprites = new Sprite[] { special1, special2,
+				special3, special2 };
+
+		specialFallAnimation = new Animation(0.1f, specialFallSprites);
+	}
+
+	private void createSpecialJumpAnimation() {
+		Skin skin = IceAspirations.getSkin();
+		Sprite special1 = skin.getSprite("SpecialJumping1");
+		special1.setSize(2.9f, 4.2f);
+		special1.setOrigin(special1.getWidth() / 2, special1.getHeight() / 2);
+
+		Sprite special2 = skin.getSprite("SpecialJumping2");
+		special2.setSize(2.985f, 4.33f);
+		special2.setOrigin(special2.getWidth() / 2, special2.getHeight() / 2);
+
+		Sprite special3 = skin.getSprite("SpecialJumping3");
+		special3.setSize(3.113f, 4.38f);
+		special3.setOrigin(special3.getWidth() / 2, special3.getHeight() / 2);
+
+		Sprite special4 = skin.getSprite("SpecialJumping3");
+		special4.setSize(3.07f, 4.45f);
+		special4.setOrigin(special4.getWidth() / 2, special4.getHeight() / 2);
+
+		Sprite[] specialStandSprites = new Sprite[] { special1, special2,
+				special3, special4, special3, special2 };
+
+		specialJumpAnimation = new Animation(0.1f, specialStandSprites);
+	}
+
+	private void createSpecialStandAnimation() {
+		Skin skin = IceAspirations.getSkin();
+		Sprite special1 = skin.getSprite("SpecialStanding1");
+		special1.setSize(3.5f, 3.15f);
+		special1.setOrigin(special1.getWidth() / 2, special1.getHeight() / 2);
+
+		Sprite special2 = skin.getSprite("SpecialStanding2");
+		special2.setSize(4.375f, 3.15f);
+		special2.setOrigin(special2.getWidth() / 2, special2.getHeight() / 2);
+
+		Sprite special3 = skin.getSprite("SpecialStanding3");
+		special3.setSize(3.395f, 3.15f);
+		special3.setOrigin(special3.getWidth() / 2, special3.getHeight() / 2);
+
+		Sprite[] specialStandSprites = new Sprite[] { special1, special2,
+				special3 };
+
+		specialStandAnimation = new Animation(0.1f, specialStandSprites);
 	}
 
 	public void update(float delta) {

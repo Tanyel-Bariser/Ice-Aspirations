@@ -24,6 +24,13 @@ Platform5
   orig: 298, 155
   offset: 0, 0
   index: -1
+Back
+  rotate: false
+  xy: 700, 646
+  size: 128, 131
+  orig: 128, 131
+  offset: 0, 0
+  index: -1
 Platform2
   rotate: false
   xy: 0, 259
@@ -43,13 +50,6 @@ Platform1
   xy: 400, 549
   size: 200, 100
   orig: 200, 100
-  offset: 0, 0
-  index: -1
-Back
-  rotate: false
-  xy: 700, 646
-  size: 128, 131
-  orig: 128, 131
   offset: 0, 0
   index: -1
 Platform4
@@ -178,72 +178,72 @@ SpecialFalling2
   orig: 77, 123
   offset: 0, 0
   index: -1
-SpecialJumping2
+SpecialJumping1
   rotate: false
   xy: 610, 133
+  size: 71, 132
+  orig: 71, 132
+  offset: 0, 0
+  index: -1
+SpecialJumping2
+  rotate: false
+  xy: 620, 1
   size: 70, 132
   orig: 70, 132
   offset: 0, 0
   index: -1
 SpecialFalling3
   rotate: false
-  xy: 620, 10
+  xy: 643, 395
   size: 78, 123
   orig: 78, 123
   offset: 0, 0
   index: -1
 Rabbit3
   rotate: false
-  xy: 643, 399
+  xy: 721, 399
   size: 79, 119
   orig: 79, 119
   offset: 0, 0
   index: -1
-Rabbit2
-  rotate: false
-  xy: 722, 400
-  size: 76, 118
-  orig: 76, 118
-  offset: 0, 0
-  index: -1
 Rabbit6
   rotate: false
-  xy: 649, 280
+  xy: 649, 276
   size: 74, 119
   orig: 74, 119
   offset: 0, 0
   index: -1
-Rabbit1
+Rabbit2
   rotate: false
-  xy: 723, 282
-  size: 74, 118
-  orig: 74, 118
+  xy: 723, 281
+  size: 76, 118
+  orig: 76, 118
   offset: 0, 0
   index: -1
 Rabbit5
   rotate: false
-  xy: 680, 160
+  xy: 681, 156
   size: 58, 120
   orig: 58, 120
   offset: 0, 0
   index: -1
 Rabbit4
   rotate: false
-  xy: 738, 163
+  xy: 739, 162
   size: 62, 119
   orig: 62, 119
   offset: 0, 0
   index: -1
-SpecialJumping1
+Rabbit1
   rotate: false
-  xy: 698, 42
-  size: 68, 118
-  orig: 68, 118
+  xy: 690, 38
+  size: 74, 118
+  orig: 74, 118
   offset: 0, 0
   index: -1
 Clock
   rotate: false
-  xy: 766, 91
+  xy: 764, 90
   size: 64, 72
   orig: 64, 72
   offset: 0, 0

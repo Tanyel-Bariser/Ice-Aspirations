@@ -74,7 +74,7 @@ public class GameScreen implements Screen {
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
 	private float frameTime;
-	private float allotedTime = 12;
+	private float allotedTime = 60;
 	private Label timeLeft;
 	private int maxHeight;
 	private ImageTextButton quit;
@@ -95,7 +95,7 @@ public class GameScreen implements Screen {
 	private Body carrot;
 	private Sprite carrotSprite;
 	private float heightLastCarrot = 0;
-	private float distanceBetweenCarrots = 155;
+	private float distanceBetweenCarrots = 158;
 	private float timeSinceCarrotTouched;
 	private BitmapFont red = new BitmapFont(Gdx.files.internal("red.fnt"),
 			false);
@@ -112,7 +112,7 @@ public class GameScreen implements Screen {
 		if (state.equals(State.Running)) {
 			allotedTime -= delta;
 			if (player.isCarrotTouched()) {
-				delta *= 2;
+				delta *= 1.5f;
 				player.setDazed(false);
 			}
 			timeLeft.setText("Score: " + String.valueOf(maxHeight)
@@ -132,7 +132,7 @@ public class GameScreen implements Screen {
 			float bottomScreenEdge = camera.position.y - camera.viewportHeight
 					/ 2;
 			updatePlayer(adjustedDelta, delta);
-			repositionCamera(topScreenEdge);
+			repositionCamera(topScreenEdge, bottomScreenEdge);
 			if (player.isCarrotTouched()) {
 				float carrotGravity = GRAVITY * (adjustedDelta / 2)
 						* (adjustedDelta / 2);
@@ -152,7 +152,7 @@ public class GameScreen implements Screen {
 			manageTimeScore();
 		}
 		drawToScreen(delta);
-		physicsDebugger.render(world, camera.combined);
+		// physicsDebugger.render(world, camera.combined);
 	}
 
 	private void updatePlayer(float adjustedDelta, float delta) {
@@ -176,15 +176,35 @@ public class GameScreen implements Screen {
 				timeDazed = 0;
 			}
 		} else if (player.getBody().getLinearVelocity().y > 2) {
-			Animation jumpAnimation = player.getjumpAnimation();
-			playerSprite = (Sprite) jumpAnimation.getKeyFrame(frameTime, false);
+			if (player.isCarrotTouched()) {
+				Animation specialJumpAnimation = player
+						.getSpecialJumpAnimation();
+				playerSprite = (Sprite) specialJumpAnimation.getKeyFrame(
+						frameTime, true);
+			} else {
+				Animation jumpAnimation = player.getjumpAnimation();
+				playerSprite = (Sprite) jumpAnimation.getKeyFrame(frameTime,
+						false);
+			}
 		} else if (player.getBody().getLinearVelocity().y < -4
 				& !player.isStanding()) {
-			playerSprite = player.getFallingSprite();
-			frameTime = 0;
+			if (player.isCarrotTouched()) {
+				Animation fallAnimation = player.getSpecialFallAnimation();
+				playerSprite = (Sprite) fallAnimation.getKeyFrame(frameTime,
+						true);
+			} else {
+				playerSprite = player.getFallingSprite();
+				frameTime = 0;
+			}
 		} else {
-			playerSprite = stand;
-			frameTime = 0;
+			if (player.isCarrotTouched()) {
+				Animation standAnimation = player.getSpecialStandAnimation();
+				playerSprite = (Sprite) standAnimation.getKeyFrame(frameTime,
+						true);
+			} else {
+				playerSprite = stand;
+				frameTime = 0;
+			}
 		}
 		boolean facingLeft = player.getFacingLeft() && playerSprite.isFlipX();
 		boolean facingRight = !player.getFacingLeft()
@@ -204,7 +224,7 @@ public class GameScreen implements Screen {
 
 	// Set camera position based on player position with
 	// high speed camera catch-up lag
-	private void repositionCamera(float topScreenEdge) {
+	private void repositionCamera(float topScreenEdge, float bottomScreenEdge) {
 		float playerY = player.getBody().getPosition().y;
 		float highSpeed = 30;
 		if (player.getBody().getLinearVelocity().y > highSpeed
@@ -216,6 +236,10 @@ public class GameScreen implements Screen {
 			camera.position.y += 3f;
 		} else if (playerY > camera.position.y + 2f) {
 			camera.position.y += 0.8f;
+		} else if (playerY > 0 && playerY < camera.position.y - 2f) {
+			camera.position.y -= 0.3f;
+		} else if (playerY < bottomScreenEdge) {
+			camera.position.y -= 3f;
 		} else if (playerY > 0) {
 			camera.position.y = playerY;
 		} else {
@@ -304,7 +328,7 @@ public class GameScreen implements Screen {
 				}
 			}
 			heightLastCarrot = camera.position.y;
-			distanceBetweenCarrots += 60;
+			distanceBetweenCarrots += 70;
 		}
 		carrotSprite.setPosition(
 				carrot.getPosition().x - carrotSprite.getWidth() / 2,
@@ -343,8 +367,7 @@ public class GameScreen implements Screen {
 				IceAspirations.getMusic().stop();
 				IceAspirations.getCarrotMusic().play();
 			}
-		} else if (IceAspirations.getCarrotMusic().isPlaying()) {
-			IceAspirations.getCarrotMusic().stop();
+		} else {
 			IceAspirations.getMusic().play();
 		}
 	}

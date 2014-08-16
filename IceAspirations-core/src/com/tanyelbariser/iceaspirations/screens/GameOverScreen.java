@@ -28,6 +28,11 @@ public class GameOverScreen implements Screen {
 		this.maxHeight = maxHeight;
 		if (IceAspirations.getTimeOutMusic().isPlaying()) {
 			IceAspirations.getTimeOutMusic().stop();
+			IceAspirations.getMusic().play();
+		}
+		if (IceAspirations.getCarrotMusic().isPlaying()) {
+			IceAspirations.getCarrotMusic().stop();
+			IceAspirations.getMusic().play();
 		}
 	}
 
@@ -59,14 +64,16 @@ public class GameOverScreen implements Screen {
 		// Create Label to show remaining game time
 		BitmapFont blue = IceAspirations.getBlue();
 		LabelStyle style = new LabelStyle(blue, Color.BLUE);
-		Label gameOver = new Label("GAME OVER\nScore: " + String.valueOf(maxHeight), style);
-		gameOver.setPosition(WIDTH /2 - gameOver.getWidth() / 2,
-				HEIGHT / 2- gameOver.getHeight() / 2);
+		Label gameOver = new Label("GAME OVER\nScore: "
+				+ String.valueOf(maxHeight), style);
+		gameOver.setPosition(WIDTH / 2 - gameOver.getWidth() / 2, HEIGHT / 2
+				- gameOver.getHeight() / 2);
 		stage.addActor(gameOver);
-		
+
 		backButtonSetUp();
 
 	}
+
 	private void backButtonSetUp() {
 		ImageButtonStyle imageStyle = new ImageButtonStyle();
 		Skin skin = IceAspirations.getSkin();
