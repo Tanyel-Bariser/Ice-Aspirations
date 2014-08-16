@@ -60,10 +60,10 @@ public class GameScreen implements Screen {
 	private Sprite stand;
 
 	public enum State {
-		Running, Paused
+		RUNNING, PAUSED
 	}
 
-	private State state = State.Running;
+	private State state = State.RUNNING;
 
 	private float approxFPS = 60.0f;
 	private final float TIMESTEP = 1.0f / approxFPS;
@@ -109,7 +109,7 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		if (state.equals(State.Running)) {
+		if (state.equals(State.RUNNING)) {
 			allotedTime -= delta;
 			if (player.isCarrotTouched()) {
 				delta *= 1.5f;
@@ -582,13 +582,13 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void pause() {
-		state = State.Paused;
+		state = State.PAUSED;
 
 	}
 
 	@Override
 	public void resume() {
-		state = State.Running;
+		state = State.RUNNING;
 	}
 
 	@Override

@@ -27,6 +27,8 @@ public class IceAspirations extends Game {
 
 	@Override
 	public void create() {
+		Assets.load();
+		Assets.MANAGER.finishLoading();
 		TextureAtlas atlas = new TextureAtlas("Atlas.atlas");
 		skin = new Skin(atlas);
 		blue = new BitmapFont(Gdx.files.internal("blue.fnt"), false);
@@ -85,10 +87,7 @@ public class IceAspirations extends Game {
 	@Override
 	public void dispose() {
 		super.dispose();
-		music.dispose();
-		skin.dispose();
-		blue.dispose();
-		background.getTexture().dispose();
+		Assets.dispose();
 	}
 
 	// nextScreen field & Override in render() & setNextScreen() methods are a
