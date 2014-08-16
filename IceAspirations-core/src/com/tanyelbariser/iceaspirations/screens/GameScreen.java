@@ -83,7 +83,6 @@ public class GameScreen implements Screen {
 	private Body boulder;
 	private Sprite boulderSprite;
 	private Fixture boulderFix;
-	private boolean carrotMode = false;
 	private float heightLastBoulder = 0;
 	private FixtureDef fixDef;
 	private BodyDef bodyDef;
@@ -93,6 +92,14 @@ public class GameScreen implements Screen {
 	private float distanceBetweenBoulders = 200;
 	private float distanceBetweenClocks = 100;
 	private float timeDazed = 0;
+	private Body carrot;
+	private Sprite carrotSprite;
+	private float heightLastCarrot = 0;
+	private float distanceBetweenCarrots = 155;
+	private float timeSinceCarrotTouched;
+	private BitmapFont red = new BitmapFont(Gdx.files.internal("red.fnt"),
+			false);
+	private LabelStyle redStyle = new LabelStyle(red, Color.RED);
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -103,10 +110,11 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if (state.equals(State.Running)) {
-			if (carrotMode) {
-				delta *= 2;
-			}
 			allotedTime -= delta;
+			if (player.isCarrotTouched()) {
+				delta *= 2;
+				player.setDazed(false);
+			}
 			timeLeft.setText("Score: " + String.valueOf(maxHeight)
 					+ "\nTime Limit: "
 					+ String.valueOf(Math.round(allotedTime)));
@@ -125,9 +133,16 @@ public class GameScreen implements Screen {
 					/ 2;
 			updatePlayer(adjustedDelta, delta);
 			repositionCamera(topScreenEdge);
-			repositionBoulder(topScreenEdge, bottomScreenEdge, gravity);
+			if (player.isCarrotTouched()) {
+				float carrotGravity = GRAVITY * (adjustedDelta / 2)
+						* (adjustedDelta / 2);
+				repositionBoulder(topScreenEdge, bottomScreenEdge, carrotGravity);
+			} else {
+				repositionBoulder(topScreenEdge, bottomScreenEdge, gravity);
+			}
 			repositionPlatforms(topScreenEdge, bottomScreenEdge);
 			repositionClock(topScreenEdge);
+			repositionCarrot(topScreenEdge, delta / 2);
 
 			// Position background at camera's position
 			background.setPosition(camera.position.x - backgroundWidth / 2,
@@ -136,11 +151,11 @@ public class GameScreen implements Screen {
 			manageTimeScore();
 		}
 		drawToScreen(delta);
-		// physicsDebugger.render(world, camera.combined);
+		physicsDebugger.render(world, camera.combined);
 	}
 
 	private void updatePlayer(float adjustedDelta, float delta) {
-		player.update(adjustedDelta, carrotMode);
+		player.update(adjustedDelta);
 		if (player.getBody().getPosition().x > Platforms.RIGHT_SCREEN_EDGE) {
 			player.getBody().setTransform(Platforms.RIGHT_SCREEN_EDGE - 0.5f,
 					player.getBody().getPosition().y, 0);
@@ -149,13 +164,13 @@ public class GameScreen implements Screen {
 					player.getBody().getPosition().y, 0);
 		}
 		frameTime += delta;
-		if (player.isDazed()) {		
+		if (player.isDazed()) {
 			playerSprite = player.getDazedSprite();
 			timeDazed += delta;
 			if (timeDazed == delta) {
 				player.playHitSound();
 			}
-			if (timeDazed > 2) {
+			if (timeDazed > 3) {
 				player.setDazed(false);
 				timeDazed = 0;
 			}
@@ -211,7 +226,8 @@ public class GameScreen implements Screen {
 	private void repositionBoulder(float topScreenEdge, float bottomScreenEdge,
 			float gravity) {
 		if (boulder.getPosition().y < bottomScreenEdge - 10
-				&& camera.position.y > heightLastBoulder + distanceBetweenBoulders) {
+				&& camera.position.y > heightLastBoulder
+						+ distanceBetweenBoulders) {
 			boulder.setTransform(player.getBody().getPosition().x,
 					topScreenEdge + 10, 0);
 			heightLastBoulder = camera.position.y;
@@ -265,20 +281,49 @@ public class GameScreen implements Screen {
 		clockSprite.setRotation(clock.getAngle() * MathUtils.radiansToDegrees);
 	}
 
+	// Reposition carrot after being touched
+	private void repositionCarrot(float topScreenEdge, float delta) {
+		if (player.isCarrotTouched()) {
+			carrot.setTransform(-50, 0, 0);
+			timeSinceCarrotTouched += delta;
+		}
+		if (timeSinceCarrotTouched > 10) {
+			timeSinceCarrotTouched = 0;
+			player.setCarrotTouched(false);
+		}
+		if (!player.isCarrotTouched()
+				&& camera.position.y > heightLastCarrot
+						+ distanceBetweenCarrots) {
+			for (Body platform : platformArray) {
+				if (platform.getPosition().y > topScreenEdge) {
+					carrot.setTransform(platform.getPosition().x,
+							platform.getPosition().y + 2.5f,
+							platform.getAngle());
+					break;
+				}
+			}
+			heightLastCarrot = camera.position.y;
+			distanceBetweenCarrots += 60;
+		}
+		carrotSprite.setPosition(
+				carrot.getPosition().x - carrotSprite.getWidth() / 2,
+				carrot.getPosition().y - carrotSprite.getHeight() / 2);
+		carrotSprite
+				.setRotation(carrot.getAngle() * MathUtils.radiansToDegrees);
+	}
+
 	private void manageTimeScore() {
 		if (camera.position.y > maxHeight) {
+			// maxHeight records users score
 			maxHeight = (int) camera.position.y;
 		}
 		if (allotedTime < 0) {
 			iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
 		} else if (allotedTime < 11) {
-			if (IceAspirations.getMusic().isPlaying()
+			if (IceAspirations.getMusic().isPlaying() || IceAspirations.getCarrotMusic().isPlaying()
 					&& !IceAspirations.getTimeOutMusic().isPlaying()) {
 				IceAspirations.getTimeOutMusic().play();
 			}
-			BitmapFont red = new BitmapFont(Gdx.files.internal("red.fnt"),
-					false);
-			LabelStyle redStyle = new LabelStyle(red, Color.RED);
 			timeLeft.setStyle(redStyle);
 			timeLeft.setPosition(timeLeft.getWidth() / 10,
 					HEIGHT - timeLeft.getHeight() * 2);
@@ -290,6 +335,16 @@ public class GameScreen implements Screen {
 			timeLeft.setPosition(timeLeft.getWidth() / 10,
 					HEIGHT - timeLeft.getHeight() * 1.5f);
 		}
+		if (player.isCarrotTouched()) {
+			if (IceAspirations.getMusic().isPlaying()
+					&& !IceAspirations.getCarrotMusic().isPlaying()) {
+				IceAspirations.getMusic().stop();
+				IceAspirations.getCarrotMusic().play();
+			}
+		} else if (IceAspirations.getCarrotMusic().isPlaying()) {
+			IceAspirations.getCarrotMusic().stop();
+			IceAspirations.getMusic().play();
+		}
 	}
 
 	private void drawToScreen(float delta) {
@@ -299,6 +354,7 @@ public class GameScreen implements Screen {
 		playerSprite.draw(batch);
 		boulderSprite.draw(batch);
 		clockSprite.draw(batch);
+		carrotSprite.draw(batch);
 		for (Sprite platform : platformSprites) {
 			platform.draw(batch);
 		}
@@ -306,7 +362,6 @@ public class GameScreen implements Screen {
 
 		stage.act(delta);
 		stage.draw();
-
 	}
 
 	@Override
@@ -352,6 +407,7 @@ public class GameScreen implements Screen {
 
 		createIceBoulder();
 		createClock();
+		createCarrot();
 
 		// Create Label to show remaining game time
 		BitmapFont yellow = new BitmapFont(Gdx.files.internal("yellow.fnt"),
@@ -386,6 +442,30 @@ public class GameScreen implements Screen {
 		clockSprite.setSize(2, 2);
 		clockSprite.setOrigin(clockSprite.getWidth() / 2,
 				clockSprite.getHeight() / 2);
+	}
+
+	private void createCarrot() {
+		bodyDef = new BodyDef();
+		bodyDef.type = BodyType.StaticBody;
+		bodyDef.position.set(0, -HEIGHT);
+
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(1, 1);
+
+		fixDef = new FixtureDef();
+		fixDef.shape = shape;
+		fixDef.isSensor = true;
+
+		carrot = world.createBody(bodyDef);
+		carrot.createFixture(fixDef).setUserData("carrot");
+
+		shape.dispose();
+
+		carrotSprite = new Sprite(new Texture("Carrot.png"));
+		carrotSprite.setPosition(0, HEIGHT);
+		carrotSprite.setSize(2, 2);
+		carrotSprite.setOrigin(carrotSprite.getWidth() / 2,
+				carrotSprite.getHeight() / 2);
 	}
 
 	private void createIceBoulder() {

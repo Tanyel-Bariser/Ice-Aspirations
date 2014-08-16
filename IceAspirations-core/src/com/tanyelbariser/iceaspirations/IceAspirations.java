@@ -17,6 +17,7 @@ import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
 public class IceAspirations extends Game {
 	private static Music music;
+	private static Music carrotMusic;
 	private static Music timeOutMusic;
 	private static Skin skin;
 	private static BitmapFont blue;
@@ -40,6 +41,12 @@ public class IceAspirations extends Game {
 		music.setLooping(true);
 		music.play();
 		music.setVolume(0.2f);
+		
+		carrotMusic = Gdx.audio.newMusic(Gdx.files
+				.internal("Carrot Mode.mp3"));
+		carrotMusic.setLooping(false);
+		carrotMusic.setVolume(0.2f);
+		
 		timeOutMusic = Gdx.audio.newMusic(Gdx.files
 				.internal("Time Running Out.mp3"));
 		timeOutMusic.setLooping(false);
@@ -119,7 +126,12 @@ public class IceAspirations extends Game {
 	public static Music getMusic() {
 		return music;
 	}
+
 	public static Music getTimeOutMusic() {
 		return timeOutMusic;
+	}
+
+	public static Music getCarrotMusic() {
+		return carrotMusic;
 	}
 }

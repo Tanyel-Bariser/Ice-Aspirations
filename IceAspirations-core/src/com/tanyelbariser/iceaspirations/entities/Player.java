@@ -42,16 +42,16 @@ public class Player implements ContactListener, InputProcessor {
 	private Animation jumpAnimation;
 	private Sound jumpSound = Gdx.audio.newSound(Gdx.files
 			.internal("Jumping.wav"));
-	private Sound getClockSound = Gdx.audio.newSound(Gdx.files
-			.internal("Clock Pick Up.ogg"));
+	private Sound getItemSound = Gdx.audio.newSound(Gdx.files
+			.internal("Pick Up.ogg"));
 	private Sound hitSound = Gdx.audio.newSound(Gdx.files
 			.internal("Hit Sound.wav"));;
 	private boolean standing;
 	private boolean canJump;
 	private boolean facingLeft = false;
-	private boolean carrotMode = false;
 	private boolean clockTouched = false;
 	private boolean dazed = false;
+	private boolean carrotTouched = false;
 
 	public Player(World world) {
 		world.setContactListener(this);
@@ -92,7 +92,7 @@ public class Player implements ContactListener, InputProcessor {
 	public Sprite getFallingSprite() {
 		return fallingSprite;
 	}
-	
+
 	public Sprite getDazedSprite() {
 		return dazedSprite;
 	}
@@ -112,19 +112,28 @@ public class Player implements ContactListener, InputProcessor {
 	public void setClockTouched(boolean clockTouched) {
 		this.clockTouched = clockTouched;
 	}
-	
+
 	public boolean isDazed() {
 		return dazed;
 	}
-	
+
 	public void setDazed(boolean dazed) {
 		this.dazed = dazed;
 	}
-	
+
 	public void playHitSound() {
-		if (IceAspirations.getMusic().isPlaying()) {
+		if (IceAspirations.getMusic().isPlaying()
+				|| IceAspirations.getCarrotMusic().isPlaying()) {
 			hitSound.play(1, 0.8f, 0);
 		}
+	}
+
+	public boolean isCarrotTouched() {
+		return carrotTouched;
+	}
+
+	public void setCarrotTouched(boolean carrotTouched) {
+		this.carrotTouched = carrotTouched;
 	}
 
 	private void createAnimations() {
@@ -159,16 +168,15 @@ public class Player implements ContactListener, InputProcessor {
 		fallingSprite.setSize(3, 4.2f);
 		fallingSprite.setOrigin(fallingSprite.getWidth() / 2,
 				fallingSprite.getHeight() / 2);
-		
+
 		dazedSprite = new Sprite(new Texture("Dazed.png"));
 		dazedSprite.setSize(3, 4.2f);
 		dazedSprite.setOrigin(dazedSprite.getWidth() / 2,
 				dazedSprite.getHeight() / 2);
 	}
 
-	public void update(float delta, boolean carrotMode) {
-		this.carrotMode = carrotMode;
-		if (carrotMode) {
+	public void update(float delta) {
+		if (carrotTouched) {
 			jump = 400f;
 		}
 		myDelta = delta;
@@ -204,7 +212,7 @@ public class Player implements ContactListener, InputProcessor {
 		boolean groundContact = fixA.equals("ground") || fixB.equals("ground");
 		boolean justBoulder = boulderContact
 				&& !(platformContact || groundContact);
-		if (playerContact && boulderContact && headContact && !carrotMode) {
+		if (playerContact && boulderContact && headContact && !carrotTouched) {
 			down = -10;
 			dazed = true;
 		} else if ((touchLeftEdge || touchRightEdge)
@@ -214,6 +222,7 @@ public class Player implements ContactListener, InputProcessor {
 		} else if (feetContact) {
 			if (playerContact && (platformContact || justBoulder)) {
 				if (platformContact) {
+					// FixtureB is a platform
 					angle = contact.getFixtureB().getBody().getAngle();
 				} else {
 					angle = 0;
@@ -247,7 +256,8 @@ public class Player implements ContactListener, InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (canJump && !dazed) {
-			if (IceAspirations.getMusic().isPlaying()) {
+			if (IceAspirations.getMusic().isPlaying()
+					|| IceAspirations.getCarrotMusic().isPlaying()) {
 				jumpSound.play(0.1f, 0.8f, 0);
 			}
 			down = angle = 0;
@@ -269,7 +279,8 @@ public class Player implements ContactListener, InputProcessor {
 			break;
 		case Keys.SPACE:
 			if (canJump && !dazed) {
-				if (IceAspirations.getMusic().isPlaying()) {
+				if (IceAspirations.getMusic().isPlaying()
+						|| IceAspirations.getCarrotMusic().isPlaying()) {
 					jumpSound.play(0.1f, 0.8f, 0);
 				}
 				down = angle = 0;
@@ -300,10 +311,20 @@ public class Player implements ContactListener, InputProcessor {
 		boolean playerContact = fixA.equals("player") || fixB.equals("player");
 		boolean clockContact = fixA.equals("clock") || fixB.equals("clock");
 		if (playerContact && clockContact) {
-			if (IceAspirations.getMusic().isPlaying()) {
-				getClockSound.play(0.1f, 0.8f, 0);
+			if (IceAspirations.getMusic().isPlaying()
+					|| IceAspirations.getCarrotMusic().isPlaying()) {
+				getItemSound.play(0.1f, 0.8f, 0);
 			}
 			clockTouched = true;
+		}
+		boolean carrotContact = fixA.equals("carrot") || fixB.equals("carrot");
+		if (playerContact && carrotContact) {
+			if (IceAspirations.getMusic().isPlaying()
+					|| IceAspirations.getCarrotMusic().isPlaying()) {
+				getItemSound.play(0.1f, 0.8f, 0);
+			}
+			carrotTouched = true;
+			Gdx.app.log("TAG", "CARROT TOUCHED");
 		}
 	}
 
