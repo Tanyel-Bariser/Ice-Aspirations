@@ -74,7 +74,7 @@ public class GameScreen implements Screen {
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
 	private float frameTime;
-	private float allotedTime = 60;
+	private float allotedTime = 12;
 	private Label timeLeft;
 	private int maxHeight;
 	private ImageTextButton quit;
@@ -136,7 +136,8 @@ public class GameScreen implements Screen {
 			if (player.isCarrotTouched()) {
 				float carrotGravity = GRAVITY * (adjustedDelta / 2)
 						* (adjustedDelta / 2);
-				repositionBoulder(topScreenEdge, bottomScreenEdge, carrotGravity);
+				repositionBoulder(topScreenEdge, bottomScreenEdge,
+						carrotGravity);
 			} else {
 				repositionBoulder(topScreenEdge, bottomScreenEdge, gravity);
 			}
@@ -205,16 +206,16 @@ public class GameScreen implements Screen {
 	// high speed camera catch-up lag
 	private void repositionCamera(float topScreenEdge) {
 		float playerY = player.getBody().getPosition().y;
-		float highSpeed = 80;
+		float highSpeed = 30;
 		if (player.getBody().getLinearVelocity().y > highSpeed
 				&& camera.position.y > HEIGHT) {
+			// Camera rises slower than player causing a camera lag giving the
+			// effect that the player is too fast for the camera to keep up.
 			camera.position.y += 0.8f;
 		} else if (playerY > topScreenEdge) {
 			camera.position.y += 3f;
 		} else if (playerY > camera.position.y + 2f) {
 			camera.position.y += 0.8f;
-		} else if (playerY > camera.position.y + 1f) {
-			camera.position.y += 0.3f;
 		} else if (playerY > 0) {
 			camera.position.y = playerY;
 		} else {
@@ -320,7 +321,8 @@ public class GameScreen implements Screen {
 		if (allotedTime < 0) {
 			iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
 		} else if (allotedTime < 11) {
-			if (IceAspirations.getMusic().isPlaying() || IceAspirations.getCarrotMusic().isPlaying()
+			if (IceAspirations.getMusic().isPlaying()
+					|| IceAspirations.getCarrotMusic().isPlaying()
 					&& !IceAspirations.getTimeOutMusic().isPlaying()) {
 				IceAspirations.getTimeOutMusic().play();
 			}

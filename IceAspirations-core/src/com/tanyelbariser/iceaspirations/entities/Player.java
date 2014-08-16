@@ -164,7 +164,7 @@ public class Player implements ContactListener, InputProcessor {
 
 		jumpAnimation = new Animation(0.10f, jumpSprites);
 
-		fallingSprite = skin.getSprite("Rabbit7");
+		fallingSprite = skin.getSprite("Rabbit6");
 		fallingSprite.setSize(3, 4.2f);
 		fallingSprite.setOrigin(fallingSprite.getWidth() / 2,
 				fallingSprite.getHeight() / 2);

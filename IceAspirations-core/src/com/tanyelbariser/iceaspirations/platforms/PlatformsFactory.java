@@ -14,15 +14,15 @@ public class PlatformsFactory {
 	
 	public static Array<Body> createPlatforms(World world) {
 		Array<Body> platforms = new Array<Body>();
-		platforms.add(createPlatform(world, "Platform3", 4, 2, 2, 0.91f));
-		platforms.add(createPlatform(world, "Platform7", 4, 3, 1.6f, 1.2f));
-		platforms.add(createPlatform(world, "Platform5", 8, 1.8f, 4, 0.72f));
-		platforms.add(createPlatform(world, "Platform6", 4, 2, 2, 0.91f));
-		platforms.add(createPlatform(world, "Platform8", 6, 3, 2.4f, 1.2f));
 		platforms.add(createPlatform(world, "Platform1", 4, 2, 2, 0.91f));
+		platforms.add(createPlatform(world, "Platform2", 4, 3, 1.6f, 1.2f));
+		platforms.add(createPlatform(world, "Platform3", 8, 1.8f, 4, 0.72f));
 		platforms.add(createPlatform(world, "Platform4", 4, 2, 2, 0.91f));
-		platforms.add(createPlatform(world, "Platform9", 3, 3, 1.2f, 1.2f));
-		platforms.add(createPlatform(world, "Platform2", 4, 2, 2, 0.91f));
+		platforms.add(createPlatform(world, "Platform5", 6, 3, 2.4f, 1.2f));
+		platforms.add(createPlatform(world, "Platform6", 4, 2, 2, 0.91f));
+		platforms.add(createPlatform(world, "Platform7", 4, 2, 2, 0.91f));
+		platforms.add(createPlatform(world, "Platform8", 3, 3, 1.2f, 1.2f));
+		platforms.add(createPlatform(world, "Platform9", 4, 2, 2, 0.91f));
 		return platforms;
 	}
 

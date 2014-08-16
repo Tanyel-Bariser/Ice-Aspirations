@@ -3,163 +3,247 @@ Atlas.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Platform5
+Title
   rotate: false
-  xy: 1, 398
-  size: 400, 85
-  orig: 400, 85
-  offset: 0, 0
-  index: -1
-Platform8
-  rotate: false
-  xy: 1, 241
-  size: 298, 155
-  orig: 298, 155
-  offset: 0, 0
-  index: -1
-Platform7
-  rotate: false
-  xy: 1, 89
-  size: 200, 150
-  orig: 200, 150
-  offset: 0, 0
-  index: -1
-Platform1
-  rotate: false
-  xy: 403, 383
-  size: 200, 100
-  orig: 200, 100
-  offset: 0, 0
-  index: -1
-Platform2
-  rotate: false
-  xy: 605, 383
-  size: 200, 100
-  orig: 200, 100
-  offset: 0, 0
-  index: -1
-Platform9
-  rotate: false
-  xy: 203, 80
-  size: 154, 159
-  orig: 154, 159
+  xy: 0, 649
+  size: 700, 128
+  orig: 700, 128
   offset: 0, 0
   index: -1
 Platform3
   rotate: false
-  xy: 301, 281
-  size: 200, 100
-  orig: 200, 100
+  xy: 0, 564
+  size: 400, 85
+  orig: 400, 85
   offset: 0, 0
   index: -1
-Platform4
+Platform5
   rotate: false
-  xy: 503, 281
-  size: 200, 100
-  orig: 200, 100
+  xy: 0, 409
+  size: 298, 155
+  orig: 298, 155
   offset: 0, 0
   index: -1
-Platform6
+Platform2
   rotate: false
-  xy: 359, 179
+  xy: 0, 259
+  size: 200, 150
+  orig: 200, 150
+  offset: 0, 0
+  index: -1
+Platform8
+  rotate: false
+  xy: 0, 100
+  size: 154, 159
+  orig: 154, 159
+  offset: 0, 0
+  index: -1
+Platform1
+  rotate: false
+  xy: 400, 549
   size: 200, 100
   orig: 200, 100
   offset: 0, 0
   index: -1
 Back
   rotate: false
-  xy: 561, 148
+  xy: 700, 646
   size: 128, 131
   orig: 128, 131
   offset: 0, 0
   index: -1
+Platform4
+  rotate: false
+  xy: 0, 0
+  size: 200, 100
+  orig: 200, 100
+  offset: 0, 0
+  index: -1
+Boulder
+  rotate: false
+  xy: 200, 259
+  size: 150, 150
+  orig: 150, 150
+  offset: 0, 0
+  index: -1
+Platform6
+  rotate: false
+  xy: 154, 159
+  size: 200, 100
+  orig: 200, 100
+  offset: 0, 0
+  index: -1
+SpecialJumping3
+  rotate: false
+  xy: 298, 428
+  size: 73, 136
+  orig: 73, 136
+  offset: 0, 0
+  index: -1
+Platform7
+  rotate: false
+  xy: 371, 449
+  size: 200, 100
+  orig: 200, 100
+  offset: 0, 0
+  index: -1
+Platform9
+  rotate: false
+  xy: 371, 349
+  size: 200, 100
+  orig: 200, 100
+  offset: 0, 0
+  index: -1
+SpecialStanding2
+  rotate: false
+  xy: 350, 259
+  size: 125, 90
+  orig: 125, 90
+  offset: 0, 0
+  index: -1
+Carrot
+  rotate: false
+  xy: 354, 131
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
 Mute
   rotate: false
-  xy: 359, 49
+  xy: 200, 31
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 Pause
   rotate: false
-  xy: 705, 253
+  xy: 328, 3
   size: 128, 128
   orig: 128, 128
+  offset: 0, 0
+  index: -1
+SpecialStanding1
+  rotate: false
+  xy: 600, 559
+  size: 100, 90
+  orig: 100, 90
   offset: 0, 0
   index: -1
 Play
   rotate: false
-  xy: 691, 123
+  xy: 700, 518
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-Rabbit4
+SpecialStanding3
   rotate: false
-  xy: 489, 58
-  size: 62, 119
-  orig: 62, 119
+  xy: 475, 259
+  size: 97, 90
+  orig: 97, 90
   offset: 0, 0
   index: -1
 Unmute
   rotate: false
-  xy: 553, 18
+  xy: 482, 131
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
+Dazed
+  rotate: false
+  xy: 456, 11
+  size: 86, 120
+  orig: 86, 120
+  offset: 0, 0
+  index: -1
+SpecialJumping4
+  rotate: false
+  xy: 571, 388
+  size: 72, 161
+  orig: 72, 161
+  offset: 0, 0
+  index: -1
+SpecialFalling1
+  rotate: false
+  xy: 542, 6
+  size: 78, 125
+  orig: 78, 125
+  offset: 0, 0
+  index: -1
+SpecialFalling2
+  rotate: false
+  xy: 572, 265
+  size: 77, 123
+  orig: 77, 123
+  offset: 0, 0
+  index: -1
+SpecialJumping2
+  rotate: false
+  xy: 610, 133
+  size: 70, 132
+  orig: 70, 132
+  offset: 0, 0
+  index: -1
+SpecialFalling3
+  rotate: false
+  xy: 620, 10
+  size: 78, 123
+  orig: 78, 123
+  offset: 0, 0
+  index: -1
 Rabbit3
   rotate: false
-  xy: 683, 2
+  xy: 643, 399
   size: 79, 119
   orig: 79, 119
   offset: 0, 0
   index: -1
-Rabbit5
-  rotate: false
-  xy: 764, 1
-  size: 58, 120
-  orig: 58, 120
-  offset: 0, 0
-  index: -1
-Rabbit6
-  rotate: false
-  xy: 807, 384
-  size: 52, 99
-  orig: 52, 99
-  offset: 0, 0
-  index: -1
-Rabbit8
-  rotate: false
-  xy: 861, 366
-  size: 58, 117
-  orig: 58, 117
-  offset: 0, 0
-  index: -1
 Rabbit2
   rotate: false
-  xy: 835, 246
+  xy: 722, 400
   size: 76, 118
   orig: 76, 118
   offset: 0, 0
   index: -1
-Rabbit7
+Rabbit6
   rotate: false
-  xy: 821, 125
+  xy: 649, 280
   size: 74, 119
   orig: 74, 119
   offset: 0, 0
   index: -1
 Rabbit1
   rotate: false
-  xy: 824, 5
+  xy: 723, 282
   size: 74, 118
   orig: 74, 118
   offset: 0, 0
   index: -1
+Rabbit5
+  rotate: false
+  xy: 680, 160
+  size: 58, 120
+  orig: 58, 120
+  offset: 0, 0
+  index: -1
+Rabbit4
+  rotate: false
+  xy: 738, 163
+  size: 62, 119
+  orig: 62, 119
+  offset: 0, 0
+  index: -1
+SpecialJumping1
+  rotate: false
+  xy: 698, 42
+  size: 68, 118
+  orig: 68, 118
+  offset: 0, 0
+  index: -1
 Clock
   rotate: false
-  xy: 1, 15
+  xy: 766, 91
   size: 64, 72
   orig: 64, 72
   offset: 0, 0
