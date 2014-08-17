@@ -509,7 +509,8 @@ public class GameScreen implements Screen {
 	}
 
 	private void pauseButtonSetUp() {
-		final ImageButton pause = ButtonFactory.createImageButton("Pause", "Play", 0, 0);
+		final ImageButton pause = ButtonFactory.createImageButton("Pause",
+				"Play", 0, 0, false);
 		pause.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -525,9 +526,8 @@ public class GameScreen implements Screen {
 				}
 			}
 		});
-		stage.addActor(pause);	
+		stage.addActor(pause);
 	}
-
 
 	// Button to quit current game
 	private void quitButtonSetUp() {

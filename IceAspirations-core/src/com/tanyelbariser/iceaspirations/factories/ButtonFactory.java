@@ -16,13 +16,14 @@ public class ButtonFactory {
 	}
 
 	public static ImageButton createImageButton(String up, String down,
-			float positionX, float positionY) {
+			float positionX, float positionY, boolean soundButtonChecked) {
 		ImageButtonStyle imageStyle = new ImageButtonStyle();
 		imageStyle.up = SKIN.getDrawable(up);
 		imageStyle.down = SKIN.getDrawable(down);
 		imageStyle.checked = imageStyle.down;
 
 		ImageButton button = new ImageButton(imageStyle);
+		button.setChecked(soundButtonChecked);
 		float size = WIDTH / 6;
 		button.setSize(size, size);
 		button.setPosition(positionX, positionY);

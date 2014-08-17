@@ -5,6 +5,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,9 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
+import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 
 public class HighScoresScreen implements Screen {
 	private IceAspirations iceA;
+	private final Preferences prefs = IceAspirations.getPrefs();
 	private SpriteBatch batch;
 	private Stage stage;
 	private Table table;
@@ -27,7 +30,7 @@ public class HighScoresScreen implements Screen {
 	private final float HEIGHT = Gdx.graphics.getHeight();
 	private int[] highScores = new int[5];
 	private int maxHeight = 0;
-	private Preferences prefs;
+	private Sprite background;
 
 	public HighScoresScreen(IceAspirations iceA, int maxHeight) {
 		this.iceA = iceA;
@@ -40,7 +43,7 @@ public class HighScoresScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.begin();
-		IceAspirations.getBackground().draw(batch);
+		background.draw(batch);
 		batch.end();
 
 		stage.act(delta);
@@ -71,8 +74,8 @@ public class HighScoresScreen implements Screen {
 	@Override
 	public void show() {
 		batch = new SpriteBatch();
+		background = SpriteFactory.createBackground();
 
-		prefs = Gdx.app.getPreferences("IceAspirations");
 		for (int i = 0; i < 5; i++) {
 			String key = "HighScore" + String.valueOf(i);
 			if (prefs.contains(key)) {
@@ -119,7 +122,7 @@ public class HighScoresScreen implements Screen {
 
 	private void backButtonSetUp() {
 		ImageButton back = ButtonFactory
-				.createImageButton("Back", "Back", 0, 0);
+				.createImageButton("Back", "Back", 0, 0, false);
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
