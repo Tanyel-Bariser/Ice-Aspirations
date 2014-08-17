@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.tanyelbariser.iceaspirations.AudioManager;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
 import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
@@ -55,7 +56,7 @@ public class MainScreen implements Screen {
 	
 
 	private void soundButtonSetup() {
-		final Preferences prefs = IceAspirations.getPrefs();
+		final Preferences prefs = Gdx.app.getPreferences("IceAspirations");
 		if (!prefs.contains("Mute")) {
 			prefs.putBoolean("Mute", false);
 			prefs.flush();
@@ -69,17 +70,15 @@ public class MainScreen implements Screen {
 				boolean changeMute = prefs.getBoolean("Mute"); 
 				prefs.putBoolean("Mute", !changeMute);
 				if (!changeMute) {
-					IceAspirations.getMusic().pause();
+					AudioManager.pauseMainMusic();
 					soundButton.setChecked(true);
 				} else {
-					IceAspirations.getMusic().play();
+					AudioManager.playMainMusic();
 					soundButton.setChecked(false);
 				}
 				prefs.flush();
-				Gdx.app.log("TAG", String.valueOf(prefs.getBoolean("Mute")));
 			}
 		});
-		soundButton.setPosition(0, 0);
 		stage.addActor(soundButton);
 	}
 

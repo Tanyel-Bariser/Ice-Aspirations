@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.tanyelbariser.iceaspirations.AudioManager;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
 import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
@@ -27,15 +28,7 @@ public class GameOverScreen implements Screen {
 
 	public GameOverScreen(IceAspirations iceA, int maxHeight) {
 		this.iceA = iceA;
-		this.maxHeight = maxHeight;
-		if (IceAspirations.getTimeOutMusic().isPlaying()) {
-			IceAspirations.getTimeOutMusic().stop();
-			IceAspirations.getMusic().play();
-		}
-		if (IceAspirations.getCarrotMusic().isPlaying()) {
-			IceAspirations.getCarrotMusic().stop();
-			IceAspirations.getMusic().play();
-		}
+		this.maxHeight = maxHeight;	
 	}
 
 	@Override
@@ -43,6 +36,9 @@ public class GameOverScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		AudioManager.stopLowTimeMusic();
+		AudioManager.playMainMusic();	
+		
 		SpriteBatch batch = new SpriteBatch();
 		batch.begin();
 		background.draw(batch);

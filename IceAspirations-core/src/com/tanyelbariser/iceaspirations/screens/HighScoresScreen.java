@@ -20,7 +20,7 @@ import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 
 public class HighScoresScreen implements Screen {
 	private IceAspirations iceA;
-	private final Preferences prefs = IceAspirations.getPrefs();
+	private final Preferences prefs = Gdx.app.getPreferences("IceAspirations");
 	private SpriteBatch batch;
 	private Stage stage;
 	private Table table;

@@ -18,7 +18,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
-import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 import com.tanyelbariser.iceaspirations.platforms.Platforms;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
@@ -139,10 +138,7 @@ public class Player implements ContactListener, InputProcessor {
 	}
 
 	public void playHitSound() {
-		if (IceAspirations.getMusic().isPlaying()
-				|| IceAspirations.getCarrotMusic().isPlaying()) {
-			hitSound.play(1, 0.8f, 0);
-		}
+		hitSound.play(1, 0.8f, 0);
 	}
 
 	public boolean isCarrotTouched() {
@@ -168,27 +164,37 @@ public class Player implements ContactListener, InputProcessor {
 	}
 
 	private void createSpecialJumpAnimation() {
-		Sprite jump1 = SpriteFactory.createPlayerSprite("SpecialJumping1", 2.9f, 4.2f);
-		Sprite jump2 = SpriteFactory.createPlayerSprite("SpecialJumping2", 2.985f, 4.33f);
-		Sprite jump3 = SpriteFactory.createPlayerSprite("SpecialJumping3", 3.113f, 4.38f);
-		Sprite jump4 = SpriteFactory.createPlayerSprite("SpecialJumping4", 3.07f, 5f);
+		Sprite jump1 = SpriteFactory.createPlayerSprite("SpecialJumping1",
+				2.9f, 4.2f);
+		Sprite jump2 = SpriteFactory.createPlayerSprite("SpecialJumping2",
+				2.985f, 4.33f);
+		Sprite jump3 = SpriteFactory.createPlayerSprite("SpecialJumping3",
+				3.113f, 4.38f);
+		Sprite jump4 = SpriteFactory.createPlayerSprite("SpecialJumping4",
+				3.07f, 5f);
 		Sprite[] specialStandSprites = new Sprite[] { jump1, jump2, jump3,
 				jump4, jump3, jump2 };
 		specialJumpAnimation = new Animation(0.05f, specialStandSprites);
 	}
 
 	private void createSpecialFallAnimation() {
-		Sprite fall1 = SpriteFactory.createPlayerSprite("SpecialFalling1", 2.9f, 4.2f);
-		Sprite fall2 = SpriteFactory.createPlayerSprite("SpecialFalling2", 2.863f, 4.2f);
-		Sprite fall3 = SpriteFactory.createPlayerSprite("SpecialFalling3", 2.9f, 4.1328f);
+		Sprite fall1 = SpriteFactory.createPlayerSprite("SpecialFalling1",
+				2.9f, 4.2f);
+		Sprite fall2 = SpriteFactory.createPlayerSprite("SpecialFalling2",
+				2.863f, 4.2f);
+		Sprite fall3 = SpriteFactory.createPlayerSprite("SpecialFalling3",
+				2.9f, 4.1328f);
 		Sprite[] specialFallSprites = new Sprite[] { fall1, fall2, fall3, fall2 };
 		specialFallAnimation = new Animation(0.1f, specialFallSprites);
 	}
 
 	private void createSpecialStandAnimation() {
-		Sprite stand1 = SpriteFactory.createPlayerSprite("SpecialStanding1", 3.5f, 3.15f);
-		Sprite stand2 = SpriteFactory.createPlayerSprite("SpecialStanding2", 4.375f, 3.15f);
-		Sprite stand3 = SpriteFactory.createPlayerSprite("SpecialStanding3", 3.395f, 3.15f);
+		Sprite stand1 = SpriteFactory.createPlayerSprite("SpecialStanding1",
+				3.5f, 3.15f);
+		Sprite stand2 = SpriteFactory.createPlayerSprite("SpecialStanding2",
+				4.375f, 3.15f);
+		Sprite stand3 = SpriteFactory.createPlayerSprite("SpecialStanding3",
+				3.395f, 3.15f);
 		Sprite[] specialStandSprites = new Sprite[] { stand1, stand2, stand3 };
 		specialStandAnimation = new Animation(0.1f, specialStandSprites);
 	}
@@ -274,10 +280,7 @@ public class Player implements ContactListener, InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (canJump && !dazed) {
-			if (IceAspirations.getMusic().isPlaying()
-					|| IceAspirations.getCarrotMusic().isPlaying()) {
-				jumpSound.play(0.1f, 0.8f, 0);
-			}
+			jumpSound.play(0.1f, 0.8f, 0);
 			down = angle = 0;
 			body.applyLinearImpulse(0, jump * myDelta, body.getWorldCenter().x,
 					body.getWorldCenter().y, true);
@@ -297,10 +300,7 @@ public class Player implements ContactListener, InputProcessor {
 			break;
 		case Keys.SPACE:
 			if (canJump && !dazed) {
-				if (IceAspirations.getMusic().isPlaying()
-						|| IceAspirations.getCarrotMusic().isPlaying()) {
-					jumpSound.play(0.1f, 0.8f, 0);
-				}
+				jumpSound.play(0.1f, 0.8f, 0);
 				down = angle = 0;
 				body.applyLinearImpulse(0, jump * myDelta,
 						body.getWorldCenter().x, body.getWorldCenter().y, true);
@@ -329,18 +329,12 @@ public class Player implements ContactListener, InputProcessor {
 		boolean playerContact = fixA.equals("player") || fixB.equals("player");
 		boolean clockContact = fixA.equals("clock") || fixB.equals("clock");
 		if (playerContact && clockContact) {
-			if (IceAspirations.getMusic().isPlaying()
-					|| IceAspirations.getCarrotMusic().isPlaying()) {
-				getItemSound.play(0.1f, 0.8f, 0);
-			}
+			getItemSound.play(0.1f, 0.8f, 0);
 			clockTouched = true;
 		}
 		boolean carrotContact = fixA.equals("carrot") || fixB.equals("carrot");
 		if (playerContact && carrotContact) {
-			if (IceAspirations.getMusic().isPlaying()
-					|| IceAspirations.getCarrotMusic().isPlaying()) {
-				getItemSound.play(0.1f, 0.8f, 0);
-			}
+			getItemSound.play(0.1f, 0.8f, 0);
 			carrotTouched = true;
 		}
 	}

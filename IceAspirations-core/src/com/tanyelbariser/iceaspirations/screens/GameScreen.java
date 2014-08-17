@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.tanyelbariser.iceaspirations.AudioManager;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.entities.Player;
 import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
@@ -71,7 +72,7 @@ public class GameScreen implements Screen {
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
 	private float frameTime;
-	private float allotedTime = 60;
+	private float allotedTime = 20;
 	private Label timeLeft;
 	private int maxHeight;
 	private ImageTextButton quit;
@@ -343,32 +344,26 @@ public class GameScreen implements Screen {
 			maxHeight = (int) camera.position.y;
 		}
 		if (allotedTime < 0) {
+			AudioManager.stopLowTimeMusic();
+			AudioManager.playMainMusic();
 			iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
 		} else if (allotedTime < 11) {
-			if (IceAspirations.getMusic().isPlaying()
-					|| IceAspirations.getCarrotMusic().isPlaying()
-					&& !IceAspirations.getTimeOutMusic().isPlaying()) {
-				IceAspirations.getTimeOutMusic().play();
-			}
+			AudioManager.playLowTimeMusic();
+			
 			timeLeft.setStyle(redStyle);
 			timeLeft.setPosition(timeLeft.getWidth() / 10,
 					HEIGHT - timeLeft.getHeight() * 2);
 		} else {
-			if (IceAspirations.getTimeOutMusic().isPlaying()) {
-				IceAspirations.getTimeOutMusic().stop();
-			}
+			AudioManager.stopLowTimeMusic();
+			
 			timeLeft.setStyle(yellowStyle);
 			timeLeft.setPosition(timeLeft.getWidth() / 10,
 					HEIGHT - timeLeft.getHeight() * 1.5f);
 		}
 		if (player.isCarrotTouched()) {
-			if (IceAspirations.getMusic().isPlaying()
-					&& !IceAspirations.getCarrotMusic().isPlaying()) {
-				IceAspirations.getMusic().stop();
-				IceAspirations.getCarrotMusic().play();
-			}
+			AudioManager.playSuperMusic();
 		} else {
-			IceAspirations.getMusic().play();
+			AudioManager.playMainMusic();
 		}
 	}
 
@@ -543,9 +538,8 @@ public class GameScreen implements Screen {
 
 		quit.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				if (IceAspirations.getTimeOutMusic().isPlaying()) {
-					IceAspirations.getTimeOutMusic().stop();
-				}
+				AudioManager.stopLowTimeMusic();
+				AudioManager.playMainMusic();
 				iceA.setScreen(new MainScreen(iceA));
 			}
 		});
