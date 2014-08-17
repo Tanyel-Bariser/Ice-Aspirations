@@ -1,5 +1,6 @@
 package com.tanyelbariser.iceaspirations.screens;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -72,7 +73,7 @@ public class GameScreen implements Screen {
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
 	private float frameTime;
-	private float allotedTime = 20;
+	private float allotedTime = 60;
 	private Label timeLeft;
 	private int maxHeight;
 	private ImageTextButton quit;
@@ -114,12 +115,10 @@ public class GameScreen implements Screen {
 				player.setDazed(false);
 			}
 			timeLeft.setText("Score: " + String.valueOf(maxHeight)
-					+ "\nTime Limit: "
+					+ "\nTime: "
 					+ String.valueOf(Math.round(allotedTime)));
 
-			// adjustedDelta is rounded to nearest whole or half, i.e. 60FPS = 1
-			// 45FPS = 1.5, 30FPS = 2, etc. for delta consistency per device
-			float adjustedDelta = Math.round(Math.round(approxFPS * delta) * 2) / 2.0f;
+			float adjustedDelta = approxFPS * delta;
 
 			float gravity = GRAVITY * adjustedDelta * adjustedDelta;
 			world.setGravity(new Vector2(0, gravity));
@@ -313,7 +312,7 @@ public class GameScreen implements Screen {
 			carrot.setTransform(-50, 0, 0);
 			timeSinceCarrotTouched += delta;
 		}
-		if (timeSinceCarrotTouched > 10) {
+		if (timeSinceCarrotTouched > 7.5f) {
 			timeSinceCarrotTouched = 0;
 			player.setCarrotTouched(false);
 		}
@@ -344,21 +343,19 @@ public class GameScreen implements Screen {
 			maxHeight = (int) camera.position.y;
 		}
 		if (allotedTime < 0) {
-			AudioManager.stopLowTimeMusic();
-			AudioManager.playMainMusic();
 			iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
-		} else if (allotedTime < 11) {
+		} else if (allotedTime < 10) {
 			AudioManager.playLowTimeMusic();
-			
+
 			timeLeft.setStyle(redStyle);
 			timeLeft.setPosition(timeLeft.getWidth() / 10,
-					HEIGHT - timeLeft.getHeight() * 2);
+					HEIGHT - timeLeft.getHeight() * 2.5f);
 		} else {
 			AudioManager.stopLowTimeMusic();
-			
+
 			timeLeft.setStyle(yellowStyle);
 			timeLeft.setPosition(timeLeft.getWidth() / 10,
-					HEIGHT - timeLeft.getHeight() * 1.5f);
+					HEIGHT - timeLeft.getHeight() * 2);
 		}
 		if (player.isCarrotTouched()) {
 			AudioManager.playSuperMusic();
@@ -396,7 +393,7 @@ public class GameScreen implements Screen {
 		batch = new SpriteBatch();
 		stage = new Stage();
 
-		background.setScale(1f / ZOOM * compatibility);
+		background.setScale((1f / ZOOM * compatibility) * 1.1f);
 
 		pauseButtonSetUp();
 		quitButtonSetUp();
@@ -435,8 +432,11 @@ public class GameScreen implements Screen {
 		yellowStyle = new LabelStyle(yellow, Color.YELLOW);
 		timeLeft = new Label("60", yellowStyle);
 		timeLeft.setPosition(timeLeft.getWidth() / 10,
-				HEIGHT - timeLeft.getHeight() * 1.5f);
-		timeLeft.setScale(HEIGHT);
+				HEIGHT - timeLeft.getHeight() * 2);
+		if (Gdx.app.getType() == ApplicationType.Android) {
+			yellowStyle.font.setScale(1.5f);
+			redStyle.font.setScale(1.5f);
+		}
 		stage.addActor(timeLeft);
 	}
 

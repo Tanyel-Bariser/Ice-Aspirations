@@ -28,7 +28,7 @@ public class GameOverScreen implements Screen {
 
 	public GameOverScreen(IceAspirations iceA, int maxHeight) {
 		this.iceA = iceA;
-		this.maxHeight = maxHeight;	
+		this.maxHeight = maxHeight;
 	}
 
 	@Override
@@ -36,9 +36,11 @@ public class GameOverScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		// Music doesn't always work first time so is in render method to be
+		// invoked multiple times to make sure
 		AudioManager.stopLowTimeMusic();
-		AudioManager.playMainMusic();	
-		
+		AudioManager.playMainMusic();
+
 		SpriteBatch batch = new SpriteBatch();
 		batch.begin();
 		background.draw(batch);
@@ -58,6 +60,7 @@ public class GameOverScreen implements Screen {
 		Gdx.input.setInputProcessor(stage);
 
 		background = SpriteFactory.createBackground();
+		background.setSize(WIDTH, HEIGHT);
 		// Create Label to show remaining game time
 		BitmapFont blue = IceAspirations.getBlue();
 		LabelStyle style = new LabelStyle(blue, Color.BLUE);

@@ -26,9 +26,9 @@ public class MainScreen implements Screen {
 	private Stage stage;
 	private ImageTextButtonStyle style;
 	private ImageTextButton play, highscores, exit;
-	private float width = Gdx.graphics.getWidth();
-	private float height = Gdx.graphics.getHeight();
 	private Sprite background;
+	private final float WIDTH = Gdx.graphics.getWidth();;
+	private final float HEIGHT = Gdx.graphics.getHeight();
 
 	public MainScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -38,13 +38,13 @@ public class MainScreen implements Screen {
 	public void show() {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-
+		
 		batch = new SpriteBatch();
 		title = SpriteFactory.createTitle();
 		background = SpriteFactory.createBackground();
-
+		background.setSize(WIDTH, HEIGHT);
 		BitmapFont blue = IceAspirations.getBlue();
-		blue.setScale(width / 300);
+		blue.setScale(WIDTH / 300);
 		style = new ImageTextButtonStyle();
 		style.font = blue;
 		
@@ -63,7 +63,6 @@ public class MainScreen implements Screen {
 		}
 		final ImageButton soundButton = ButtonFactory
 				.createImageButton("Unmute", "Mute", 0, 0, prefs.getBoolean("Mute"));
-		Gdx.app.log("TAG", String.valueOf(prefs.getBoolean("Mute")));
 		soundButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -86,8 +85,8 @@ public class MainScreen implements Screen {
 	private void playButtonSetUp() {
 		play = new ImageTextButton("Play", style);
 
-		float x = width / 2 - play.getWidth() / 2;
-		float y = height / 2;
+		float x = WIDTH / 2 - play.getWidth() / 2;
+		float y = HEIGHT / 2;
 		play.setPosition(x, y);
 
 		play.addListener(new ClickListener() {
@@ -102,8 +101,8 @@ public class MainScreen implements Screen {
 	private void highscoreButtonSetUp() {
 		highscores = new ImageTextButton("High Scores", style);
 
-		float x = width / 2 - highscores.getWidth() / 2;
-		float y = height / 2 - highscores.getHeight();
+		float x = WIDTH / 2 - highscores.getWidth() / 2;
+		float y = HEIGHT / 2 - highscores.getHeight();
 		highscores.setPosition(x, y);
 
 		highscores.addListener(new ClickListener() {
@@ -118,8 +117,8 @@ public class MainScreen implements Screen {
 	private void exitButtonSetup() {
 		exit = new ImageTextButton("Exit", style);
 
-		float x = width / 2 - exit.getWidth() / 2;
-		float y = height / 2 - exit.getHeight() * 2;
+		float x = WIDTH / 2 - exit.getWidth() / 2;
+		float y = HEIGHT / 2 - exit.getHeight() * 2;
 		exit.setPosition(x, y);
 
 		exit.addListener(new ClickListener() {
@@ -138,7 +137,9 @@ public class MainScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+		
+		AudioManager.playMainMusic();
+		
 		batch.begin();
 		background.draw(batch);
 		title.draw(batch);

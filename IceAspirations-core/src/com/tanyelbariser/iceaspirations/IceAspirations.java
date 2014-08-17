@@ -14,7 +14,6 @@ public class IceAspirations extends Game {
 	public void create() {
 		Assets.load();
 		Assets.MANAGER.finishLoading();
-		AudioManager.playMainMusic();
 		blue = new BitmapFont(Gdx.files.internal("blue.fnt"), false);
 		setScreen(new MainScreen(this));
 	}

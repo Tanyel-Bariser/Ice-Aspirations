@@ -75,6 +75,7 @@ public class HighScoresScreen implements Screen {
 	public void show() {
 		batch = new SpriteBatch();
 		background = SpriteFactory.createBackground();
+		background.setSize(WIDTH, HEIGHT);
 
 		for (int i = 0; i < 5; i++) {
 			String key = "HighScore" + String.valueOf(i);
