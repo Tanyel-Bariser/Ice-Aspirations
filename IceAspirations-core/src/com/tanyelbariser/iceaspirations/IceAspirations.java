@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -13,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
 public class IceAspirations extends Game {
@@ -32,7 +32,7 @@ public class IceAspirations extends Game {
 		TextureAtlas atlas = new TextureAtlas("Atlas.atlas");
 		skin = new Skin(atlas);
 		blue = new BitmapFont(Gdx.files.internal("blue.fnt"), false);
-		background = new Sprite(new Texture("Background.png"));
+		background = SpriteFactory.createBackground();
 		muteButtonSetup();
 		setScreen(new GameScreen(this));
 		musicSetup();

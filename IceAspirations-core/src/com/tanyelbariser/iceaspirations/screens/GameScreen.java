@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -35,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.entities.Player;
+import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 import com.tanyelbariser.iceaspirations.platforms.Platforms;
 import com.tanyelbariser.iceaspirations.platforms.PlatformsFactory;
 
@@ -52,7 +52,7 @@ public class GameScreen implements Screen {
 	private World world;
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer physicsDebugger;
-	private final Sprite background = new Sprite(new Texture("Background.png"));
+	private final Sprite background = SpriteFactory.createBackground();
 	private float backgroundWidth = background.getWidth();
 	private float backgroundHeight = background.getHeight();
 	private Player player;
@@ -226,12 +226,15 @@ public class GameScreen implements Screen {
 	// high speed camera catch-up lag
 	private void repositionCamera(float topScreenEdge, float bottomScreenEdge) {
 		float playerY = player.getBody().getPosition().y;
-		float highSpeed = 30;
-		if (player.getBody().getLinearVelocity().y > highSpeed
+		float veryHighSpeed = 80, highSpeed = 30;
+		if (player.getBody().getLinearVelocity().y > veryHighSpeed
 				&& camera.position.y > HEIGHT) {
 			// Camera rises slower than player causing a camera lag giving the
 			// effect that the player is too fast for the camera to keep up.
 			camera.position.y += 0.8f;
+		} else if (player.getBody().getLinearVelocity().y > highSpeed
+				&& camera.position.y > HEIGHT) {
+			camera.position.y += 0.5f;
 		} else if (playerY > topScreenEdge) {
 			camera.position.y += 3f;
 		} else if (playerY > camera.position.y + 2f) {
@@ -462,11 +465,7 @@ public class GameScreen implements Screen {
 
 		shape.dispose();
 
-		clockSprite = new Sprite(new Texture("Clock.png"));
-		clockSprite.setPosition(0, -HEIGHT);
-		clockSprite.setSize(2, 2);
-		clockSprite.setOrigin(clockSprite.getWidth() / 2,
-				clockSprite.getHeight() / 2);
+		clockSprite = SpriteFactory.createClock();
 	}
 
 	private void createCarrot() {
@@ -486,11 +485,7 @@ public class GameScreen implements Screen {
 
 		shape.dispose();
 
-		carrotSprite = new Sprite(new Texture("Carrot.png"));
-		carrotSprite.setPosition(0, HEIGHT);
-		carrotSprite.setSize(2, 2);
-		carrotSprite.setOrigin(carrotSprite.getWidth() / 2,
-				carrotSprite.getHeight() / 2);
+		carrotSprite = SpriteFactory.createCarrot();
 	}
 
 	private void createIceBoulder() {
@@ -513,10 +508,7 @@ public class GameScreen implements Screen {
 
 		shape.dispose();
 
-		boulderSprite = new Sprite(new Texture("Boulder.png"));
-		boulderSprite.setSize(5f, 5f);
-		boulderSprite.setOrigin(boulderSprite.getWidth() / 2,
-				boulderSprite.getHeight() / 2);
+		boulderSprite = SpriteFactory.createBoulder();
 	}
 
 	// For some reason pause button suddenly doesn't work on desktop, but still
@@ -597,6 +589,5 @@ public class GameScreen implements Screen {
 		stage.dispose();
 		world.dispose();
 		physicsDebugger.dispose();
-		background.getTexture().dispose();
 	}
 }

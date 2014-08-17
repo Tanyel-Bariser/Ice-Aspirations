@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -21,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.tanyelbariser.iceaspirations.IceAspirations;
+import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 import com.tanyelbariser.iceaspirations.platforms.Platforms;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
@@ -155,63 +155,19 @@ public class Player implements ContactListener, InputProcessor {
 	}
 
 	private void createAnimation() {
-		Skin skin = IceAspirations.getSkin();
-		standSprite = skin.getSprite("Rabbit1");
-		standSprite.setSize(2.9f, 4.2f);
-		standSprite.setOrigin(standSprite.getWidth() / 2,
-				standSprite.getHeight() / 2);
+		Sprite jump1 = SpriteFactory.createJump1();
+		Sprite jump2 = SpriteFactory.createJump2();
+		Sprite jump3 = SpriteFactory.createJump3();
+		Sprite jump4 = SpriteFactory.createJump4();
+		Sprite[] jumpSprites = new Sprite[] { jump1, jump2, jump3, jump4 };
+		jumpAnimation = new Animation(0.1f, jumpSprites);		
 
-		Sprite rabbit2 = skin.getSprite("Rabbit2");
-		rabbit2.setSize(2.9f, 4.2f);
-		rabbit2.setOrigin(rabbit2.getWidth() / 2, rabbit2.getHeight() / 2);
-
-		Sprite rabbit3 = skin.getSprite("Rabbit3");
-		rabbit3.setSize(2.3f, 4.2f);
-		rabbit3.setOrigin(rabbit3.getWidth() / 2, rabbit3.getHeight() / 2);
-
-		Sprite rabbit4 = skin.getSprite("Rabbit4");
-		rabbit4.setSize(2.3f, 4.2f);
-		rabbit4.setOrigin(rabbit4.getWidth() / 2, rabbit4.getHeight() / 2);
-
-		Sprite rabbit5 = skin.getSprite("Rabbit5");
-		rabbit5.setSize(2.3f, 4.2f);
-		rabbit5.setOrigin(rabbit5.getWidth() / 2, rabbit5.getHeight() / 2);
-
-		Sprite[] jumpSprites = new Sprite[] { standSprite, rabbit2, rabbit3,
-				rabbit4, rabbit5 };
-
-		jumpAnimation = new Animation(0.1f, jumpSprites);
-
-		fallingSprite = skin.getSprite("Rabbit6");
-		fallingSprite.setSize(3, 4.2f);
-		fallingSprite.setOrigin(fallingSprite.getWidth() / 2,
-				fallingSprite.getHeight() / 2);
-
-		dazedSprite = new Sprite(new Texture("Dazed.png"));
-		dazedSprite.setSize(3, 4.2f);
-		dazedSprite.setOrigin(dazedSprite.getWidth() / 2,
-				dazedSprite.getHeight() / 2);
+		//non animation sprites
+		standSprite = SpriteFactory.createStand();
+		fallingSprite = SpriteFactory.createFalling();
+		dazedSprite = SpriteFactory.createDazed();	
 	}
 
-	private void createSpecialFallAnimation() {
-		Skin skin = IceAspirations.getSkin();
-		Sprite special1 = skin.getSprite("SpecialFalling1");
-		special1.setSize(2.9f, 4.2f);
-		special1.setOrigin(special1.getWidth() / 2, special1.getHeight() / 2);
-
-		Sprite special2 = skin.getSprite("SpecialFalling2");
-		special2.setSize(2.863f, 4.2f);
-		special2.setOrigin(special2.getWidth() / 2, special2.getHeight() / 2);
-
-		Sprite special3 = skin.getSprite("SpecialFalling3");
-		special3.setSize(2.9f, 4.1328f);
-		special3.setOrigin(special3.getWidth() / 2, special3.getHeight() / 2);
-
-		Sprite[] specialFallSprites = new Sprite[] { special1, special2,
-				special3, special2 };
-
-		specialFallAnimation = new Animation(0.1f, specialFallSprites);
-	}
 
 	private void createSpecialJumpAnimation() {
 		Skin skin = IceAspirations.getSkin();
@@ -235,6 +191,26 @@ public class Player implements ContactListener, InputProcessor {
 				special3, special4, special3, special2 };
 
 		specialJumpAnimation = new Animation(0.1f, specialStandSprites);
+	}
+	
+	private void createSpecialFallAnimation() {
+		Skin skin = IceAspirations.getSkin();
+		Sprite special1 = skin.getSprite("SpecialFalling1");
+		special1.setSize(2.9f, 4.2f);
+		special1.setOrigin(special1.getWidth() / 2, special1.getHeight() / 2);
+
+		Sprite special2 = skin.getSprite("SpecialFalling2");
+		special2.setSize(2.863f, 4.2f);
+		special2.setOrigin(special2.getWidth() / 2, special2.getHeight() / 2);
+
+		Sprite special3 = skin.getSprite("SpecialFalling3");
+		special3.setSize(2.9f, 4.1328f);
+		special3.setOrigin(special3.getWidth() / 2, special3.getHeight() / 2);
+
+		Sprite[] specialFallSprites = new Sprite[] { special1, special2,
+				special3, special2 };
+
+		specialFallAnimation = new Animation(0.1f, specialFallSprites);
 	}
 
 	private void createSpecialStandAnimation() {
@@ -406,7 +382,6 @@ public class Player implements ContactListener, InputProcessor {
 				getItemSound.play(0.1f, 0.8f, 0);
 			}
 			carrotTouched = true;
-			Gdx.app.log("TAG", "CARROT TOUCHED");
 		}
 	}
 
