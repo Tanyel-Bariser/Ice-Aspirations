@@ -9,13 +9,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.IceAspirations;
+import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
 
 public class HighScoresScreen implements Screen {
 	private IceAspirations iceA;
@@ -24,9 +23,8 @@ public class HighScoresScreen implements Screen {
 	private Table table;
 	private LabelStyle style;
 	private Label heading;
-	private ImageButton back;
-	private float width = Gdx.graphics.getWidth();
-	private float height = Gdx.graphics.getHeight();
+	private final float WIDTH = Gdx.graphics.getWidth();
+	private final float HEIGHT = Gdx.graphics.getHeight();
 	private int[] highScores = new int[5];
 	private int maxHeight = 0;
 	private Preferences prefs;
@@ -103,7 +101,7 @@ public class HighScoresScreen implements Screen {
 		Label points5 = new Label(score5, style);
 
 		table = new Table();
-		table.setBounds(0, 0, width, height);
+		table.setBounds(0, 0, WIDTH, HEIGHT);
 		table.add(heading).center().row();
 		table.add(points1).row();
 		table.add(points2).row();
@@ -120,18 +118,8 @@ public class HighScoresScreen implements Screen {
 	}
 
 	private void backButtonSetUp() {
-		ImageButtonStyle imageStyle = new ImageButtonStyle();
-		Skin skin = IceAspirations.getSkin();
-		imageStyle.up = skin.getDrawable("Back");
-		imageStyle.down = skin.getDrawable("Back");
-
-		back = new ImageButton(imageStyle);
-
-		float backSize = width / 6;
-		back.setSize(backSize, backSize);
-
-		back.setPosition(0, 0);
-
+		ImageButton back = ButtonFactory
+				.createImageButton("Back", "Back", 0, 0);
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

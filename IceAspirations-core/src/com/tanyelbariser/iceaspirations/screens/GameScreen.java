@@ -24,27 +24,24 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.entities.Player;
+import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
+import com.tanyelbariser.iceaspirations.factories.PlatformsFactory;
 import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 import com.tanyelbariser.iceaspirations.platforms.Platforms;
-import com.tanyelbariser.iceaspirations.platforms.PlatformsFactory;
 
 public class GameScreen implements Screen {
 	private IceAspirations iceA;
 	private final float GRAVITY = -9.81f;
 	private SpriteBatch batch;
 	private Stage stage;
-	private Skin skin = IceAspirations.getSkin();
-	private ImageButton pause;
 	private static float phoneWidth = 768;
 	public static final float WIDTH = Gdx.graphics.getWidth();
 	public static final float HEIGHT = Gdx.graphics.getHeight();
@@ -511,22 +508,8 @@ public class GameScreen implements Screen {
 		boulderSprite = SpriteFactory.createBoulder();
 	}
 
-	// For some reason pause button suddenly doesn't work on desktop, but still
-	// works on Android. Don't bother trying to fix this yet as I'll re-do this
-	// with an AssetManger, which may fix it.
 	private void pauseButtonSetUp() {
-		ImageButtonStyle imageStyle = new ImageButtonStyle();
-		imageStyle.up = skin.getDrawable("Pause");
-		imageStyle.down = skin.getDrawable("Play");
-		imageStyle.checked = imageStyle.down;
-
-		pause = new ImageButton(imageStyle);
-
-		float pauseSize = WIDTH / 6;
-		pause.setSize(pauseSize, pauseSize);
-
-		pause.setPosition(WIDTH - pauseSize, HEIGHT - pauseSize);
-
+		final ImageButton pause = ButtonFactory.createImageButton("Pause", "Play", 0, 0);
 		pause.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -542,8 +525,9 @@ public class GameScreen implements Screen {
 				}
 			}
 		});
-		stage.addActor(pause);
+		stage.addActor(pause);	
 	}
+
 
 	// Button to quit current game
 	private void quitButtonSetUp() {

@@ -9,12 +9,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.IceAspirations;
+import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
 
 public class GameOverScreen implements Screen {
 	private IceAspirations iceA;
@@ -52,8 +51,6 @@ public class GameOverScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -75,18 +72,8 @@ public class GameOverScreen implements Screen {
 	}
 
 	private void backButtonSetUp() {
-		ImageButtonStyle imageStyle = new ImageButtonStyle();
-		Skin skin = IceAspirations.getSkin();
-		imageStyle.up = skin.getDrawable("Back");
-		imageStyle.down = skin.getDrawable("Back");
-
-		ImageButton back = new ImageButton(imageStyle);
-
-		float backSize = WIDTH / 6;
-		back.setSize(backSize, backSize);
-
-		back.setPosition(0, 0);
-
+		ImageButton back = ButtonFactory
+				.createImageButton("Back", "Back", 0, 0);
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -98,25 +85,19 @@ public class GameOverScreen implements Screen {
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-
+		dispose();
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void dispose() {
 		stage.dispose();
 	}
-
 }

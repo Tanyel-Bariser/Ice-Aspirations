@@ -1,4 +1,4 @@
-package com.tanyelbariser.iceaspirations.platforms;
+package com.tanyelbariser.iceaspirations.factories;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
+import com.tanyelbariser.iceaspirations.platforms.Platforms;
 
 public class PlatformsFactory {
 
