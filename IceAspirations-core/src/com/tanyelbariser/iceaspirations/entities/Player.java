@@ -16,7 +16,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.tanyelbariser.iceaspirations.IceAspirations;
@@ -160,76 +159,37 @@ public class Player implements ContactListener, InputProcessor {
 		Sprite jump3 = SpriteFactory.createJump3();
 		Sprite jump4 = SpriteFactory.createJump4();
 		Sprite[] jumpSprites = new Sprite[] { jump1, jump2, jump3, jump4 };
-		jumpAnimation = new Animation(0.1f, jumpSprites);		
+		jumpAnimation = new Animation(0.1f, jumpSprites);
 
-		//non animation sprites
+		// non animation sprites
 		standSprite = SpriteFactory.createStand();
 		fallingSprite = SpriteFactory.createFalling();
-		dazedSprite = SpriteFactory.createDazed();	
+		dazedSprite = SpriteFactory.createDazed();
 	}
-
 
 	private void createSpecialJumpAnimation() {
-		Skin skin = IceAspirations.getSkin();
-		Sprite special1 = skin.getSprite("SpecialJumping1");
-		special1.setSize(2.9f, 4.2f);
-		special1.setOrigin(special1.getWidth() / 2, special1.getHeight() / 2);
-
-		Sprite special2 = skin.getSprite("SpecialJumping2");
-		special2.setSize(2.985f, 4.33f);
-		special2.setOrigin(special2.getWidth() / 2, special2.getHeight() / 2);
-
-		Sprite special3 = skin.getSprite("SpecialJumping3");
-		special3.setSize(3.113f, 4.38f);
-		special3.setOrigin(special3.getWidth() / 2, special3.getHeight() / 2);
-
-		Sprite special4 = skin.getSprite("SpecialJumping3");
-		special4.setSize(3.07f, 4.45f);
-		special4.setOrigin(special4.getWidth() / 2, special4.getHeight() / 2);
-
-		Sprite[] specialStandSprites = new Sprite[] { special1, special2,
-				special3, special4, special3, special2 };
-
-		specialJumpAnimation = new Animation(0.1f, specialStandSprites);
+		Sprite jump1 = SpriteFactory.createSpecialJump1();
+		Sprite jump2 = SpriteFactory.createSpecialJump2();
+		Sprite jump3 = SpriteFactory.createSpecialJump3();
+		Sprite jump4 = SpriteFactory.createSpecialJump4();
+		Sprite[] specialStandSprites = new Sprite[] { jump1, jump2, jump3,
+				jump4, jump3, jump2 };
+		specialJumpAnimation = new Animation(0.05f, specialStandSprites);
 	}
-	
+
 	private void createSpecialFallAnimation() {
-		Skin skin = IceAspirations.getSkin();
-		Sprite special1 = skin.getSprite("SpecialFalling1");
-		special1.setSize(2.9f, 4.2f);
-		special1.setOrigin(special1.getWidth() / 2, special1.getHeight() / 2);
-
-		Sprite special2 = skin.getSprite("SpecialFalling2");
-		special2.setSize(2.863f, 4.2f);
-		special2.setOrigin(special2.getWidth() / 2, special2.getHeight() / 2);
-
-		Sprite special3 = skin.getSprite("SpecialFalling3");
-		special3.setSize(2.9f, 4.1328f);
-		special3.setOrigin(special3.getWidth() / 2, special3.getHeight() / 2);
-
-		Sprite[] specialFallSprites = new Sprite[] { special1, special2,
-				special3, special2 };
-
+		Sprite fall1 = SpriteFactory.createSpecialFall1();
+		Sprite fall2 = SpriteFactory.createSpecialFall2();
+		Sprite fall3 = SpriteFactory.createSpecialFall3();
+		Sprite[] specialFallSprites = new Sprite[] { fall1, fall2, fall3, fall2 };
 		specialFallAnimation = new Animation(0.1f, specialFallSprites);
 	}
 
 	private void createSpecialStandAnimation() {
-		Skin skin = IceAspirations.getSkin();
-		Sprite special1 = skin.getSprite("SpecialStanding1");
-		special1.setSize(3.5f, 3.15f);
-		special1.setOrigin(special1.getWidth() / 2, special1.getHeight() / 2);
-
-		Sprite special2 = skin.getSprite("SpecialStanding2");
-		special2.setSize(4.375f, 3.15f);
-		special2.setOrigin(special2.getWidth() / 2, special2.getHeight() / 2);
-
-		Sprite special3 = skin.getSprite("SpecialStanding3");
-		special3.setSize(3.395f, 3.15f);
-		special3.setOrigin(special3.getWidth() / 2, special3.getHeight() / 2);
-
-		Sprite[] specialStandSprites = new Sprite[] { special1, special2,
-				special3 };
-
+		Sprite stand1 = SpriteFactory.createSpecialStand1();
+		Sprite stand2 = SpriteFactory.createSpecialStand2();
+		Sprite stand3 = SpriteFactory.createSpecialStand3();
+		Sprite[] specialStandSprites = new Sprite[] { stand1, stand2, stand3 };
 		specialStandAnimation = new Animation(0.1f, specialStandSprites);
 	}
 

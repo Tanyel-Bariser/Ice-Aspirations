@@ -24,13 +24,6 @@ Platform5
   orig: 298, 155
   offset: 0, 0
   index: -1
-Back
-  rotate: false
-  xy: 700, 646
-  size: 128, 131
-  orig: 128, 131
-  offset: 0, 0
-  index: -1
 Platform2
   rotate: false
   xy: 0, 259
@@ -50,6 +43,13 @@ Platform1
   xy: 400, 549
   size: 200, 100
   orig: 200, 100
+  offset: 0, 0
+  index: -1
+Back
+  rotate: false
+  xy: 700, 646
+  size: 128, 131
+  orig: 128, 131
   offset: 0, 0
   index: -1
 Platform4
@@ -94,6 +94,13 @@ Platform9
   orig: 200, 100
   offset: 0, 0
   index: -1
+SpecialJumping4
+  rotate: false
+  xy: 571, 379
+  size: 72, 170
+  orig: 72, 170
+  offset: 0, 0
+  index: -1
 SpecialStanding2
   rotate: false
   xy: 350, 259
@@ -136,6 +143,13 @@ Play
   orig: 128, 128
   offset: 0, 0
   index: -1
+Unmute
+  rotate: false
+  xy: 643, 390
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
 SpecialStanding3
   rotate: false
   xy: 475, 259
@@ -143,107 +157,93 @@ SpecialStanding3
   orig: 97, 90
   offset: 0, 0
   index: -1
-Unmute
-  rotate: false
-  xy: 482, 131
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
 Dazed
   rotate: false
-  xy: 456, 11
+  xy: 482, 139
   size: 86, 120
   orig: 86, 120
   offset: 0, 0
   index: -1
-SpecialJumping4
-  rotate: false
-  xy: 571, 388
-  size: 72, 161
-  orig: 72, 161
-  offset: 0, 0
-  index: -1
-SpecialFalling1
-  rotate: false
-  xy: 542, 6
-  size: 78, 125
-  orig: 78, 125
-  offset: 0, 0
-  index: -1
-SpecialFalling2
-  rotate: false
-  xy: 572, 265
-  size: 77, 123
-  orig: 77, 123
-  offset: 0, 0
-  index: -1
 SpecialJumping1
   rotate: false
-  xy: 610, 133
+  xy: 771, 386
   size: 71, 132
   orig: 71, 132
   offset: 0, 0
   index: -1
+SpecialFalling1
+  rotate: false
+  xy: 572, 254
+  size: 78, 125
+  orig: 78, 125
+  offset: 0, 0
+  index: -1
 SpecialJumping2
   rotate: false
-  xy: 620, 1
+  xy: 650, 258
   size: 70, 132
   orig: 70, 132
   offset: 0, 0
   index: -1
-SpecialFalling3
-  rotate: false
-  xy: 643, 395
-  size: 78, 123
-  orig: 78, 123
-  offset: 0, 0
-  index: -1
 Rabbit3
   rotate: false
-  xy: 721, 399
+  xy: 568, 135
   size: 79, 119
   orig: 79, 119
   offset: 0, 0
   index: -1
-Rabbit6
+SpecialFalling3
   rotate: false
-  xy: 649, 276
-  size: 74, 119
-  orig: 74, 119
+  xy: 720, 263
+  size: 78, 123
+  orig: 78, 123
+  offset: 0, 0
+  index: -1
+SpecialFalling2
+  rotate: false
+  xy: 456, 8
+  size: 77, 123
+  orig: 77, 123
   offset: 0, 0
   index: -1
 Rabbit2
   rotate: false
-  xy: 723, 281
+  xy: 533, 17
   size: 76, 118
   orig: 76, 118
   offset: 0, 0
   index: -1
-Rabbit5
-  rotate: false
-  xy: 681, 156
-  size: 58, 120
-  orig: 58, 120
-  offset: 0, 0
-  index: -1
-Rabbit4
-  rotate: false
-  xy: 739, 162
-  size: 62, 119
-  orig: 62, 119
-  offset: 0, 0
-  index: -1
 Rabbit1
   rotate: false
-  xy: 690, 38
+  xy: 609, 17
   size: 74, 118
   orig: 74, 118
   offset: 0, 0
   index: -1
+Rabbit4
+  rotate: false
+  xy: 647, 135
+  size: 62, 119
+  orig: 62, 119
+  offset: 0, 0
+  index: -1
+Rabbit5
+  rotate: false
+  xy: 683, 15
+  size: 58, 120
+  orig: 58, 120
+  offset: 0, 0
+  index: -1
+Rabbit6
+  rotate: false
+  xy: 709, 139
+  size: 74, 119
+  orig: 74, 119
+  offset: 0, 0
+  index: -1
 Clock
   rotate: false
-  xy: 764, 90
+  xy: 741, 67
   size: 64, 72
   orig: 64, 72
   offset: 0, 0

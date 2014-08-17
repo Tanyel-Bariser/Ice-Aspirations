@@ -20,7 +20,7 @@ public class Assets {
 	public static final String SUPER_MUSIC = "Carrot Mode.mp3";
 	public static final String HIT_SOUND = "Hit Sound.wav";
 	public static final String JUMP_SOUND = "Jumping.wav";
-	public static final String PICK_UP_SOUND = "Pick up.ogg";
+	public static final String PICK_UP_SOUND = "Pick Up.ogg";
 	
 	public static void load() {
 		MANAGER.load(ATLAS, TextureAtlas.class);
