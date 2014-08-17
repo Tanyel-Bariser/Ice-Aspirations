@@ -6,12 +6,11 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-import com.tanyelbariser.iceaspirations.IceAspirations;
+import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 
 public class PlatformsFactory {
-	
+
 	public static Array<Body> createPlatforms(World world) {
 		Array<Body> platforms = new Array<Body>();
 		platforms.add(createPlatform(world, "Platform1", 4, 2, 2, 0.91f));
@@ -26,9 +25,8 @@ public class PlatformsFactory {
 		return platforms;
 	}
 
-	private static Body createPlatform(World world, String platformNum,
-			float width, float height, float boxWidth, float boxHeight) {
-		Skin skin = IceAspirations.getSkin();
+	private static Body createPlatform(World world, String name, float width,
+			float height, float boxWidth, float boxHeight) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 30);
@@ -39,8 +37,7 @@ public class PlatformsFactory {
 		platform.createFixture(shape, 0).setUserData("platform");
 		shape.dispose();
 
-		Sprite sprite = skin.getSprite(platformNum);
-		sprite.setSize(width, height);
+		Sprite sprite = SpriteFactory.createPlatformSprite(name, width, height);
 
 		platform.setUserData(sprite);
 		return platform;

@@ -3,7 +3,6 @@ package com.tanyelbariser.iceaspirations.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.IceAspirations;
+import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 
 public class MainScreen implements Screen {
 	private IceAspirations iceA;
@@ -37,11 +37,7 @@ public class MainScreen implements Screen {
 		
 		batch = new SpriteBatch();
 
-		title = new Sprite(new Texture("Title.png"));
-		float titleX = width / 2 - title.getWidth() / 2;
-		float titleY = Math.round(height / 1.4);
-		title.setPosition(titleX, titleY);
-		title.setScale(width / 768);
+		title = SpriteFactory.createTitle();
 
 		BitmapFont blue = IceAspirations.getBlue();
 		blue.setScale(width / 300);
@@ -135,7 +131,6 @@ public class MainScreen implements Screen {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		title.getTexture().dispose();
 		stage.dispose();
 	}
 

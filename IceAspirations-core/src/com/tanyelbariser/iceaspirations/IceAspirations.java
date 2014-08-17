@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
-import com.tanyelbariser.iceaspirations.screens.GameScreen;
+import com.tanyelbariser.iceaspirations.screens.MainScreen;
 
 public class IceAspirations extends Game {
 	private static Music music;
@@ -34,7 +34,7 @@ public class IceAspirations extends Game {
 		blue = new BitmapFont(Gdx.files.internal("blue.fnt"), false);
 		background = SpriteFactory.createBackground();
 		muteButtonSetup();
-		setScreen(new GameScreen(this));
+		setScreen(new MainScreen(this));
 		musicSetup();
 	}
 

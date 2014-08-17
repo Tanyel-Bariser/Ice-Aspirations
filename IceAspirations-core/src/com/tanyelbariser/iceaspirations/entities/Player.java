@@ -154,41 +154,41 @@ public class Player implements ContactListener, InputProcessor {
 	}
 
 	private void createAnimation() {
-		Sprite jump1 = SpriteFactory.createJump1();
-		Sprite jump2 = SpriteFactory.createJump2();
-		Sprite jump3 = SpriteFactory.createJump3();
-		Sprite jump4 = SpriteFactory.createJump4();
+		Sprite jump1 = SpriteFactory.createPlayerSprite("Rabbit2", 2.9f, 4.2f);
+		Sprite jump2 = SpriteFactory.createPlayerSprite("Rabbit3", 2.3f, 4.2f);
+		Sprite jump3 = SpriteFactory.createPlayerSprite("Rabbit4", 2.3f, 4.2f);
+		Sprite jump4 = SpriteFactory.createPlayerSprite("Rabbit5", 2.3f, 4.2f);
 		Sprite[] jumpSprites = new Sprite[] { jump1, jump2, jump3, jump4 };
 		jumpAnimation = new Animation(0.1f, jumpSprites);
 
 		// non animation sprites
-		standSprite = SpriteFactory.createStand();
-		fallingSprite = SpriteFactory.createFalling();
-		dazedSprite = SpriteFactory.createDazed();
+		standSprite = SpriteFactory.createPlayerSprite("Rabbit1", 2.9f, 4.2f);
+		fallingSprite = SpriteFactory.createPlayerSprite("Rabbit6", 3, 4.2f);
+		dazedSprite = SpriteFactory.createPlayerSprite("Dazed", 3, 4.2f);
 	}
 
 	private void createSpecialJumpAnimation() {
-		Sprite jump1 = SpriteFactory.createSpecialJump1();
-		Sprite jump2 = SpriteFactory.createSpecialJump2();
-		Sprite jump3 = SpriteFactory.createSpecialJump3();
-		Sprite jump4 = SpriteFactory.createSpecialJump4();
+		Sprite jump1 = SpriteFactory.createPlayerSprite("SpecialJumping1", 2.9f, 4.2f);
+		Sprite jump2 = SpriteFactory.createPlayerSprite("SpecialJumping2", 2.985f, 4.33f);
+		Sprite jump3 = SpriteFactory.createPlayerSprite("SpecialJumping3", 3.113f, 4.38f);
+		Sprite jump4 = SpriteFactory.createPlayerSprite("SpecialJumping4", 3.07f, 5f);
 		Sprite[] specialStandSprites = new Sprite[] { jump1, jump2, jump3,
 				jump4, jump3, jump2 };
 		specialJumpAnimation = new Animation(0.05f, specialStandSprites);
 	}
 
 	private void createSpecialFallAnimation() {
-		Sprite fall1 = SpriteFactory.createSpecialFall1();
-		Sprite fall2 = SpriteFactory.createSpecialFall2();
-		Sprite fall3 = SpriteFactory.createSpecialFall3();
+		Sprite fall1 = SpriteFactory.createPlayerSprite("SpecialFalling1", 2.9f, 4.2f);
+		Sprite fall2 = SpriteFactory.createPlayerSprite("SpecialFalling2", 2.863f, 4.2f);
+		Sprite fall3 = SpriteFactory.createPlayerSprite("SpecialFalling3", 2.9f, 4.1328f);
 		Sprite[] specialFallSprites = new Sprite[] { fall1, fall2, fall3, fall2 };
 		specialFallAnimation = new Animation(0.1f, specialFallSprites);
 	}
 
 	private void createSpecialStandAnimation() {
-		Sprite stand1 = SpriteFactory.createSpecialStand1();
-		Sprite stand2 = SpriteFactory.createSpecialStand2();
-		Sprite stand3 = SpriteFactory.createSpecialStand3();
+		Sprite stand1 = SpriteFactory.createPlayerSprite("SpecialStanding1", 3.5f, 3.15f);
+		Sprite stand2 = SpriteFactory.createPlayerSprite("SpecialStanding2", 4.375f, 3.15f);
+		Sprite stand3 = SpriteFactory.createPlayerSprite("SpecialStanding3", 3.395f, 3.15f);
 		Sprite[] specialStandSprites = new Sprite[] { stand1, stand2, stand3 };
 		specialStandAnimation = new Animation(0.1f, specialStandSprites);
 	}
