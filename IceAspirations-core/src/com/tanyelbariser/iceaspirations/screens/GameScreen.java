@@ -57,13 +57,7 @@ public class GameScreen implements Screen {
 	private Player player;
 	public static final float ZOOM = 30f * compatibility;
 	private Sprite stand;
-
-	public enum State {
-		RUNNING, PAUSED
-	}
-
 	private State state = State.RUNNING;
-
 	private float approxFPS = 60.0f;
 	private final float TIMESTEP = 1.0f / approxFPS;
 	private final int VELOCITYITERATIONS = 8; // Box2d manual recommends 8 & 3
@@ -145,9 +139,8 @@ public class GameScreen implements Screen {
 			// Position background at camera's position
 			background.setPosition(camera.position.x - backgroundWidth / 2,
 					camera.position.y - backgroundHeight / 2);
-
-			manageTimeScore();
 		}
+		manageTimeScore();
 		drawToScreen(delta);
 		// physicsDebugger.render(world, camera.combined);
 	}

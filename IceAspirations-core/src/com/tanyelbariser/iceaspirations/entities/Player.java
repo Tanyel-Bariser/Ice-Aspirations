@@ -3,7 +3,6 @@ package com.tanyelbariser.iceaspirations.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -18,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.tanyelbariser.iceaspirations.AudioManager;
 import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 import com.tanyelbariser.iceaspirations.platforms.Platforms;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
@@ -38,12 +38,6 @@ public class Player implements ContactListener, InputProcessor {
 	private Sprite dazedSprite;
 	private Sprite fallingSprite;
 	private Animation jumpAnimation;
-	private Sound jumpSound = Gdx.audio.newSound(Gdx.files
-			.internal("Jumping.wav"));
-	private Sound getItemSound = Gdx.audio.newSound(Gdx.files
-			.internal("Pick Up.ogg"));
-	private Sound hitSound = Gdx.audio.newSound(Gdx.files
-			.internal("Hit Sound.wav"));;
 	private boolean standing;
 	private boolean canJump;
 	private boolean facingLeft = false;
@@ -138,7 +132,7 @@ public class Player implements ContactListener, InputProcessor {
 	}
 
 	public void playHitSound() {
-		hitSound.play(1, 0.8f, 0);
+		AudioManager.playHitSound();
 	}
 
 	public boolean isCarrotTouched() {
@@ -280,7 +274,7 @@ public class Player implements ContactListener, InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (canJump && !dazed) {
-			jumpSound.play(0.1f, 0.8f, 0);
+			AudioManager.playJumpSound();
 			down = angle = 0;
 			body.applyLinearImpulse(0, jump * myDelta, body.getWorldCenter().x,
 					body.getWorldCenter().y, true);
@@ -300,7 +294,7 @@ public class Player implements ContactListener, InputProcessor {
 			break;
 		case Keys.SPACE:
 			if (canJump && !dazed) {
-				jumpSound.play(0.1f, 0.8f, 0);
+				AudioManager.playJumpSound();
 				down = angle = 0;
 				body.applyLinearImpulse(0, jump * myDelta,
 						body.getWorldCenter().x, body.getWorldCenter().y, true);
@@ -329,12 +323,12 @@ public class Player implements ContactListener, InputProcessor {
 		boolean playerContact = fixA.equals("player") || fixB.equals("player");
 		boolean clockContact = fixA.equals("clock") || fixB.equals("clock");
 		if (playerContact && clockContact) {
-			getItemSound.play(0.1f, 0.8f, 0);
+			AudioManager.playPickUpSound();
 			clockTouched = true;
 		}
 		boolean carrotContact = fixA.equals("carrot") || fixB.equals("carrot");
 		if (playerContact && carrotContact) {
-			getItemSound.play(0.1f, 0.8f, 0);
+			AudioManager.playPickUpSound();
 			carrotTouched = true;
 		}
 	}
