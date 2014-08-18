@@ -34,6 +34,7 @@ import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.AudioManager;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.entities.Player;
+import com.tanyelbariser.iceaspirations.factories.AnimationFactory;
 import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
 import com.tanyelbariser.iceaspirations.factories.PlatformsFactory;
 import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
@@ -56,7 +57,7 @@ public class GameScreen implements Screen {
 	private float backgroundHeight = background.getHeight();
 	private Player player;
 	public static final float ZOOM = 30f * compatibility;
-	private Sprite stand;
+	private Sprite standSprite;
 	private State state = State.RUNNING;
 	private float approxFPS = 60.0f;
 	private final float TIMESTEP = 1.0f / approxFPS;
@@ -93,6 +94,12 @@ public class GameScreen implements Screen {
 	private BitmapFont red = new BitmapFont(Gdx.files.internal("red.fnt"),
 			false);
 	private LabelStyle redStyle = new LabelStyle(red, Color.RED);
+	private Sprite fallingSprite;
+	private Sprite dazedSprite;
+	private Animation specialJumpAnimation;
+	private Animation jumpAnimation;
+	private Animation fallAnimation;
+	private Animation standAnimation;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -156,7 +163,7 @@ public class GameScreen implements Screen {
 		}
 		frameTime += delta;
 		if (player.isDazed()) {
-			playerSprite = player.getDazedSprite();
+			playerSprite = dazedSprite;
 			timeDazed += delta;
 			if (timeDazed == delta) {
 				player.playHitSound();
@@ -167,32 +174,27 @@ public class GameScreen implements Screen {
 			}
 		} else if (player.getBody().getLinearVelocity().y > 2) {
 			if (player.isCarrotTouched()) {
-				Animation specialJumpAnimation = player
-						.getSpecialJumpAnimation();
 				playerSprite = (Sprite) specialJumpAnimation.getKeyFrame(
 						frameTime, true);
 			} else {
-				Animation jumpAnimation = player.getjumpAnimation();
 				playerSprite = (Sprite) jumpAnimation.getKeyFrame(frameTime,
 						false);
 			}
 		} else if (player.getBody().getLinearVelocity().y < -4
 				& !player.isStanding()) {
 			if (player.isCarrotTouched()) {
-				Animation fallAnimation = player.getSpecialFallAnimation();
 				playerSprite = (Sprite) fallAnimation.getKeyFrame(frameTime,
 						true);
 			} else {
-				playerSprite = player.getFallingSprite();
+				playerSprite = fallingSprite;
 				frameTime = 0;
 			}
 		} else {
 			if (player.isCarrotTouched()) {
-				Animation standAnimation = player.getSpecialStandAnimation();
 				playerSprite = (Sprite) standAnimation.getKeyFrame(frameTime,
 						true);
 			} else {
-				playerSprite = stand;
+				playerSprite = standSprite;
 				frameTime = 0;
 			}
 		}
@@ -397,7 +399,14 @@ public class GameScreen implements Screen {
 
 		player = new Player(world);
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, player));
-		stand = player.getStandSprite();
+		standSprite = SpriteFactory.createPlayerSprite("Rabbit1", 2.9f, 4.2f);
+		fallingSprite = SpriteFactory.createPlayerSprite("Rabbit6", 3, 4.2f);
+		dazedSprite = SpriteFactory.createPlayerSprite("Dazed", 3, 4.2f);
+		jumpAnimation = AnimationFactory.createJumpAnimation();
+		specialJumpAnimation = AnimationFactory.createSpecialJumpAnimation();
+		fallAnimation = AnimationFactory.createSpecialFallAnimation();
+		standAnimation = AnimationFactory.createSpecialStandAnimation();
+		
 
 		platforms = new Platforms(world);
 

@@ -3,8 +3,6 @@ package com.tanyelbariser.iceaspirations.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -18,7 +16,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.tanyelbariser.iceaspirations.AudioManager;
-import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 import com.tanyelbariser.iceaspirations.platforms.Platforms;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
@@ -34,19 +31,12 @@ public class Player implements ContactListener, InputProcessor {
 	private final float forceChange = 5000;
 	private float down;
 	private float myDelta;
-	private Sprite standSprite;
-	private Sprite dazedSprite;
-	private Sprite fallingSprite;
-	private Animation jumpAnimation;
 	private boolean standing;
 	private boolean canJump;
 	private boolean facingLeft = false;
 	private boolean clockTouched = false;
 	private boolean dazed = false;
 	private boolean carrotTouched = false;
-	private Animation specialStandAnimation;
-	private Animation specialJumpAnimation;
-	private Animation specialFallAnimation;
 
 	public Player(World world) {
 		world.setContactListener(this);
@@ -68,43 +58,11 @@ public class Player implements ContactListener, InputProcessor {
 		body.createFixture(fixDef).setUserData("player");
 
 		shape.dispose();
-		createAnimation();
-		createSpecialStandAnimation();
-		createSpecialJumpAnimation();
-		createSpecialFallAnimation();
 		Gdx.input.setCatchBackKey(true);
 	}
 
 	public Body getBody() {
 		return body;
-	}
-
-	public Animation getjumpAnimation() {
-		return jumpAnimation;
-	}
-
-	public Animation getSpecialStandAnimation() {
-		return specialStandAnimation;
-	}
-
-	public Animation getSpecialJumpAnimation() {
-		return specialJumpAnimation;
-	}
-
-	public Animation getSpecialFallAnimation() {
-		return specialFallAnimation;
-	}
-
-	public Sprite getStandSprite() {
-		return standSprite;
-	}
-
-	public Sprite getFallingSprite() {
-		return fallingSprite;
-	}
-
-	public Sprite getDazedSprite() {
-		return dazedSprite;
 	}
 
 	public boolean isStanding() {
@@ -143,55 +101,7 @@ public class Player implements ContactListener, InputProcessor {
 		this.carrotTouched = carrotTouched;
 	}
 
-	private void createAnimation() {
-		Sprite jump1 = SpriteFactory.createPlayerSprite("Rabbit2", 2.9f, 4.2f);
-		Sprite jump2 = SpriteFactory.createPlayerSprite("Rabbit3", 2.3f, 4.2f);
-		Sprite jump3 = SpriteFactory.createPlayerSprite("Rabbit4", 2.3f, 4.2f);
-		Sprite jump4 = SpriteFactory.createPlayerSprite("Rabbit5", 2.3f, 4.2f);
-		Sprite[] jumpSprites = new Sprite[] { jump1, jump2, jump3, jump4 };
-		jumpAnimation = new Animation(0.1f, jumpSprites);
 
-		// non animation sprites
-		standSprite = SpriteFactory.createPlayerSprite("Rabbit1", 2.9f, 4.2f);
-		fallingSprite = SpriteFactory.createPlayerSprite("Rabbit6", 3, 4.2f);
-		dazedSprite = SpriteFactory.createPlayerSprite("Dazed", 3, 4.2f);
-	}
-
-	private void createSpecialJumpAnimation() {
-		Sprite jump1 = SpriteFactory.createPlayerSprite("SpecialJumping1",
-				2.9f, 4.2f);
-		Sprite jump2 = SpriteFactory.createPlayerSprite("SpecialJumping2",
-				2.985f, 4.33f);
-		Sprite jump3 = SpriteFactory.createPlayerSprite("SpecialJumping3",
-				3.113f, 4.38f);
-		Sprite jump4 = SpriteFactory.createPlayerSprite("SpecialJumping4",
-				3.07f, 5f);
-		Sprite[] specialStandSprites = new Sprite[] { jump1, jump2, jump3,
-				jump4, jump3, jump2 };
-		specialJumpAnimation = new Animation(0.05f, specialStandSprites);
-	}
-
-	private void createSpecialFallAnimation() {
-		Sprite fall1 = SpriteFactory.createPlayerSprite("SpecialFalling1",
-				2.9f, 4.2f);
-		Sprite fall2 = SpriteFactory.createPlayerSprite("SpecialFalling2",
-				2.863f, 4.2f);
-		Sprite fall3 = SpriteFactory.createPlayerSprite("SpecialFalling3",
-				2.9f, 4.1328f);
-		Sprite[] specialFallSprites = new Sprite[] { fall1, fall2, fall3, fall2 };
-		specialFallAnimation = new Animation(0.1f, specialFallSprites);
-	}
-
-	private void createSpecialStandAnimation() {
-		Sprite stand1 = SpriteFactory.createPlayerSprite("SpecialStanding1",
-				3.5f, 3.15f);
-		Sprite stand2 = SpriteFactory.createPlayerSprite("SpecialStanding2",
-				4.375f, 3.15f);
-		Sprite stand3 = SpriteFactory.createPlayerSprite("SpecialStanding3",
-				3.395f, 3.15f);
-		Sprite[] specialStandSprites = new Sprite[] { stand1, stand2, stand3 };
-		specialStandAnimation = new Animation(0.1f, specialStandSprites);
-	}
 
 	public void update(float delta) {
 		if (carrotTouched) {
