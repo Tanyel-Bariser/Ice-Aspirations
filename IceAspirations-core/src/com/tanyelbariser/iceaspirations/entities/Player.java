@@ -1,18 +1,15 @@
 package com.tanyelbariser.iceaspirations.entities;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.tanyelbariser.iceaspirations.AudioManager;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
-public class Player implements InputProcessor {
+public class Player {
 	private Body body;
 	private BodyDef bodyDef;
 	private FixtureDef fixDef;
@@ -69,130 +66,73 @@ public class Player implements InputProcessor {
 		}
 	}
 
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (canJump && !dazed) {
-			AudioManager.playJumpSound();
-			down = angle = 0;
-			body.applyLinearImpulse(0, jump * myDelta, body.getWorldCenter().x,
-					body.getWorldCenter().y, true);
-			canJump = standing = false;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean keyDown(int keycode) {
-		switch (keycode) {
-		case Keys.LEFT:
-			force -= forceChange + slippery * 10;
-			break;
-		case Keys.RIGHT:
-			force += forceChange + slippery * 10;
-			break;
-		case Keys.SPACE:
-			if (canJump && !dazed) {
-				AudioManager.playJumpSound();
-				down = angle = 0;
-				body.applyLinearImpulse(0, jump * myDelta,
-						body.getWorldCenter().x, body.getWorldCenter().y, true);
-				canJump = standing = false;
-			}
-		case Keys.BACK:
-			// Do nothing
-			return false;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int keycode) {
-		if (keycode == Keys.LEFT || keycode == Keys.RIGHT) {
-			force = 0;
-		}
-		return false;
-	}
-
-	// UNUSED METHODS FROM INTERFACES
-	@Override
-	public boolean keyTyped(char character) {
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		return false;
-	}
-
+	
 	
 	// Getters and Setters
 	public Body getBody() {
 		return body;
 	}
-
+	public void jump() {
+		body.applyLinearImpulse(0, jump * myDelta,
+				body.getWorldCenter().x, body.getWorldCenter().y, true);
+	}
+	public float getJump() {
+		return jump;
+	}
+	public float getForce() {
+		return force;
+	}
+	public void setForce(float force) {
+		this.force = force;
+	}
+	public void leftForce() {
+		force -= forceChange + slippery * 10;
+	}
+	public void rightForce() {
+		force += forceChange + slippery * 10;
+	}
+	public float getPlayerDelta() {
+		return myDelta;
+	}
 	public boolean isStanding() {
 		return standing;
 	}
-
 	public boolean getFacingLeft() {
 		return facingLeft;
 	}
-
 	public boolean isClockTouched() {
 		return clockTouched;
 	}
-
 	public void setClockTouched(boolean clockTouched) {
 		this.clockTouched = clockTouched;
 	}
-
 	public boolean isDazed() {
 		return dazed;
 	}
-
 	public void setDazed(boolean dazed) {
 		this.dazed = dazed;
 	}
-
 	public boolean isCarrotTouched() {
 		return carrotTouched;
 	}
-
 	public void setCarrotTouched(boolean carrotTouched) {
 		this.carrotTouched = carrotTouched;
 	}
-	
 	public void setDown(float down) {
 		this.down = down;
 	}
-
 	public void setCanJump(boolean canJump) {
 		this.canJump = canJump;
 	}
-
+	public boolean canJump() {
+		return canJump;
+	}
 	public void setAngle(float angle) {
 		this.angle = angle;
 	}
-
 	public void setSlippery(float slippery) {
 		this.slippery = slippery;
 	}
-
 	public void setStanding(boolean standing) {
 		this.standing = standing;
 	}

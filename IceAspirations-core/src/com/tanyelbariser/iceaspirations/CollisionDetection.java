@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.tanyelbariser.iceaspirations.entities.Player;
 import com.tanyelbariser.iceaspirations.platforms.Platforms;
 
-public class MyContactListener implements ContactListener {
+public class CollisionDetection implements ContactListener {
 	private Player player;
 	private Body body;
 	private float angle;
@@ -26,7 +26,7 @@ public class MyContactListener implements ContactListener {
 	private String fixA;
 	private String fixB;
 
-	public MyContactListener(Player player) {
+	public CollisionDetection(Player player) {
 		this.player = player;
 		this.body = player.getBody();
 	}

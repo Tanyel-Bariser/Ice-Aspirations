@@ -32,8 +32,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.AudioManager;
+import com.tanyelbariser.iceaspirations.CollisionDetection;
+import com.tanyelbariser.iceaspirations.Controller;
 import com.tanyelbariser.iceaspirations.IceAspirations;
-import com.tanyelbariser.iceaspirations.MyContactListener;
 import com.tanyelbariser.iceaspirations.entities.Player;
 import com.tanyelbariser.iceaspirations.factories.AnimationFactory;
 import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
@@ -399,8 +400,8 @@ public class GameScreen implements Screen {
 
 		world = new World(new Vector2(0, GRAVITY), true);		
 		player = new Player(world);
-		world.setContactListener(new MyContactListener(player));
-		Gdx.input.setInputProcessor(new InputMultiplexer(stage, player));
+		world.setContactListener(new CollisionDetection(player));
+		Gdx.input.setInputProcessor(new InputMultiplexer(stage, new Controller(player)));
 		standSprite = SpriteFactory.createPlayerSprite("Rabbit1", 2.9f, 4.2f);
 		fallingSprite = SpriteFactory.createPlayerSprite("Rabbit6", 3, 4.2f);
 		dazedSprite = SpriteFactory.createPlayerSprite("Dazed", 3, 4.2f);
