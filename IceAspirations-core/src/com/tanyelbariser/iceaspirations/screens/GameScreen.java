@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.AudioManager;
 import com.tanyelbariser.iceaspirations.IceAspirations;
+import com.tanyelbariser.iceaspirations.MyContactListener;
 import com.tanyelbariser.iceaspirations.entities.Player;
 import com.tanyelbariser.iceaspirations.factories.AnimationFactory;
 import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
@@ -166,7 +167,7 @@ public class GameScreen implements Screen {
 			playerSprite = dazedSprite;
 			timeDazed += delta;
 			if (timeDazed == delta) {
-				player.playHitSound();
+				AudioManager.playHitSound();
 			}
 			if (timeDazed > 3) {
 				player.setDazed(false);
@@ -393,11 +394,12 @@ public class GameScreen implements Screen {
 		pauseButtonSetUp();
 		quitButtonSetUp();
 
-		world = new World(new Vector2(0, GRAVITY), true);
 		physicsDebugger = new Box2DDebugRenderer();
 		camera = new OrthographicCamera(WIDTH / ZOOM, HEIGHT / ZOOM);
 
+		world = new World(new Vector2(0, GRAVITY), true);		
 		player = new Player(world);
+		world.setContactListener(new MyContactListener(player));
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, player));
 		standSprite = SpriteFactory.createPlayerSprite("Rabbit1", 2.9f, 4.2f);
 		fallingSprite = SpriteFactory.createPlayerSprite("Rabbit6", 3, 4.2f);

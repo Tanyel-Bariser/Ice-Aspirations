@@ -6,20 +6,13 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
 import com.tanyelbariser.iceaspirations.AudioManager;
-import com.tanyelbariser.iceaspirations.platforms.Platforms;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
-public class Player implements ContactListener, InputProcessor {
+public class Player implements InputProcessor {
 	private Body body;
 	private BodyDef bodyDef;
 	private FixtureDef fixDef;
@@ -39,8 +32,6 @@ public class Player implements ContactListener, InputProcessor {
 	private boolean carrotTouched = false;
 
 	public Player(World world) {
-		world.setContactListener(this);
-
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(0, -HEIGHT / GameScreen.ZOOM / 3);
@@ -61,48 +52,6 @@ public class Player implements ContactListener, InputProcessor {
 		Gdx.input.setCatchBackKey(true);
 	}
 
-	public Body getBody() {
-		return body;
-	}
-
-	public boolean isStanding() {
-		return standing;
-	}
-
-	public boolean getFacingLeft() {
-		return facingLeft;
-	}
-
-	public boolean isClockTouched() {
-		return clockTouched;
-	}
-
-	public void setClockTouched(boolean clockTouched) {
-		this.clockTouched = clockTouched;
-	}
-
-	public boolean isDazed() {
-		return dazed;
-	}
-
-	public void setDazed(boolean dazed) {
-		this.dazed = dazed;
-	}
-
-	public void playHitSound() {
-		AudioManager.playHitSound();
-	}
-
-	public boolean isCarrotTouched() {
-		return carrotTouched;
-	}
-
-	public void setCarrotTouched(boolean carrotTouched) {
-		this.carrotTouched = carrotTouched;
-	}
-
-
-
 	public void update(float delta) {
 		if (carrotTouched) {
 			jump = 400f;
@@ -118,67 +67,6 @@ public class Player implements ContactListener, InputProcessor {
 		} else if (accel > 0.3f || force > 0) {
 			facingLeft = false;
 		}
-	}
-
-	@Override
-	public void postSolve(Contact contact, ContactImpulse impulse) {
-		boolean touchLeftEdge = Platforms.LEFT_SCREEN_EDGE + 0.6f > body
-				.getPosition().x;
-		boolean touchRightEdge = Platforms.RIGHT_SCREEN_EDGE - 0.6f < body
-				.getPosition().x;
-		boolean feetContact = contact.getWorldManifold().getPoints()[0].y < body
-				.getPosition().y;
-		boolean headContact = contact.getWorldManifold().getPoints()[0].y > body
-				.getPosition().y;
-		String fixA = (String) contact.getFixtureA().getUserData();
-		String fixB = (String) contact.getFixtureB().getUserData();
-		boolean playerContact = fixA.equals("player") || fixB.equals("player");
-		boolean boulderContact = fixA.equals("boulder")
-				|| fixB.equals("boulder");
-		boolean platformContact = fixA.equals("platform")
-				|| fixB.equals("platform");
-		boolean groundContact = fixA.equals("ground") || fixB.equals("ground");
-		boolean justBoulder = boulderContact
-				&& !(platformContact || groundContact);
-		if (playerContact && boulderContact && headContact && !carrotTouched) {
-			down = -10;
-			dazed = true;
-		} else if ((touchLeftEdge || touchRightEdge)
-				&& !(playerContact && (platformContact || boulderContact))) {
-			canJump = false;
-			down = 0;
-		} else if (feetContact) {
-			if (playerContact && (platformContact || justBoulder)) {
-				if (platformContact) {
-					// FixtureB is a platform
-					angle = contact.getFixtureB().getBody().getAngle();
-				} else {
-					angle = 0;
-				}
-				slippery = angle * 15;
-				down = -1.5f;
-				canJump = standing = true;
-			} else if (playerContact && groundContact) {
-				down = angle = slippery = 0;
-				canJump = standing = true;
-			}
-		}
-	}
-
-	@Override
-	public void endContact(Contact contact) {
-		down = 0;
-		standing = false;
-		// Delay in resetting slippery causes player to jump off platform at an
-		// angle perpendicular to the platform & allows smoother sliding on
-		// platforms & continued movement in the same direction after contact.
-		Timer.schedule(new Task() {
-			@Override
-			public void run() {
-				slippery = 0;
-				canJump = false;
-			}
-		}, 0.5f);
 	}
 
 	@Override
@@ -227,27 +115,6 @@ public class Player implements ContactListener, InputProcessor {
 
 	// UNUSED METHODS FROM INTERFACES
 	@Override
-	public void beginContact(Contact contact) {
-		String fixA = (String) contact.getFixtureA().getUserData();
-		String fixB = (String) contact.getFixtureB().getUserData();
-		boolean playerContact = fixA.equals("player") || fixB.equals("player");
-		boolean clockContact = fixA.equals("clock") || fixB.equals("clock");
-		if (playerContact && clockContact) {
-			AudioManager.playPickUpSound();
-			clockTouched = true;
-		}
-		boolean carrotContact = fixA.equals("carrot") || fixB.equals("carrot");
-		if (playerContact && carrotContact) {
-			AudioManager.playPickUpSound();
-			carrotTouched = true;
-		}
-	}
-
-	@Override
-	public void preSolve(Contact contact, Manifold oldManifold) {
-	}
-
-	@Override
 	public boolean keyTyped(char character) {
 		return false;
 	}
@@ -270,5 +137,63 @@ public class Player implements ContactListener, InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+
+	
+	// Getters and Setters
+	public Body getBody() {
+		return body;
+	}
+
+	public boolean isStanding() {
+		return standing;
+	}
+
+	public boolean getFacingLeft() {
+		return facingLeft;
+	}
+
+	public boolean isClockTouched() {
+		return clockTouched;
+	}
+
+	public void setClockTouched(boolean clockTouched) {
+		this.clockTouched = clockTouched;
+	}
+
+	public boolean isDazed() {
+		return dazed;
+	}
+
+	public void setDazed(boolean dazed) {
+		this.dazed = dazed;
+	}
+
+	public boolean isCarrotTouched() {
+		return carrotTouched;
+	}
+
+	public void setCarrotTouched(boolean carrotTouched) {
+		this.carrotTouched = carrotTouched;
+	}
+	
+	public void setDown(float down) {
+		this.down = down;
+	}
+
+	public void setCanJump(boolean canJump) {
+		this.canJump = canJump;
+	}
+
+	public void setAngle(float angle) {
+		this.angle = angle;
+	}
+
+	public void setSlippery(float slippery) {
+		this.slippery = slippery;
+	}
+
+	public void setStanding(boolean standing) {
+		this.standing = standing;
 	}
 }
