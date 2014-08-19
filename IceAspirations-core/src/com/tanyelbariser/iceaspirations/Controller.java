@@ -7,20 +7,22 @@ import com.tanyelbariser.iceaspirations.entities.Player;
 public class Controller implements InputProcessor {
 	
 	private Player player;
+	private CollisionDetection contact;
 
-	public Controller (Player player) {
+	public Controller (Player player, CollisionDetection contact) {
 		this.player = player;
+		this.contact = contact;
 	}
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (player.canJump() && !player.isDazed()) {
+		if (contact.canJump() && !contact.isDazed()) {
 			AudioManager.playJumpSound();
-			player.setDown(0);
-			player.setAngle(0);
+			contact.setDown(0);
+			contact.setAngle(0);
 			player.jump();
-			player.setCanJump(false);
-			player.setStanding(false);
+			contact.setCanJump(false);
+			contact.setStanding(false);
 		}
 		return false;
 	}
@@ -35,13 +37,13 @@ public class Controller implements InputProcessor {
 			player.rightForce();
 			break;
 		case Keys.SPACE:
-			if (player.canJump() && !player.isDazed()) {
+			if (contact.canJump() && !contact.isDazed()) {
 				AudioManager.playJumpSound();
-				player.setDown(0);
-				player.setAngle(0);
+				contact.setDown(0);
+				contact.setAngle(0);
 				player.jump();
-				player.setCanJump(false);
-				player.setStanding(false);
+				contact.setCanJump(false);
+				contact.setStanding(false);
 			}
 		}
 		return false;

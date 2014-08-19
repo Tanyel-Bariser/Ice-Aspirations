@@ -11,104 +11,148 @@ import com.tanyelbariser.iceaspirations.entities.Player;
 import com.tanyelbariser.iceaspirations.platforms.Platforms;
 
 public class CollisionDetection implements ContactListener {
-	private Player player;
 	private Body body;
+	private boolean clockTouched;
+	private boolean carrotTouched;
+	private float down;
+	private boolean dazed;
+	private boolean canJump;
 	private float angle;
-	private boolean touchLeftEdge;
-	private boolean touchRightEdge;
-	private boolean feetContact;
-	private boolean headContact;
-	private boolean playerContact;
-	private boolean boulderContact;
-	private boolean platformContact;
-	private boolean groundContact;
-	private boolean justBoulder;
-	private String fixA;
-	private String fixB;
+	private float slippery;
+	private boolean standing;
+
 
 	public CollisionDetection(Player player) {
-		this.player = player;
+		player.setCollisionDetection(this);
 		this.body = player.getBody();
 	}
-
-	@Override
-	public void beginContact(Contact contact) {
-		fixA = (String) contact.getFixtureA().getUserData();
-		fixB = (String) contact.getFixtureB().getUserData();
-		boolean playerContact = fixA.equals("player") || fixB.equals("player");
-		boolean clockContact = fixA.equals("clock") || fixB.equals("clock");
-		if (playerContact && clockContact) {
-			AudioManager.playPickUpSound();
-			player.setClockTouched(true);
-		}
-		boolean carrotContact = fixA.equals("carrot") || fixB.equals("carrot");
-		if (playerContact && carrotContact) {
-			AudioManager.playPickUpSound();
-			player.setCarrotTouched(true);
-		}
+	
+	public boolean isClockTouched() {
+		return clockTouched;
 	}
-
-	@Override
-	public void preSolve(Contact contact, Manifold oldManifold) {
-		touchLeftEdge = Platforms.LEFT_SCREEN_EDGE + 0.6f > body.getPosition().x;
-		touchRightEdge = Platforms.RIGHT_SCREEN_EDGE - 0.6f < body
-				.getPosition().x;
-		feetContact = contact.getWorldManifold().getPoints()[0].y < body
-				.getPosition().y;
-		headContact = contact.getWorldManifold().getPoints()[0].y > body
-				.getPosition().y;
-		playerContact = fixA.equals("player") || fixB.equals("player");
-		boulderContact = fixA.equals("boulder") || fixB.equals("boulder");
-		platformContact = fixA.equals("platform") || fixB.equals("platform");
-		groundContact = fixA.equals("ground") || fixB.equals("ground");
-		justBoulder = boulderContact && !(platformContact || groundContact);
+	public void setClockTouched(boolean clockTouched) {
+		this.clockTouched = clockTouched;
 	}
-
+	public boolean isCarrotTouched() {
+		return carrotTouched;
+	}
+	public void setCarrotTouched(boolean carrotTouched) {
+		this.carrotTouched = carrotTouched;
+	}
+	public float getDown() {
+		return down;
+	}
+	public void setDown(float down) {
+		this.down = down;
+	}
+	public boolean isDazed() {
+		return dazed;
+	}
+	public void setDazed(boolean dazed) {
+		this.dazed = dazed;
+	}
+	public boolean canJump() {
+		return canJump;
+	}
+	public void setCanJump(boolean canJump) {
+		this.canJump = canJump;
+	}
+	public float getAngle() {
+		return angle;
+	}
+	public void setAngle(float angle) {
+		this.angle = angle;
+	}
+	public float getSlippery() {
+		return slippery;
+	}
+	public boolean isStanding() {
+		return standing;
+	}
+	public void setStanding(boolean standing) {
+		this.standing = standing;
+	}
+	
+	
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
-		if (playerContact && boulderContact && headContact
-				&& !player.isCarrotTouched()) {
-			player.setDown(-10);
-			player.setDazed(true);
+		boolean touchLeftEdge = Platforms.LEFT_SCREEN_EDGE + 0.6f > body
+				.getPosition().x;
+		boolean touchRightEdge = Platforms.RIGHT_SCREEN_EDGE - 0.6f < body
+				.getPosition().x;
+		boolean feetContact = contact.getWorldManifold().getPoints()[0].y < body
+				.getPosition().y;
+		boolean headContact = contact.getWorldManifold().getPoints()[0].y > body
+				.getPosition().y;
+		String fixA = (String) contact.getFixtureA().getUserData();
+		String fixB = (String) contact.getFixtureB().getUserData();
+		boolean playerContact = fixA.equals("player") || fixB.equals("player");
+		boolean boulderContact = fixA.equals("boulder")
+				|| fixB.equals("boulder");
+		boolean platformContact = fixA.equals("platform")
+				|| fixB.equals("platform");
+		boolean groundContact = fixA.equals("ground") || fixB.equals("ground");
+		boolean justBoulder = boulderContact
+				&& !(platformContact || groundContact);
+		if (playerContact && boulderContact && headContact && !carrotTouched) {
+			down = -10;
+			dazed = true;
 		} else if ((touchLeftEdge || touchRightEdge)
 				&& !(playerContact && (platformContact || boulderContact))) {
-			player.setCanJump(false);
-			player.setDown(0);
+			canJump = false;
+			down = 0;
 		} else if (feetContact) {
 			if (playerContact && (platformContact || justBoulder)) {
 				if (platformContact) {
 					// FixtureB is a platform
 					angle = contact.getFixtureB().getBody().getAngle();
-					player.setAngle(angle);
 				} else {
-					player.setAngle(0);
+					angle = 0;
 				}
-				player.setSlippery(angle * 15);
-				player.setDown(-1.5f);
-				player.setCanJump(true);
-				player.setStanding(true);
+				slippery = angle * 15;
+				down = -1.5f;
+				canJump = standing = true;
 			} else if (playerContact && groundContact) {
-				player.setDown(0);
-				player.setAngle(0);
-				player.setCanJump(true);
-				player.setStanding(true);
+				down = angle = slippery = 0;
+				canJump = standing = true;
 			}
 		}
 	}
 
 	@Override
 	public void endContact(Contact contact) {
-		player.setDown(0);
-		player.setStanding(false);
+		down = 0;
+		standing = false;
 		// Delay in resetting slippery causes player to jump off platform at an
-		// angular direction perpendicular to the platform & allows smoother
-		// sliding on platforms & inertia after.
+		// angle perpendicular to the platform & allows smoother sliding on
+		// platforms & continued movement in the same direction after contact.
 		Timer.schedule(new Task() {
 			@Override
 			public void run() {
-				player.setSlippery(0);
-				player.setCanJump(false);
+				slippery = 0;
+				canJump = false;
 			}
 		}, 0.5f);
+	}
+
+	@Override
+	public void beginContact(Contact contact) {
+		String fixA = (String) contact.getFixtureA().getUserData();
+		String fixB = (String) contact.getFixtureB().getUserData();
+		boolean playerContact = fixA.equals("player") || fixB.equals("player");
+		boolean clockContact = fixA.equals("clock") || fixB.equals("clock");
+		if (playerContact && clockContact) {
+			AudioManager.playPickUpSound();
+			clockTouched = true;
+		}
+		boolean carrotContact = fixA.equals("carrot") || fixB.equals("carrot");
+		if (playerContact && carrotContact) {
+			AudioManager.playPickUpSound();
+			carrotTouched = true;
+		}
+	}
+
+	@Override
+	public void preSolve(Contact contact, Manifold oldManifold) {
 	}
 }

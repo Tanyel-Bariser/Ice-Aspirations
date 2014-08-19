@@ -70,7 +70,7 @@ public class GameScreen implements Screen {
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
 	private float frameTime;
-	private float allotedTime = 60;
+	private float allotedTime = 100;
 	private Label timeLeft;
 	private int maxHeight;
 	private ImageTextButton quit;
@@ -102,6 +102,7 @@ public class GameScreen implements Screen {
 	private Animation jumpAnimation;
 	private Animation fallAnimation;
 	private Animation standAnimation;
+	private CollisionDetection contact;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -113,9 +114,9 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if (state.equals(State.RUNNING)) {
 			allotedTime -= delta;
-			if (player.isCarrotTouched()) {
+			if (contact.isCarrotTouched()) {
 				delta *= 1.5f;
-				player.setDazed(false);
+				contact.setDazed(false);
 			}
 			timeLeft.setText("Score: " + String.valueOf(maxHeight)
 					+ "\nTime: "
@@ -133,7 +134,7 @@ public class GameScreen implements Screen {
 					/ 2;
 			updatePlayer(adjustedDelta, delta);
 			repositionCamera(topScreenEdge, bottomScreenEdge);
-			if (player.isCarrotTouched()) {
+			if (contact.isCarrotTouched()) {
 				float carrotGravity = GRAVITY * (adjustedDelta / 2)
 						* (adjustedDelta / 2);
 				repositionBoulder(topScreenEdge, bottomScreenEdge,
@@ -164,18 +165,18 @@ public class GameScreen implements Screen {
 					player.getBody().getPosition().y, 0);
 		}
 		frameTime += delta;
-		if (player.isDazed()) {
+		if (contact.isDazed()) {
 			playerSprite = dazedSprite;
 			timeDazed += delta;
 			if (timeDazed == delta) {
 				AudioManager.playHitSound();
 			}
 			if (timeDazed > 3) {
-				player.setDazed(false);
+				contact.setDazed(false);
 				timeDazed = 0;
 			}
 		} else if (player.getBody().getLinearVelocity().y > 2) {
-			if (player.isCarrotTouched()) {
+			if (contact.isCarrotTouched()) {
 				playerSprite = (Sprite) specialJumpAnimation.getKeyFrame(
 						frameTime, true);
 			} else {
@@ -183,8 +184,8 @@ public class GameScreen implements Screen {
 						false);
 			}
 		} else if (player.getBody().getLinearVelocity().y < -4
-				& !player.isStanding()) {
-			if (player.isCarrotTouched()) {
+				& !contact.isStanding()) {
+			if (contact.isCarrotTouched()) {
 				playerSprite = (Sprite) fallAnimation.getKeyFrame(frameTime,
 						true);
 			} else {
@@ -192,7 +193,7 @@ public class GameScreen implements Screen {
 				frameTime = 0;
 			}
 		} else {
-			if (player.isCarrotTouched()) {
+			if (contact.isCarrotTouched()) {
 				playerSprite = (Sprite) standAnimation.getKeyFrame(frameTime,
 						true);
 			} else {
@@ -280,7 +281,7 @@ public class GameScreen implements Screen {
 
 	// Reposition clock after being touched
 	private void repositionClock(float topScreenEdge) {
-		if (!player.isClockTouched()
+		if (!contact.isClockTouched()
 				&& camera.position.y > heightLastClock + distanceBetweenClocks) {
 			for (Body platform : platformArray) {
 				if (platform.getPosition().y > topScreenEdge) {
@@ -293,10 +294,10 @@ public class GameScreen implements Screen {
 			heightLastClock = camera.position.y;
 			distanceBetweenClocks += 20;
 		}
-		if (player.isClockTouched()) {
+		if (contact.isClockTouched()) {
 			allotedTime += 10;
 			clock.setTransform(-50, 0, 0);
-			player.setClockTouched(false);
+			contact.setClockTouched(false);
 		}
 		clockSprite.setPosition(clock.getPosition().x - clockSprite.getWidth()
 				/ 2, clock.getPosition().y - clockSprite.getHeight() / 2);
@@ -305,15 +306,15 @@ public class GameScreen implements Screen {
 
 	// Reposition carrot after being touched
 	private void repositionCarrot(float topScreenEdge, float delta) {
-		if (player.isCarrotTouched()) {
+		if (contact.isCarrotTouched()) {
 			carrot.setTransform(-50, 0, 0);
 			timeSinceCarrotTouched += delta;
 		}
 		if (timeSinceCarrotTouched > 7.5f) {
 			timeSinceCarrotTouched = 0;
-			player.setCarrotTouched(false);
+			contact.setCarrotTouched(false);
 		}
-		if (!player.isCarrotTouched()
+		if (!contact.isCarrotTouched()
 				&& camera.position.y > heightLastCarrot
 						+ distanceBetweenCarrots) {
 			for (Body platform : platformArray) {
@@ -354,7 +355,7 @@ public class GameScreen implements Screen {
 			timeLeft.setPosition(timeLeft.getWidth() / 10,
 					HEIGHT - timeLeft.getHeight() * 2);
 		}
-		if (player.isCarrotTouched()) {
+		if (contact.isCarrotTouched()) {
 			AudioManager.playSuperMusic();
 		} else {
 			AudioManager.playMainMusic();
@@ -400,8 +401,9 @@ public class GameScreen implements Screen {
 
 		world = new World(new Vector2(0, GRAVITY), true);		
 		player = new Player(world);
-		world.setContactListener(new CollisionDetection(player));
-		Gdx.input.setInputProcessor(new InputMultiplexer(stage, new Controller(player)));
+		contact = new CollisionDetection(player);
+		world.setContactListener(contact);
+		Gdx.input.setInputProcessor(new InputMultiplexer(stage, new Controller(player, contact)));
 		standSprite = SpriteFactory.createPlayerSprite("Rabbit1", 2.9f, 4.2f);
 		fallingSprite = SpriteFactory.createPlayerSprite("Rabbit6", 3, 4.2f);
 		dazedSprite = SpriteFactory.createPlayerSprite("Dazed", 3, 4.2f);
