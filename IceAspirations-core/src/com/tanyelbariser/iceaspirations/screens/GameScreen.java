@@ -38,7 +38,7 @@ import com.tanyelbariser.iceaspirations.entities.Player;
 import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
 import com.tanyelbariser.iceaspirations.factories.PlatformsFactory;
 import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
-import com.tanyelbariser.iceaspirations.platforms.Platforms;
+import com.tanyelbariser.iceaspirations.platforms.PlatformManager;
 
 public class GameScreen implements Screen {
 	private IceAspirations iceA;
@@ -62,7 +62,6 @@ public class GameScreen implements Screen {
 	private final float TIMESTEP = 1.0f / approxFPS;
 	private final int VELOCITYITERATIONS = 8; // Box2d manual recommends 8 & 3
 	private final int POSITIONITERATIONS = 3; // for these iterations values
-	private Platforms platforms;
 	private Array<Sprite> platformSprites = new Array<Sprite>();
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
@@ -136,7 +135,7 @@ public class GameScreen implements Screen {
 			} else {
 				repositionBoulder(topScreenEdge, bottomScreenEdge, gravity);
 			}
-			repositionPlatforms(topScreenEdge, bottomScreenEdge);
+			PlatformManager.repositionPlatforms(topScreenEdge, bottomScreenEdge, platformArray);
 			repositionClock(topScreenEdge);
 			repositionCarrot(topScreenEdge, delta / 2);
 
@@ -199,17 +198,6 @@ public class GameScreen implements Screen {
 				boulder.getPosition().y - boulderSprite.getHeight() / 2);
 		boulderSprite.setRotation(boulder.getAngle()
 				* MathUtils.radiansToDegrees);
-	}
-
-	// Repositions platform if out of camera/screen view
-	private void repositionPlatforms(float topScreenEdge, float bottomScreenEdge) {
-		for (Body platform : platformArray) {
-			if (platform.getPosition().y < bottomScreenEdge - 25) {
-				platforms.repositionAbove(platform, topScreenEdge);
-			} else if (platform.getPosition().y > topScreenEdge + 25) {
-				platforms.repositionBelow(platform, bottomScreenEdge);
-			}
-		}
 	}
 
 	// Reposition clock after being touched
@@ -340,10 +328,8 @@ public class GameScreen implements Screen {
 	
 		
 
-		platforms = new Platforms(world);
-
+		PlatformsFactory.createGroundWalls(world);
 		platformArray = PlatformsFactory.createPlatforms(world);
-		platformArray.ordered = false;
 
 		// Match sprite position to platform
 		for (Body platform : platformArray) {

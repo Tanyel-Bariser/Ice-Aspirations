@@ -1,15 +1,51 @@
 package com.tanyelbariser.iceaspirations.factories;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.tanyelbariser.iceaspirations.platforms.Platforms;
+import com.tanyelbariser.iceaspirations.platforms.PlatformManager;
+import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
 public class PlatformsFactory {
+	public static final float LEFT_SCREEN_EDGE = -GameScreen.WIDTH
+			/ GameScreen.ZOOM / 2;
+	public static final float RIGHT_SCREEN_EDGE = GameScreen.WIDTH
+			/ GameScreen.ZOOM / 2;
+	public static final float BOTTOM_SCREEN_EDGE = -GameScreen.HEIGHT
+			/ GameScreen.ZOOM / 2;
+	
+	public static void createGroundWalls(World world) {
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.StaticBody;
+		bodyDef.position.set(0, 0);
+
+		ChainShape worldContainerShape = new ChainShape();
+
+		Vector2 topLeft = new Vector2(LEFT_SCREEN_EDGE, 5000);
+		Vector2 bottomLeft = new Vector2(LEFT_SCREEN_EDGE, BOTTOM_SCREEN_EDGE);
+		Vector2 bottomRight = new Vector2(RIGHT_SCREEN_EDGE, BOTTOM_SCREEN_EDGE);
+		Vector2 topRight = new Vector2(RIGHT_SCREEN_EDGE, 5000);
+
+		worldContainerShape.createChain(new Vector2[] { topLeft, bottomLeft,
+				bottomRight, topRight });
+
+		FixtureDef fixDef = new FixtureDef();
+		fixDef.shape = worldContainerShape;
+		fixDef.friction = 0f;
+		fixDef.restitution = 0;
+
+		Body worldContainer = world.createBody(bodyDef);
+		worldContainer.createFixture(fixDef).setUserData("ground");
+
+		worldContainerShape.dispose();
+	}
 
 	public static Array<Body> createPlatforms(World world) {
 		Array<Body> platforms = new Array<Body>();
@@ -29,7 +65,7 @@ public class PlatformsFactory {
 			float height, float boxWidth, float boxHeight) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(5, Platforms.BOTTOM_SCREEN_EDGE - 30);
+		bodyDef.position.set(5, PlatformManager.BOTTOM_SCREEN_EDGE - 30);
 		Body platform = world.createBody(bodyDef);
 
 		PolygonShape shape = new PolygonShape();
