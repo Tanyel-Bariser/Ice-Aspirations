@@ -16,7 +16,7 @@ public class Controller implements InputProcessor {
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (contact.canJump() && !contact.isDazed()) {
+		if (contact.isCanJump() && !contact.isDazed()) {
 			AudioManager.playJumpSound();
 			contact.setDown(0);
 			contact.setAngle(0);
@@ -26,7 +26,8 @@ public class Controller implements InputProcessor {
 		}
 		return false;
 	}
-
+	
+	// Only for desktop version
 	@Override
 	public boolean keyDown(int keycode) {
 		switch (keycode) {
@@ -37,7 +38,7 @@ public class Controller implements InputProcessor {
 			player.rightForce();
 			break;
 		case Keys.SPACE:
-			if (contact.canJump() && !contact.isDazed()) {
+			if (contact.isCanJump() && !contact.isDazed()) {
 				AudioManager.playJumpSound();
 				contact.setDown(0);
 				contact.setAngle(0);

@@ -1,5 +1,8 @@
 package com.tanyelbariser.iceaspirations;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -10,6 +13,8 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.tanyelbariser.iceaspirations.entities.Player;
 import com.tanyelbariser.iceaspirations.platforms.Platforms;
 
+@Getter
+@Setter
 public class CollisionDetection implements ContactListener {
 	private Body body;
 	private boolean clockTouched;
@@ -21,59 +26,32 @@ public class CollisionDetection implements ContactListener {
 	private float slippery;
 	private boolean standing;
 
-
 	public CollisionDetection(Player player) {
 		player.setCollisionDetection(this);
 		this.body = player.getBody();
 	}
-	
-	public boolean isClockTouched() {
-		return clockTouched;
+
+	@Override
+	public void beginContact(Contact contact) {
+		String fixA = (String) contact.getFixtureA().getUserData();
+		String fixB = (String) contact.getFixtureB().getUserData();
+		boolean playerContact = fixA.equals("player") || fixB.equals("player");
+		boolean clockContact = fixA.equals("clock") || fixB.equals("clock");
+		if (playerContact && clockContact) {
+			AudioManager.playPickUpSound();
+			clockTouched = true;
+		}
+		boolean carrotContact = fixA.equals("carrot") || fixB.equals("carrot");
+		if (playerContact && carrotContact) {
+			AudioManager.playPickUpSound();
+			carrotTouched = true;
+		}
 	}
-	public void setClockTouched(boolean clockTouched) {
-		this.clockTouched = clockTouched;
+
+	@Override
+	public void preSolve(Contact contact, Manifold oldManifold) {
 	}
-	public boolean isCarrotTouched() {
-		return carrotTouched;
-	}
-	public void setCarrotTouched(boolean carrotTouched) {
-		this.carrotTouched = carrotTouched;
-	}
-	public float getDown() {
-		return down;
-	}
-	public void setDown(float down) {
-		this.down = down;
-	}
-	public boolean isDazed() {
-		return dazed;
-	}
-	public void setDazed(boolean dazed) {
-		this.dazed = dazed;
-	}
-	public boolean canJump() {
-		return canJump;
-	}
-	public void setCanJump(boolean canJump) {
-		this.canJump = canJump;
-	}
-	public float getAngle() {
-		return angle;
-	}
-	public void setAngle(float angle) {
-		this.angle = angle;
-	}
-	public float getSlippery() {
-		return slippery;
-	}
-	public boolean isStanding() {
-		return standing;
-	}
-	public void setStanding(boolean standing) {
-		this.standing = standing;
-	}
-	
-	
+
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 		boolean touchLeftEdge = Platforms.LEFT_SCREEN_EDGE + 0.6f > body
@@ -133,26 +111,5 @@ public class CollisionDetection implements ContactListener {
 				canJump = false;
 			}
 		}, 0.5f);
-	}
-
-	@Override
-	public void beginContact(Contact contact) {
-		String fixA = (String) contact.getFixtureA().getUserData();
-		String fixB = (String) contact.getFixtureB().getUserData();
-		boolean playerContact = fixA.equals("player") || fixB.equals("player");
-		boolean clockContact = fixA.equals("clock") || fixB.equals("clock");
-		if (playerContact && clockContact) {
-			AudioManager.playPickUpSound();
-			clockTouched = true;
-		}
-		boolean carrotContact = fixA.equals("carrot") || fixB.equals("carrot");
-		if (playerContact && carrotContact) {
-			AudioManager.playPickUpSound();
-			carrotTouched = true;
-		}
-	}
-
-	@Override
-	public void preSolve(Contact contact, Manifold oldManifold) {
 	}
 }
