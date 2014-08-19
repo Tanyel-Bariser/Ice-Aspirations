@@ -78,7 +78,7 @@ public class Player {
 
 	public void update(float delta) {
 		if (contact.isCarrotTouched()) {
-			jump = 500f;
+			jump = 600f;
 		}
 		myDelta = delta;
 		body.setTransform(body.getPosition(), contact.getAngle());
@@ -159,12 +159,17 @@ public class Player {
 	public Body getBody() {
 		return body;
 	}
+	
+	public boolean getFacingLeft() {
+		return facingLeft;
+	}
 
 	public void jump() {
 		body.applyLinearImpulse(0, jump * myDelta, body.getWorldCenter().x,
 				body.getWorldCenter().y, true);
 	}
 
+	// For desktop version only
 	public void leftForce() {
 		force -= forceChange + contact.getSlippery() * 10;
 	}
@@ -175,9 +180,5 @@ public class Player {
 
 	public void setForce(float force) {
 		this.force = force;
-	}
-
-	public boolean getFacingLeft() {
-		return facingLeft;
 	}
 }

@@ -15,19 +15,24 @@ import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
 public class Platforms {
-	private static Array<Body> platforms = new Array<Body>();
+	private World world;
+	private Array<Body> platforms = new Array<Body>();
 	public static final float LEFT_SCREEN_EDGE = -GameScreen.WIDTH
 			/ GameScreen.ZOOM / 2;
 	public static final float RIGHT_SCREEN_EDGE = GameScreen.WIDTH
 			/ GameScreen.ZOOM / 2;
 	public static final float BOTTOM_SCREEN_EDGE = -GameScreen.HEIGHT
 			/ GameScreen.ZOOM / 2;
-	private static float topPlatformY = BOTTOM_SCREEN_EDGE / 3;
-	private static boolean placeLeft = true;
-	private static float bottomPlatformY;
+	private float topPlatformY = BOTTOM_SCREEN_EDGE / 3;
+	private boolean placeLeft = true;
+	private float bottomPlatformY;
 	private final static float DISTANCE_BETWEEN_PLATFORMS = 10;
 	
-	public static void createGroundWalls(World world) {
+	public Platforms(World world) {
+		this.world = world;
+	}
+	
+	public void createGroundWalls() {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(0, 0);
@@ -53,7 +58,7 @@ public class Platforms {
 		worldContainerShape.dispose();
 	}
 
-	public static Array<Body> createPlatforms(World world) {
+	public Array<Body> createPlatforms() {
 		platforms.add(createPlatform(world, "Platform1", 4, 2, 2, 0.91f));
 		platforms.add(createPlatform(world, "Platform2", 4, 3, 1.6f, 1.2f));
 		platforms.add(createPlatform(world, "Platform3", 8, 1.8f, 4, 0.72f));
@@ -66,7 +71,7 @@ public class Platforms {
 		return platforms;
 	}
 
-	private static Body createPlatform(World world, String name, float width,
+	private Body createPlatform(World world, String name, float width,
 			float height, float boxWidth, float boxHeight) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
@@ -84,7 +89,7 @@ public class Platforms {
 		return platform;
 	}
 
-	public static Array<Sprite> initiseSprites() {
+	public Array<Sprite> initiseSprites() {
 		Array<Sprite> platformSprites = new Array<Sprite>();
 		for (Body platform : platforms) {
 			Sprite sprite = (Sprite) platform.getUserData();
@@ -99,7 +104,7 @@ public class Platforms {
 	}
 
 	// Repositions platform if out of camera/screen view
-	public static void repositionPlatforms(float topScreenEdge, float bottomScreenEdge, Array<Body> platformArray) {
+	public void repositionPlatforms(float topScreenEdge, float bottomScreenEdge, Array<Body> platformArray) {
 		for (Body platform : platformArray) {
 			if (platform.getPosition().y < bottomScreenEdge - 25) {
 				repositionAbove(platform, topScreenEdge);
@@ -109,7 +114,7 @@ public class Platforms {
 		}
 	}
 
-	private static void repositionAbove(Body platform, float topScreenEdge) {
+	private void repositionAbove(Body platform, float topScreenEdge) {
 		if (topPlatformY < topScreenEdge + 25) {
 			bottomPlatformY = platform.getPosition().y;
 			repositionPlatform(platform, topPlatformY);
@@ -117,7 +122,7 @@ public class Platforms {
 		}
 	}
 
-	private static void repositionBelow(Body platform, float bottomScreenEdge) {
+	private void repositionBelow(Body platform, float bottomScreenEdge) {
 		if (bottomPlatformY > bottomScreenEdge - 25
 				&& bottomPlatformY > BOTTOM_SCREEN_EDGE / 3) {
 			topPlatformY = platform.getPosition().y;
@@ -126,7 +131,7 @@ public class Platforms {
 		}
 	}
 
-	private static void repositionPlatform(Body platform, float positionY) {
+	private void repositionPlatform(Body platform, float positionY) {
 		float platformX;
 		Sprite sprite = (Sprite) platform.getUserData();
 		float width = sprite.getWidth();

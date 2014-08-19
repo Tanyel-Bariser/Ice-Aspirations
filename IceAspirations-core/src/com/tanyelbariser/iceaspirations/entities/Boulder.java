@@ -11,11 +11,11 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class Boulder {
-	private static Body boulder;
-	private static float distanceBetweenBoulders = 200;
-	private static float heightLastBoulder = 0;
+	private Body boulder;
+	private float distanceBetweenBoulders = 200;
+	private float heightLastBoulder = 0;
 
-	public static void createIceBoulder(World world) {
+	public Boulder(World world) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(0, -50);
@@ -35,7 +35,7 @@ public class Boulder {
 		shape.dispose();
 	}
 	
-	public static Sprite repositionBoulder(Sprite boulderSprite,
+	public Sprite repositionBoulder(Sprite boulderSprite,
 			OrthographicCamera camera, float topScreenEdge, float bottomScreenEdge,
 			float gravity, float playerX) {
 		if (boulder.getPosition().y < bottomScreenEdge - 10
@@ -45,7 +45,7 @@ public class Boulder {
 					topScreenEdge + 10, 0);
 			heightLastBoulder = camera.position.y;
 			if (distanceBetweenBoulders > 20) {
-				distanceBetweenBoulders -= 20;
+				distanceBetweenBoulders -= 10;
 			}
 		}
 		if (boulder.getLinearVelocity().y > -1) {

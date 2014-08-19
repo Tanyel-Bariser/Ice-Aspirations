@@ -1,7 +1,6 @@
 package com.tanyelbariser.iceaspirations;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.tanyelbariser.iceaspirations.screens.MainScreen;
@@ -14,7 +13,7 @@ public class IceAspirations extends Game {
 	public void create() {
 		Assets.load();
 		Assets.MANAGER.finishLoading();
-		blue = new BitmapFont(Gdx.files.internal("blue.fnt"), false);
+		blue  = Assets.MANAGER.get(Assets.BLUE_FONT, BitmapFont.class);
 		setScreen(new MainScreen(this));
 	}
 

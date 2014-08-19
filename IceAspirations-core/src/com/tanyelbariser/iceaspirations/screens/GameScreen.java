@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.tanyelbariser.iceaspirations.Assets;
 import com.tanyelbariser.iceaspirations.AudioManager;
 import com.tanyelbariser.iceaspirations.CollisionDetection;
 import com.tanyelbariser.iceaspirations.Controller;
@@ -69,11 +70,15 @@ public class GameScreen implements Screen {
 	private Sprite boulderSprite;
 	private Sprite clockSprite;
 	private Sprite carrotSprite;
-	private BitmapFont red = new BitmapFont(Gdx.files.internal("red.fnt"),
-			false);
+	private BitmapFont red = Assets.MANAGER.get(Assets.RED_FONT,
+			BitmapFont.class);
 	private LabelStyle redStyle = new LabelStyle(red, Color.RED);
 	private CollisionDetection contact;
 	private final float CARROT_MODE = 1.5f;
+	private Platforms platforms;
+	private Boulder boulder;
+	private Carrot carrot;
+	private Clock clock;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -113,19 +118,19 @@ public class GameScreen implements Screen {
 			if (contact.isCarrotTouched()) {
 				float carrotGravity = GRAVITY * (adjustedDelta / CARROT_MODE)
 						* (adjustedDelta / CARROT_MODE);
-				Boulder.repositionBoulder(boulderSprite, camera, topScreenEdge,
+				boulder.repositionBoulder(boulderSprite, camera, topScreenEdge,
 						bottomScreenEdge, carrotGravity, player.getBody()
 								.getPosition().x);
 			} else {
-				Boulder.repositionBoulder(boulderSprite, camera, topScreenEdge,
+				boulder.repositionBoulder(boulderSprite, camera, topScreenEdge,
 						bottomScreenEdge, gravity, player.getBody()
 								.getPosition().x);
 			}
-			Platforms.repositionPlatforms(topScreenEdge,
-					bottomScreenEdge, platformArray);
-			Clock.repositionClock(clockSprite, camera, contact, topScreenEdge,
+			platforms.repositionPlatforms(topScreenEdge, bottomScreenEdge,
+					platformArray);
+			clock.repositionClock(clockSprite, camera, contact, topScreenEdge,
 					platformArray, this);
-			Carrot.repositionCarrot(carrotSprite, camera, contact,
+			carrot.repositionCarrot(carrotSprite, camera, contact,
 					topScreenEdge, delta / CARROT_MODE, platformArray);
 
 			// Position background at camera's position
@@ -142,22 +147,17 @@ public class GameScreen implements Screen {
 	private void repositionCamera(float topScreenEdge, float bottomScreenEdge) {
 		float playerY = player.getBody().getPosition().y;
 		float veryHighSpeed = 80, highSpeed = 30;
-		if (player.getBody().getLinearVelocity().y > veryHighSpeed
-				&& camera.position.y > HEIGHT) {
-			// Camera rises slower than player causing a camera lag giving the
-			// effect that the player is too fast for the camera to keep up.
-			camera.position.y += 1f;
-		} else if (player.getBody().getLinearVelocity().y > highSpeed
-				&& camera.position.y > HEIGHT) {
-			camera.position.y += 0.8f;
-		} else if (playerY > topScreenEdge) {
-			camera.position.y += 3f;
-		} else if (playerY > camera.position.y + 2f) {
-			camera.position.y += 0.8f;
-		} else if (playerY > 0 && playerY < camera.position.y - 2f) {
-			camera.position.y -= 0.8f;
+		float playerSpeed = player.getBody().getLinearVelocity().y;
+		if ((playerSpeed > veryHighSpeed && camera.position.y > HEIGHT)
+				|| playerY > topScreenEdge) {
+			camera.position.y += 1;
 		} else if (playerY < bottomScreenEdge) {
-			camera.position.y -= 3f;
+			camera.position.y -= 1;
+		} else if ((playerSpeed > highSpeed && camera.position.y > HEIGHT)
+				|| playerY > camera.position.y + 2) {
+			camera.position.y += 0.8f;
+		} else if (playerY > 0 && playerY < camera.position.y - 1) {
+			camera.position.y -= 0.8f;
 		} else if (playerY > 0) {
 			camera.position.y = playerY;
 		} else {
@@ -237,23 +237,24 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, new Controller(
 				player, contact)));
 
-		Platforms.createGroundWalls(world);
-		platformArray = Platforms.createPlatforms(world);
-		platformSprites = Platforms.initiseSprites();
+		platforms = new Platforms(world);
+		platforms.createGroundWalls();
+		platformArray = platforms.createPlatforms();
+		platformSprites = platforms.initiseSprites();
 
-		Boulder.createIceBoulder(world);
+		boulder = new Boulder(world);
 		boulderSprite = SpriteFactory.createBoulder();
-		Clock.createClock(world);
+		clock = new Clock(world);
 		clockSprite = SpriteFactory.createClock();
-		Carrot.createCarrot(world);
+		carrot = new Carrot(world);
 		carrotSprite = SpriteFactory.createCarrot();
 
 		scoreTimeLabelSetUp();
 	}
 
 	private void scoreTimeLabelSetUp() {
-		BitmapFont yellow = new BitmapFont(Gdx.files.internal("yellow.fnt"),
-				false);
+		BitmapFont yellow = Assets.MANAGER.get(Assets.YELLOW_FONT,
+				BitmapFont.class);
 		yellowStyle = new LabelStyle(yellow, Color.YELLOW);
 		timeLeft = new Label("60", yellowStyle);
 		timeLeft.setPosition(timeLeft.getWidth() / 10,

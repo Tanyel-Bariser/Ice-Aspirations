@@ -14,11 +14,11 @@ import com.tanyelbariser.iceaspirations.CollisionDetection;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
 public class Clock {
-	private static Body clock;
-	private static float heightLastClock = 0;
-	private static float distanceBetweenClocks = 100;
+	private Body clock;
+	private float heightLastClock = 0;
+	private float distanceBetweenClocks = 100;
 
-	public static void createClock(World world) {
+	public Clock(World world) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(0, -50);
@@ -37,7 +37,7 @@ public class Clock {
 	}
 
 	// Reposition clock after being touched
-	public static Sprite repositionClock(Sprite clockSprite,
+	public Sprite repositionClock(Sprite clockSprite,
 			OrthographicCamera camera, CollisionDetection contact,
 			float topScreenEdge, Array<Body> platformArray,
 			GameScreen gameScreen) {

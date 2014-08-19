@@ -13,12 +13,12 @@ import com.badlogic.gdx.utils.Array;
 import com.tanyelbariser.iceaspirations.CollisionDetection;
 
 public class Carrot {
-	private static Body carrot;
-	private static float heightLastCarrot = 0;
-	private static float distanceBetweenCarrots = 158;
-	private static float timeSinceCarrotTouched = 0;
+	private Body carrot;
+	private float heightLastCarrot = 0;
+	private float distanceBetweenCarrots = 158;
+	private float timeSinceCarrotTouched = 0;
 
-	public static void createCarrot(World world) {
+	public Carrot(World world) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(0, -50);
@@ -37,7 +37,7 @@ public class Carrot {
 	}
 
 	// Reposition carrot after being touched
-	public static Sprite repositionCarrot(Sprite carrotSprite,
+	public Sprite repositionCarrot(Sprite carrotSprite,
 			OrthographicCamera camera, CollisionDetection contact,
 			float topScreenEdge, float delta, Array<Body> platformArray) {
 		if (contact.isCarrotTouched()) {
@@ -60,7 +60,7 @@ public class Carrot {
 				}
 			}
 			heightLastCarrot = camera.position.y;
-			distanceBetweenCarrots += 70;
+			distanceBetweenCarrots += 40;
 		}
 		carrotSprite.setPosition(
 				carrot.getPosition().x - carrotSprite.getWidth() / 2,
