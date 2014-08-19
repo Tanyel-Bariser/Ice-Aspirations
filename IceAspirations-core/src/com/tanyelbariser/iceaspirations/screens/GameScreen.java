@@ -33,6 +33,7 @@ import com.tanyelbariser.iceaspirations.CollisionDetection;
 import com.tanyelbariser.iceaspirations.Controller;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.entities.Boulder;
+import com.tanyelbariser.iceaspirations.entities.Clock;
 import com.tanyelbariser.iceaspirations.entities.Player;
 import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
 import com.tanyelbariser.iceaspirations.factories.PlatformsFactory;
@@ -73,10 +74,7 @@ public class GameScreen implements Screen {
 	private Sprite boulderSprite;
 	private FixtureDef fixDef;
 	private BodyDef bodyDef;
-	private Body clock;
 	private Sprite clockSprite;
-	private float heightLastClock = 0;
-	private float distanceBetweenClocks = 100;
 	private Body carrot;
 	private Sprite carrotSprite;
 	private float heightLastCarrot = 0;
@@ -86,11 +84,12 @@ public class GameScreen implements Screen {
 			false);
 	private LabelStyle redStyle = new LabelStyle(red, Color.RED);
 	private CollisionDetection contact;
+	private final float CARROT_MODE = 1.5f;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
 	}
-	
+
 	public void setPlayerSprite(Sprite playerSprite) {
 		this.playerSprite = playerSprite;
 	}
@@ -102,11 +101,10 @@ public class GameScreen implements Screen {
 		if (state.equals(State.RUNNING)) {
 			allotedTime -= delta;
 			if (contact.isCarrotTouched()) {
-				delta *= 1.5f;
+				delta *= CARROT_MODE;
 				contact.setDazed(false);
 			}
-			timeLeft.setText("Score: " + String.valueOf(maxHeight)
-					+ "\nTime: "
+			timeLeft.setText("Score: " + String.valueOf(maxHeight) + "\nTime: "
 					+ String.valueOf(Math.round(allotedTime)));
 
 			float adjustedDelta = approxFPS * delta;
@@ -123,17 +121,21 @@ public class GameScreen implements Screen {
 			playerSprite = player.updateSprite(adjustedDelta, delta);
 			repositionCamera(topScreenEdge, bottomScreenEdge);
 			if (contact.isCarrotTouched()) {
-				float carrotGravity = GRAVITY * (adjustedDelta / 2)
-						* (adjustedDelta / 2);
-				boulderSprite = Boulder.repositionBoulder(boulderSprite, camera, topScreenEdge, bottomScreenEdge,
-						carrotGravity, player.getBody().getPosition().x);
+				float carrotGravity = GRAVITY * (adjustedDelta / CARROT_MODE)
+						* (adjustedDelta / CARROT_MODE);
+				boulderSprite = Boulder.repositionBoulder(boulderSprite,
+						camera, topScreenEdge, bottomScreenEdge, carrotGravity,
+						player.getBody().getPosition().x);
 			} else {
-				boulderSprite = Boulder.repositionBoulder(boulderSprite, camera, topScreenEdge, bottomScreenEdge,
-						gravity, player.getBody().getPosition().x);
+				boulderSprite = Boulder.repositionBoulder(boulderSprite,
+						camera, topScreenEdge, bottomScreenEdge, gravity,
+						player.getBody().getPosition().x);
 			}
-			PlatformManager.repositionPlatforms(topScreenEdge, bottomScreenEdge, platformArray);
-			repositionClock(topScreenEdge);
-			repositionCarrot(topScreenEdge, delta / 2);
+			PlatformManager.repositionPlatforms(topScreenEdge,
+					bottomScreenEdge, platformArray);
+			clockSprite = Clock.repositionClock(clockSprite, camera, contact,
+					topScreenEdge, platformArray, this);
+			repositionCarrot(topScreenEdge, delta / CARROT_MODE);
 
 			// Position background at camera's position
 			background.setPosition(camera.position.x - backgroundWidth / 2,
@@ -144,7 +146,6 @@ public class GameScreen implements Screen {
 		// physicsDebugger.render(world, camera.combined);
 	}
 
-	
 	// Set camera position based on player position with
 	// high speed camera catch-up lag
 	private void repositionCamera(float topScreenEdge, float bottomScreenEdge) {
@@ -172,31 +173,6 @@ public class GameScreen implements Screen {
 			camera.position.y = 0;
 		}
 		camera.update();
-	}
-
-	// Reposition clock after being touched
-	private void repositionClock(float topScreenEdge) {
-		if (!contact.isClockTouched()
-				&& camera.position.y > heightLastClock + distanceBetweenClocks) {
-			for (Body platform : platformArray) {
-				if (platform.getPosition().y > topScreenEdge) {
-					clock.setTransform(platform.getPosition().x,
-							platform.getPosition().y + 2.5f,
-							platform.getAngle());
-					break;
-				}
-			}
-			heightLastClock = camera.position.y;
-			distanceBetweenClocks += 20;
-		}
-		if (contact.isClockTouched()) {
-			allotedTime += 10;
-			clock.setTransform(-50, 0, 0);
-			contact.setClockTouched(false);
-		}
-		clockSprite.setPosition(clock.getPosition().x - clockSprite.getWidth()
-				/ 2, clock.getPosition().y - clockSprite.getHeight() / 2);
-		clockSprite.setRotation(clock.getAngle() * MathUtils.radiansToDegrees);
 	}
 
 	// Reposition carrot after being touched
@@ -294,13 +270,12 @@ public class GameScreen implements Screen {
 		physicsDebugger = new Box2DDebugRenderer();
 		camera = new OrthographicCamera(WIDTH / ZOOM, HEIGHT / ZOOM);
 
-		world = new World(new Vector2(0, GRAVITY), true);		
+		world = new World(new Vector2(0, GRAVITY), true);
 		player = new Player(world);
 		contact = new CollisionDetection(player);
 		world.setContactListener(contact);
-		Gdx.input.setInputProcessor(new InputMultiplexer(stage, new Controller(player, contact)));
-	
-		
+		Gdx.input.setInputProcessor(new InputMultiplexer(stage, new Controller(
+				player, contact)));
 
 		PlatformsFactory.createGroundWalls(world);
 		platformArray = PlatformsFactory.createPlatforms(world);
@@ -318,7 +293,8 @@ public class GameScreen implements Screen {
 
 		Boulder.createIceBoulder(world);
 		boulderSprite = SpriteFactory.createBoulder();
-		createClock();
+		Clock.createClock(world);
+		clockSprite = SpriteFactory.createClock();
 		createCarrot();
 
 		// Create Label to show remaining game time
@@ -333,26 +309,6 @@ public class GameScreen implements Screen {
 			redStyle.font.setScale(1.5f);
 		}
 		stage.addActor(timeLeft);
-	}
-
-	private void createClock() {
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(0, -HEIGHT);
-
-		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(1, 1);
-
-		fixDef = new FixtureDef();
-		fixDef.shape = shape;
-		fixDef.isSensor = true;
-
-		clock = world.createBody(bodyDef);
-		clock.createFixture(fixDef).setUserData("clock");
-
-		shape.dispose();
-
-		clockSprite = SpriteFactory.createClock();
 	}
 
 	private void createCarrot() {
@@ -439,5 +395,9 @@ public class GameScreen implements Screen {
 		stage.dispose();
 		world.dispose();
 		physicsDebugger.dispose();
+	}
+
+	public void increaseAllotedTime(float increment) {
+		allotedTime += increment;
 	}
 }

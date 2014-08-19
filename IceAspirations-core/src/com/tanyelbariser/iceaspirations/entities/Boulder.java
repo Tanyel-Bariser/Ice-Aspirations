@@ -15,7 +15,7 @@ public class Boulder {
 	private static float distanceBetweenBoulders = 200;
 	private static float heightLastBoulder = 0;
 
-	public static Body createIceBoulder(World world) {
+	public static void createIceBoulder(World world) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(0, -50);
@@ -33,11 +33,10 @@ public class Boulder {
 		boulder.createFixture(fixDef).setUserData("boulder");
 
 		shape.dispose();
-		
-		return boulder;
 	}
 	
-	public static Sprite repositionBoulder(Sprite boulderSprite, OrthographicCamera camera, float topScreenEdge, float bottomScreenEdge,
+	public static Sprite repositionBoulder(Sprite boulderSprite,
+			OrthographicCamera camera, float topScreenEdge, float bottomScreenEdge,
 			float gravity, float playerX) {
 		if (boulder.getPosition().y < bottomScreenEdge - 10
 				&& camera.position.y > heightLastBoulder
