@@ -7,7 +7,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -36,7 +35,6 @@ import com.tanyelbariser.iceaspirations.CollisionDetection;
 import com.tanyelbariser.iceaspirations.Controller;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.entities.Player;
-import com.tanyelbariser.iceaspirations.factories.AnimationFactory;
 import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
 import com.tanyelbariser.iceaspirations.factories.PlatformsFactory;
 import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
@@ -58,8 +56,7 @@ public class GameScreen implements Screen {
 	private float backgroundWidth = background.getWidth();
 	private float backgroundHeight = background.getHeight();
 	private Player player;
-	public static final float ZOOM = 30f * compatibility;
-	private Sprite standSprite;
+	public static final float ZOOM = 30f * compatibility;;
 	private State state = State.RUNNING;
 	private float approxFPS = 60.0f;
 	private final float TIMESTEP = 1.0f / approxFPS;
@@ -69,7 +66,6 @@ public class GameScreen implements Screen {
 	private Array<Sprite> platformSprites = new Array<Sprite>();
 	private Sprite playerSprite;
 	private Array<Body> platformArray;
-	private float frameTime;
 	private float allotedTime = 100;
 	private Label timeLeft;
 	private int maxHeight;
@@ -87,7 +83,6 @@ public class GameScreen implements Screen {
 	private float heightLastClock = 0;
 	private float distanceBetweenBoulders = 200;
 	private float distanceBetweenClocks = 100;
-	private float timeDazed = 0;
 	private Body carrot;
 	private Sprite carrotSprite;
 	private float heightLastCarrot = 0;
@@ -96,16 +91,14 @@ public class GameScreen implements Screen {
 	private BitmapFont red = new BitmapFont(Gdx.files.internal("red.fnt"),
 			false);
 	private LabelStyle redStyle = new LabelStyle(red, Color.RED);
-	private Sprite fallingSprite;
-	private Sprite dazedSprite;
-	private Animation specialJumpAnimation;
-	private Animation jumpAnimation;
-	private Animation fallAnimation;
-	private Animation standAnimation;
 	private CollisionDetection contact;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
+	}
+	
+	public void setPlayerSprite(Sprite playerSprite) {
+		this.playerSprite = playerSprite;
 	}
 
 	@Override
@@ -132,7 +125,8 @@ public class GameScreen implements Screen {
 			float topScreenEdge = camera.position.y + camera.viewportHeight / 2;
 			float bottomScreenEdge = camera.position.y - camera.viewportHeight
 					/ 2;
-			updatePlayer(adjustedDelta, delta);
+			player.update(adjustedDelta);
+			playerSprite = player.updateSprite(adjustedDelta, delta);
 			repositionCamera(topScreenEdge, bottomScreenEdge);
 			if (contact.isCarrotTouched()) {
 				float carrotGravity = GRAVITY * (adjustedDelta / 2)
@@ -155,68 +149,7 @@ public class GameScreen implements Screen {
 		// physicsDebugger.render(world, camera.combined);
 	}
 
-	private void updatePlayer(float adjustedDelta, float delta) {
-		player.update(adjustedDelta);
-		if (player.getBody().getPosition().x > Platforms.RIGHT_SCREEN_EDGE) {
-			player.getBody().setTransform(Platforms.RIGHT_SCREEN_EDGE - 0.5f,
-					player.getBody().getPosition().y, 0);
-		} else if (player.getBody().getPosition().x < Platforms.LEFT_SCREEN_EDGE) {
-			player.getBody().setTransform(Platforms.LEFT_SCREEN_EDGE + 0.5f,
-					player.getBody().getPosition().y, 0);
-		}
-		frameTime += delta;
-		if (contact.isDazed()) {
-			playerSprite = dazedSprite;
-			timeDazed += delta;
-			if (timeDazed == delta) {
-				AudioManager.playHitSound();
-			}
-			if (timeDazed > 3) {
-				contact.setDazed(false);
-				timeDazed = 0;
-			}
-		} else if (player.getBody().getLinearVelocity().y > 2) {
-			if (contact.isCarrotTouched()) {
-				playerSprite = (Sprite) specialJumpAnimation.getKeyFrame(
-						frameTime, true);
-			} else {
-				playerSprite = (Sprite) jumpAnimation.getKeyFrame(frameTime,
-						false);
-			}
-		} else if (player.getBody().getLinearVelocity().y < -4
-				& !contact.isStanding()) {
-			if (contact.isCarrotTouched()) {
-				playerSprite = (Sprite) fallAnimation.getKeyFrame(frameTime,
-						true);
-			} else {
-				playerSprite = fallingSprite;
-				frameTime = 0;
-			}
-		} else {
-			if (contact.isCarrotTouched()) {
-				playerSprite = (Sprite) standAnimation.getKeyFrame(frameTime,
-						true);
-			} else {
-				playerSprite = standSprite;
-				frameTime = 0;
-			}
-		}
-		boolean facingLeft = player.getFacingLeft() && playerSprite.isFlipX();
-		boolean facingRight = !player.getFacingLeft()
-				&& !playerSprite.isFlipX();
-		if (facingLeft || facingRight) {
-			// do nothing if player is moving left AND the playerSprite is
-			// already facing left (same for right)
-		} else {
-			playerSprite.flip(true, false);
-		}
-		playerSprite.setPosition(player.getBody().getPosition().x
-				- playerSprite.getWidth() / 2, player.getBody().getPosition().y
-				- playerSprite.getHeight() / 2);
-		playerSprite.setRotation(player.getBody().getAngle()
-				* MathUtils.radiansToDegrees);
-	}
-
+	
 	// Set camera position based on player position with
 	// high speed camera catch-up lag
 	private void repositionCamera(float topScreenEdge, float bottomScreenEdge) {
@@ -404,13 +337,7 @@ public class GameScreen implements Screen {
 		contact = new CollisionDetection(player);
 		world.setContactListener(contact);
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, new Controller(player, contact)));
-		standSprite = SpriteFactory.createPlayerSprite("Rabbit1", 2.9f, 4.2f);
-		fallingSprite = SpriteFactory.createPlayerSprite("Rabbit6", 3, 4.2f);
-		dazedSprite = SpriteFactory.createPlayerSprite("Dazed", 3, 4.2f);
-		jumpAnimation = AnimationFactory.createJumpAnimation();
-		specialJumpAnimation = AnimationFactory.createSpecialJumpAnimation();
-		fallAnimation = AnimationFactory.createSpecialFallAnimation();
-		standAnimation = AnimationFactory.createSpecialStandAnimation();
+	
 		
 
 		platforms = new Platforms(world);
