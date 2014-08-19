@@ -16,8 +16,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -34,6 +32,7 @@ import com.tanyelbariser.iceaspirations.AudioManager;
 import com.tanyelbariser.iceaspirations.CollisionDetection;
 import com.tanyelbariser.iceaspirations.Controller;
 import com.tanyelbariser.iceaspirations.IceAspirations;
+import com.tanyelbariser.iceaspirations.entities.Boulder;
 import com.tanyelbariser.iceaspirations.entities.Player;
 import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
 import com.tanyelbariser.iceaspirations.factories.PlatformsFactory;
@@ -71,16 +70,12 @@ public class GameScreen implements Screen {
 	private ImageTextButton quit;
 	private BitmapFont blue;
 	private LabelStyle yellowStyle;
-	private Body boulder;
 	private Sprite boulderSprite;
-	private Fixture boulderFix;
-	private float heightLastBoulder = 0;
 	private FixtureDef fixDef;
 	private BodyDef bodyDef;
 	private Body clock;
 	private Sprite clockSprite;
 	private float heightLastClock = 0;
-	private float distanceBetweenBoulders = 200;
 	private float distanceBetweenClocks = 100;
 	private Body carrot;
 	private Sprite carrotSprite;
@@ -130,10 +125,11 @@ public class GameScreen implements Screen {
 			if (contact.isCarrotTouched()) {
 				float carrotGravity = GRAVITY * (adjustedDelta / 2)
 						* (adjustedDelta / 2);
-				repositionBoulder(topScreenEdge, bottomScreenEdge,
-						carrotGravity);
+				boulderSprite = Boulder.repositionBoulder(boulderSprite, camera, topScreenEdge, bottomScreenEdge,
+						carrotGravity, player.getBody().getPosition().x);
 			} else {
-				repositionBoulder(topScreenEdge, bottomScreenEdge, gravity);
+				boulderSprite = Boulder.repositionBoulder(boulderSprite, camera, topScreenEdge, bottomScreenEdge,
+						gravity, player.getBody().getPosition().x);
 			}
 			PlatformManager.repositionPlatforms(topScreenEdge, bottomScreenEdge, platformArray);
 			repositionClock(topScreenEdge);
@@ -176,28 +172,6 @@ public class GameScreen implements Screen {
 			camera.position.y = 0;
 		}
 		camera.update();
-	}
-
-	private void repositionBoulder(float topScreenEdge, float bottomScreenEdge,
-			float gravity) {
-		if (boulder.getPosition().y < bottomScreenEdge - 10
-				&& camera.position.y > heightLastBoulder
-						+ distanceBetweenBoulders) {
-			boulder.setTransform(player.getBody().getPosition().x,
-					topScreenEdge + 10, 0);
-			heightLastBoulder = camera.position.y;
-			if (distanceBetweenBoulders > 20) {
-				distanceBetweenBoulders -= 20;
-			}
-		}
-		if (boulder.getLinearVelocity().y > -1) {
-			boulder.setLinearVelocity(0, gravity);
-		}
-		boulderSprite.setPosition(
-				boulder.getPosition().x - boulderSprite.getWidth() / 2,
-				boulder.getPosition().y - boulderSprite.getHeight() / 2);
-		boulderSprite.setRotation(boulder.getAngle()
-				* MathUtils.radiansToDegrees);
 	}
 
 	// Reposition clock after being touched
@@ -342,7 +316,8 @@ public class GameScreen implements Screen {
 			platformSprites.add(sprite);
 		}
 
-		createIceBoulder();
+		Boulder.createIceBoulder(world);
+		boulderSprite = SpriteFactory.createBoulder();
 		createClock();
 		createCarrot();
 
@@ -398,29 +373,6 @@ public class GameScreen implements Screen {
 		shape.dispose();
 
 		carrotSprite = SpriteFactory.createCarrot();
-	}
-
-	private void createIceBoulder() {
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(0, -HEIGHT);
-
-		CircleShape shape = new CircleShape();
-		shape.setRadius(2.5f);
-
-		fixDef = new FixtureDef();
-		fixDef.shape = shape;
-		fixDef.density = 3f;
-		fixDef.friction = 1f;
-		fixDef.restitution = 0f;
-
-		boulder = world.createBody(bodyDef);
-		boulderFix = boulder.createFixture(fixDef);
-		boulderFix.setUserData("boulder");
-
-		shape.dispose();
-
-		boulderSprite = SpriteFactory.createBoulder();
 	}
 
 	private void pauseButtonSetUp() {
