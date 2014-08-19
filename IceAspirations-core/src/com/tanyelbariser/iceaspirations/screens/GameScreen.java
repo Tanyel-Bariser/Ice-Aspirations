@@ -88,6 +88,7 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 		if (state.equals(State.RUNNING)) {
 			allotedTime -= delta;
 			if (contact.isCarrotTouched()) {
@@ -113,20 +114,20 @@ public class GameScreen implements Screen {
 			if (contact.isCarrotTouched()) {
 				float carrotGravity = GRAVITY * (adjustedDelta / CARROT_MODE)
 						* (adjustedDelta / CARROT_MODE);
-				Boulder.repositionBoulder(boulderSprite,
-						camera, topScreenEdge, bottomScreenEdge, carrotGravity,
-						player.getBody().getPosition().x);
+				Boulder.repositionBoulder(boulderSprite, camera, topScreenEdge,
+						bottomScreenEdge, carrotGravity, player.getBody()
+								.getPosition().x);
 			} else {
-				Boulder.repositionBoulder(boulderSprite,
-						camera, topScreenEdge, bottomScreenEdge, gravity,
-						player.getBody().getPosition().x);
+				Boulder.repositionBoulder(boulderSprite, camera, topScreenEdge,
+						bottomScreenEdge, gravity, player.getBody()
+								.getPosition().x);
 			}
 			PlatformManager.repositionPlatforms(topScreenEdge,
 					bottomScreenEdge, platformArray);
-			Clock.repositionClock(clockSprite, camera, contact,
-					topScreenEdge, platformArray, this);
-			Carrot.repositionCarrot(carrotSprite, camera,
-					contact, topScreenEdge, delta / CARROT_MODE, platformArray);
+			Clock.repositionClock(clockSprite, camera, contact, topScreenEdge,
+					platformArray, this);
+			Carrot.repositionCarrot(carrotSprite, camera, contact,
+					topScreenEdge, delta / CARROT_MODE, platformArray);
 
 			// Position background at camera's position
 			background.setPosition(camera.position.x - backgroundWidth / 2,
@@ -146,16 +147,16 @@ public class GameScreen implements Screen {
 				&& camera.position.y > HEIGHT) {
 			// Camera rises slower than player causing a camera lag giving the
 			// effect that the player is too fast for the camera to keep up.
-			camera.position.y += 0.8f;
+			camera.position.y += 1f;
 		} else if (player.getBody().getLinearVelocity().y > highSpeed
 				&& camera.position.y > HEIGHT) {
-			camera.position.y += 0.5f;
+			camera.position.y += 0.8f;
 		} else if (playerY > topScreenEdge) {
 			camera.position.y += 3f;
 		} else if (playerY > camera.position.y + 2f) {
 			camera.position.y += 0.8f;
 		} else if (playerY > 0 && playerY < camera.position.y - 2f) {
-			camera.position.y -= 0.3f;
+			camera.position.y -= 0.8f;
 		} else if (playerY < bottomScreenEdge) {
 			camera.position.y -= 3f;
 		} else if (playerY > 0) {
@@ -248,7 +249,10 @@ public class GameScreen implements Screen {
 		Carrot.createCarrot(world);
 		carrotSprite = SpriteFactory.createCarrot();
 
-		// Create Label to show remaining game time
+		scoreTimeLabelSetUp();
+	}
+
+	private void scoreTimeLabelSetUp() {
 		BitmapFont yellow = new BitmapFont(Gdx.files.internal("yellow.fnt"),
 				false);
 		yellowStyle = new LabelStyle(yellow, Color.YELLOW);
