@@ -10,8 +10,8 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.tanyelbariser.iceaspirations.entities.Platforms;
 import com.tanyelbariser.iceaspirations.entities.Player;
-import com.tanyelbariser.iceaspirations.platforms.PlatformManager;
 
 @Getter
 @Setter
@@ -54,9 +54,9 @@ public class CollisionDetection implements ContactListener {
 
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
-		boolean touchLeftEdge = PlatformManager.LEFT_SCREEN_EDGE + 0.6f > body
+		boolean touchLeftEdge = Platforms.LEFT_SCREEN_EDGE + 0.6f > body
 				.getPosition().x;
-		boolean touchRightEdge = PlatformManager.RIGHT_SCREEN_EDGE - 0.6f < body
+		boolean touchRightEdge = Platforms.RIGHT_SCREEN_EDGE - 0.6f < body
 				.getPosition().x;
 		boolean feetContact = contact.getWorldManifold().getPoints()[0].y < body
 				.getPosition().y;

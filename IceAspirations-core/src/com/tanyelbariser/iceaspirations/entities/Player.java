@@ -14,7 +14,6 @@ import com.tanyelbariser.iceaspirations.AudioManager;
 import com.tanyelbariser.iceaspirations.CollisionDetection;
 import com.tanyelbariser.iceaspirations.factories.AnimationFactory;
 import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
-import com.tanyelbariser.iceaspirations.platforms.PlatformManager;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
 public class Player {
@@ -92,11 +91,11 @@ public class Player {
 		} else if (accel > 0.3f || force > 0) {
 			facingLeft = false;
 		}
-		if (body.getPosition().x > PlatformManager.RIGHT_SCREEN_EDGE) {
-			body.setTransform(PlatformManager.RIGHT_SCREEN_EDGE - 0.5f,
+		if (body.getPosition().x > Platforms.RIGHT_SCREEN_EDGE) {
+			body.setTransform(Platforms.RIGHT_SCREEN_EDGE - 0.5f,
 					body.getPosition().y, 0);
-		} else if (body.getPosition().x < PlatformManager.LEFT_SCREEN_EDGE) {
-			body.setTransform(PlatformManager.LEFT_SCREEN_EDGE + 0.5f,
+		} else if (body.getPosition().x < Platforms.LEFT_SCREEN_EDGE) {
+			body.setTransform(Platforms.LEFT_SCREEN_EDGE + 0.5f,
 					body.getPosition().y, 0);
 		}
 	}

@@ -30,11 +30,10 @@ import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.entities.Boulder;
 import com.tanyelbariser.iceaspirations.entities.Carrot;
 import com.tanyelbariser.iceaspirations.entities.Clock;
+import com.tanyelbariser.iceaspirations.entities.Platforms;
 import com.tanyelbariser.iceaspirations.entities.Player;
 import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
-import com.tanyelbariser.iceaspirations.factories.PlatformsFactory;
 import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
-import com.tanyelbariser.iceaspirations.platforms.PlatformManager;
 
 public class GameScreen implements Screen {
 	private IceAspirations iceA;
@@ -122,7 +121,7 @@ public class GameScreen implements Screen {
 						bottomScreenEdge, gravity, player.getBody()
 								.getPosition().x);
 			}
-			PlatformManager.repositionPlatforms(topScreenEdge,
+			Platforms.repositionPlatforms(topScreenEdge,
 					bottomScreenEdge, platformArray);
 			Clock.repositionClock(clockSprite, camera, contact, topScreenEdge,
 					platformArray, this);
@@ -238,9 +237,9 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, new Controller(
 				player, contact)));
 
-		PlatformsFactory.createGroundWalls(world);
-		platformArray = PlatformsFactory.createPlatforms(world);
-		platformSprites = PlatformsFactory.initiseSprites();
+		Platforms.createGroundWalls(world);
+		platformArray = Platforms.createPlatforms(world);
+		platformSprites = Platforms.initiseSprites();
 
 		Boulder.createIceBoulder(world);
 		boulderSprite = SpriteFactory.createBoulder();
