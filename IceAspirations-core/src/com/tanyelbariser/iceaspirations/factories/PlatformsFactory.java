@@ -1,12 +1,13 @@
 package com.tanyelbariser.iceaspirations.factories;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -14,13 +15,14 @@ import com.tanyelbariser.iceaspirations.platforms.PlatformManager;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
 public class PlatformsFactory {
+	private static Array<Body> platforms = new Array<Body>();
 	public static final float LEFT_SCREEN_EDGE = -GameScreen.WIDTH
 			/ GameScreen.ZOOM / 2;
 	public static final float RIGHT_SCREEN_EDGE = GameScreen.WIDTH
 			/ GameScreen.ZOOM / 2;
 	public static final float BOTTOM_SCREEN_EDGE = -GameScreen.HEIGHT
 			/ GameScreen.ZOOM / 2;
-	
+
 	public static void createGroundWalls(World world) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
@@ -48,7 +50,6 @@ public class PlatformsFactory {
 	}
 
 	public static Array<Body> createPlatforms(World world) {
-		Array<Body> platforms = new Array<Body>();
 		platforms.add(createPlatform(world, "Platform1", 4, 2, 2, 0.91f));
 		platforms.add(createPlatform(world, "Platform2", 4, 3, 1.6f, 1.2f));
 		platforms.add(createPlatform(world, "Platform3", 8, 1.8f, 4, 0.72f));
@@ -77,5 +78,19 @@ public class PlatformsFactory {
 
 		platform.setUserData(sprite);
 		return platform;
+	}
+
+	public static Array<Sprite> initiseSprites() {
+		Array<Sprite> platformSprites = new Array<Sprite>();
+		for (Body platform : platforms) {
+			Sprite sprite = (Sprite) platform.getUserData();
+			sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+			sprite.setPosition(
+					platform.getPosition().x - sprite.getWidth() / 2,
+					platform.getPosition().y - sprite.getHeight() / 2);
+			sprite.setRotation(platform.getAngle() * MathUtils.radiansToDegrees);
+			platformSprites.add(sprite);
+		}
+		return platformSprites;
 	}
 }

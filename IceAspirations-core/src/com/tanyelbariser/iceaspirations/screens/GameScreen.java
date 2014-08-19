@@ -10,14 +10,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -33,6 +28,7 @@ import com.tanyelbariser.iceaspirations.CollisionDetection;
 import com.tanyelbariser.iceaspirations.Controller;
 import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.entities.Boulder;
+import com.tanyelbariser.iceaspirations.entities.Carrot;
 import com.tanyelbariser.iceaspirations.entities.Clock;
 import com.tanyelbariser.iceaspirations.entities.Player;
 import com.tanyelbariser.iceaspirations.factories.ButtonFactory;
@@ -72,14 +68,8 @@ public class GameScreen implements Screen {
 	private BitmapFont blue;
 	private LabelStyle yellowStyle;
 	private Sprite boulderSprite;
-	private FixtureDef fixDef;
-	private BodyDef bodyDef;
 	private Sprite clockSprite;
-	private Body carrot;
 	private Sprite carrotSprite;
-	private float heightLastCarrot = 0;
-	private float distanceBetweenCarrots = 158;
-	private float timeSinceCarrotTouched;
 	private BitmapFont red = new BitmapFont(Gdx.files.internal("red.fnt"),
 			false);
 	private LabelStyle redStyle = new LabelStyle(red, Color.RED);
@@ -123,19 +113,20 @@ public class GameScreen implements Screen {
 			if (contact.isCarrotTouched()) {
 				float carrotGravity = GRAVITY * (adjustedDelta / CARROT_MODE)
 						* (adjustedDelta / CARROT_MODE);
-				boulderSprite = Boulder.repositionBoulder(boulderSprite,
+				Boulder.repositionBoulder(boulderSprite,
 						camera, topScreenEdge, bottomScreenEdge, carrotGravity,
 						player.getBody().getPosition().x);
 			} else {
-				boulderSprite = Boulder.repositionBoulder(boulderSprite,
+				Boulder.repositionBoulder(boulderSprite,
 						camera, topScreenEdge, bottomScreenEdge, gravity,
 						player.getBody().getPosition().x);
 			}
 			PlatformManager.repositionPlatforms(topScreenEdge,
 					bottomScreenEdge, platformArray);
-			clockSprite = Clock.repositionClock(clockSprite, camera, contact,
+			Clock.repositionClock(clockSprite, camera, contact,
 					topScreenEdge, platformArray, this);
-			repositionCarrot(topScreenEdge, delta / CARROT_MODE);
+			Carrot.repositionCarrot(carrotSprite, camera,
+					contact, topScreenEdge, delta / CARROT_MODE, platformArray);
 
 			// Position background at camera's position
 			background.setPosition(camera.position.x - backgroundWidth / 2,
@@ -173,37 +164,6 @@ public class GameScreen implements Screen {
 			camera.position.y = 0;
 		}
 		camera.update();
-	}
-
-	// Reposition carrot after being touched
-	private void repositionCarrot(float topScreenEdge, float delta) {
-		if (contact.isCarrotTouched()) {
-			carrot.setTransform(-50, 0, 0);
-			timeSinceCarrotTouched += delta;
-		}
-		if (timeSinceCarrotTouched > 7.5f) {
-			timeSinceCarrotTouched = 0;
-			contact.setCarrotTouched(false);
-		}
-		if (!contact.isCarrotTouched()
-				&& camera.position.y > heightLastCarrot
-						+ distanceBetweenCarrots) {
-			for (Body platform : platformArray) {
-				if (platform.getPosition().y > topScreenEdge) {
-					carrot.setTransform(platform.getPosition().x,
-							platform.getPosition().y + 2.5f,
-							platform.getAngle());
-					break;
-				}
-			}
-			heightLastCarrot = camera.position.y;
-			distanceBetweenCarrots += 70;
-		}
-		carrotSprite.setPosition(
-				carrot.getPosition().x - carrotSprite.getWidth() / 2,
-				carrot.getPosition().y - carrotSprite.getHeight() / 2);
-		carrotSprite
-				.setRotation(carrot.getAngle() * MathUtils.radiansToDegrees);
 	}
 
 	private void manageTimeScore() {
@@ -279,23 +239,14 @@ public class GameScreen implements Screen {
 
 		PlatformsFactory.createGroundWalls(world);
 		platformArray = PlatformsFactory.createPlatforms(world);
-
-		// Match sprite position to platform
-		for (Body platform : platformArray) {
-			Sprite sprite = (Sprite) platform.getUserData();
-			sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
-			sprite.setPosition(
-					platform.getPosition().x - sprite.getWidth() / 2,
-					platform.getPosition().y - sprite.getHeight() / 2);
-			sprite.setRotation(platform.getAngle() * MathUtils.radiansToDegrees);
-			platformSprites.add(sprite);
-		}
+		platformSprites = PlatformsFactory.initiseSprites();
 
 		Boulder.createIceBoulder(world);
 		boulderSprite = SpriteFactory.createBoulder();
 		Clock.createClock(world);
 		clockSprite = SpriteFactory.createClock();
-		createCarrot();
+		Carrot.createCarrot(world);
+		carrotSprite = SpriteFactory.createCarrot();
 
 		// Create Label to show remaining game time
 		BitmapFont yellow = new BitmapFont(Gdx.files.internal("yellow.fnt"),
@@ -309,26 +260,6 @@ public class GameScreen implements Screen {
 			redStyle.font.setScale(1.5f);
 		}
 		stage.addActor(timeLeft);
-	}
-
-	private void createCarrot() {
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(0, -HEIGHT);
-
-		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(1, 1);
-
-		fixDef = new FixtureDef();
-		fixDef.shape = shape;
-		fixDef.isSensor = true;
-
-		carrot = world.createBody(bodyDef);
-		carrot.createFixture(fixDef).setUserData("carrot");
-
-		shape.dispose();
-
-		carrotSprite = SpriteFactory.createCarrot();
 	}
 
 	private void pauseButtonSetUp() {
