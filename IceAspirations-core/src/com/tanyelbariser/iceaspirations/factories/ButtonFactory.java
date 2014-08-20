@@ -6,20 +6,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.tanyelbariser.iceaspirations.Assets;
+import com.tanyelbariser.iceaspirations.IceAspirations;
 
 public class ButtonFactory {
-	private static final Skin SKIN = new Skin(Assets.MANAGER.get(Assets.ATLAS,
-			TextureAtlas.class));
+	private Skin skin;
 	private final static float WIDTH = Gdx.graphics.getWidth();
 
-	private ButtonFactory() {
+	public ButtonFactory() {
+		skin = new Skin(IceAspirations.getAssets().getManager()
+				.get(Assets.ATLAS, TextureAtlas.class));
 	}
 
-	public static ImageButton createImageButton(String up, String down,
+	public ImageButton createImageButton(String up, String down,
 			float positionX, float positionY, boolean isChecked) {
 		ImageButtonStyle imageStyle = new ImageButtonStyle();
-		imageStyle.up = SKIN.getDrawable(up);
-		imageStyle.down = SKIN.getDrawable(down);
+		imageStyle.up = skin.getDrawable(up);
+		imageStyle.down = skin.getDrawable(down);
 		imageStyle.checked = imageStyle.down;
 
 		ImageButton button = new ImageButton(imageStyle);
@@ -27,7 +29,7 @@ public class ButtonFactory {
 		float size = WIDTH / 6;
 		button.setSize(size, size);
 		button.setPosition(positionX, positionY);
-		
+
 		return button;
 	}
 }

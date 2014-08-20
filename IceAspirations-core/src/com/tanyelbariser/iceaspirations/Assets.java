@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class Assets {
-	public static final AssetManager MANAGER = new AssetManager();
+	private AssetManager manager;
 	
 	public static final String ATLAS = "Atlas.atlas";
 	public static final String BACKGROUND = "Background.png";
@@ -22,21 +22,29 @@ public class Assets {
 	public static final String JUMP_SOUND = "Jumping.wav";
 	public static final String PICK_UP_SOUND = "Pick Up.ogg";
 	
-	public static void load() {
-		MANAGER.load(ATLAS, TextureAtlas.class);
-		MANAGER.load(BACKGROUND, Texture.class);
-		MANAGER.load(BLUE_FONT, BitmapFont.class);
-		MANAGER.load(YELLOW_FONT, BitmapFont.class);
-		MANAGER.load(RED_FONT, BitmapFont.class);
-		MANAGER.load(MAIN_MUSIC, Music.class);
-		MANAGER.load(LOW_TIME_MUSIC, Music.class);
-		MANAGER.load(SUPER_MUSIC, Music.class);
-		MANAGER.load(HIT_SOUND, Sound.class);
-		MANAGER.load(JUMP_SOUND, Sound.class);
-		MANAGER.load(PICK_UP_SOUND, Sound.class);
+	public Assets() {
+		manager = new AssetManager();
 	}
 	
-	public static void dispose() {
-		MANAGER.dispose();
+	public AssetManager getManager() {
+		return manager;
+	}
+	
+	public void load() {
+		manager.load(ATLAS, TextureAtlas.class);
+		manager.load(BACKGROUND, Texture.class);
+		manager.load(BLUE_FONT, BitmapFont.class);
+		manager.load(YELLOW_FONT, BitmapFont.class);
+		manager.load(RED_FONT, BitmapFont.class);
+		manager.load(MAIN_MUSIC, Music.class);
+		manager.load(LOW_TIME_MUSIC, Music.class);
+		manager.load(SUPER_MUSIC, Music.class);
+		manager.load(HIT_SOUND, Sound.class);
+		manager.load(JUMP_SOUND, Sound.class);
+		manager.load(PICK_UP_SOUND, Sound.class);
+	}
+	
+	public void dispose() {
+		manager.dispose();
 	}
 }

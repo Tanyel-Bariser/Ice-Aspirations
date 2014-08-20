@@ -9,86 +9,98 @@ public class AudioManager {
 
 	private static final Preferences prefs = Gdx.app
 			.getPreferences("IceAspirations");
-	private static final Music MAIN_MUSIC = Assets.MANAGER.get(
-			Assets.MAIN_MUSIC, Music.class);
-	private static final Music SUPER_MUSIC = Assets.MANAGER.get(
-			Assets.SUPER_MUSIC, Music.class);
-	private static final Music LOW_TIME_MUSIC = Assets.MANAGER.get(
-			Assets.LOW_TIME_MUSIC, Music.class);
-	private static final Sound JUMP_SOUND = Assets.MANAGER.get(
-			Assets.JUMP_SOUND, Sound.class);
-	private static final Sound GET_ITEM_SOUND = Assets.MANAGER.get(
-			Assets.PICK_UP_SOUND, Sound.class);
-	private static final Sound HIT_SOUND = Assets.MANAGER.get(Assets.HIT_SOUND,
-			Sound.class);
+	private Assets assets;
+	private Music mainMusic;
+	private Music superMusic;
+	private Music lowTimeMusic;
+	private Sound jumpSound;
+	private Sound getItemSound;
+	private Sound hitSound;
+	
+	
+	public AudioManager() {
+		assets = IceAspirations.getAssets();
+		mainMusic = assets.getManager().get(
+				Assets.MAIN_MUSIC, Music.class);
+		superMusic = assets.getManager().get(
+				Assets.SUPER_MUSIC, Music.class);
+		lowTimeMusic = assets.getManager().get(
+				Assets.LOW_TIME_MUSIC, Music.class);
+		jumpSound = assets.getManager().get(
+				Assets.JUMP_SOUND, Sound.class);
+		getItemSound = assets.getManager().get(
+				Assets.PICK_UP_SOUND, Sound.class);
+		hitSound = assets.getManager().get(Assets.HIT_SOUND,
+				Sound.class);
+	}
 
-	public static void playMainMusic() {
+	public void playMainMusic() {
 		stopSuperMusic();
 		if (!mainMusicIsPlaying() && !prefs.getBoolean("Mute")) {
-			MAIN_MUSIC.setLooping(true);
-			MAIN_MUSIC.setVolume(0.2f);
-			MAIN_MUSIC.play();
+			mainMusic.setLooping(true);
+			mainMusic.setVolume(0.2f);
+			mainMusic.play();
 		}
 	}
 
-	public static void pauseMainMusic() {
+	public void pauseMainMusic() {
 		if (mainMusicIsPlaying()) {
-			MAIN_MUSIC.pause();
+			mainMusic.pause();
 		}
 	}
 
-	private static boolean mainMusicIsPlaying() {
-		return MAIN_MUSIC.isPlaying();
+	private boolean mainMusicIsPlaying() {
+		return mainMusic.isPlaying();
 	}
 
-	public static void playSuperMusic() {
+	public void playSuperMusic() {
 		pauseMainMusic();
 		if (!superMusicIsPlaying() && !prefs.getBoolean("Mute")) {
-			SUPER_MUSIC.setLooping(false);
-			SUPER_MUSIC.setVolume(0.2f);
-			SUPER_MUSIC.play();
+			superMusic.setLooping(false);
+			superMusic.setVolume(0.2f);
+			superMusic.play();
 		}
 	}
 
-	private static void stopSuperMusic() {
+	private void stopSuperMusic() {
 		if (superMusicIsPlaying()) {
-			SUPER_MUSIC.stop();
+			superMusic.stop();
 		}
 	}
 
-	private static boolean superMusicIsPlaying() {
-		return SUPER_MUSIC.isPlaying();
+	private boolean superMusicIsPlaying() {
+		return superMusic.isPlaying();
 	}
 
-	public static void playLowTimeMusic() {
+	public void playLowTimeMusic() {
 		if (!lowTimeMusicIsPlaying() && !prefs.getBoolean("Mute")) {
-			LOW_TIME_MUSIC.setLooping(false);
-			LOW_TIME_MUSIC.setVolume(0.2f);
-			LOW_TIME_MUSIC.play();
+			lowTimeMusic.setLooping(false);
+			lowTimeMusic.setVolume(0.2f);
+			lowTimeMusic.play();
 		}
 	}
 
-	public static void stopLowTimeMusic() {
+	public void stopLowTimeMusic() {
 		if (lowTimeMusicIsPlaying()) {
-			LOW_TIME_MUSIC.stop();
+			lowTimeMusic.stop();
 		}
 	}
 
-	private static boolean lowTimeMusicIsPlaying() {
-		return LOW_TIME_MUSIC.isPlaying();
+	private boolean lowTimeMusicIsPlaying() {
+		return lowTimeMusic.isPlaying();
 	}
 	
-	public static void playJumpSound() {
+	public void playJumpSound() {
 		if (!prefs.getBoolean("Mute")) {
-			JUMP_SOUND.play(0.1f, 0.8f, 0);
+			jumpSound.play(0.1f, 0.8f, 0);
 		}
 	}
 
-	public static void playPickUpSound() {
-		GET_ITEM_SOUND.play(0.1f, 0.8f, 0);
+	public void playPickUpSound() {
+		getItemSound.play(0.1f, 0.8f, 0);
 	}
 
-	public static void playHitSound() {
-		HIT_SOUND.play(1, 0.8f, 0);
+	public void playHitSound() {
+		hitSound.play(1, 0.8f, 0);
 	}
 }

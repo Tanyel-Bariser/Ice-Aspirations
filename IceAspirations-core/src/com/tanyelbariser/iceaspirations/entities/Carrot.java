@@ -15,7 +15,7 @@ import com.tanyelbariser.iceaspirations.CollisionDetection;
 public class Carrot {
 	private Body carrot;
 	private float heightLastCarrot = 0;
-	private float distanceBetweenCarrots = 158;
+	private float distanceBetweenCarrots = 155;
 	private float timeSinceCarrotTouched = 0;
 
 	public Carrot(World world) {

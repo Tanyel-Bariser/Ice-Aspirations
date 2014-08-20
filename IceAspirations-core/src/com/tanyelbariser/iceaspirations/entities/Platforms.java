@@ -16,6 +16,7 @@ import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
 public class Platforms {
 	private World world;
+	private SpriteFactory spriteFactory;
 	private Array<Body> platforms = new Array<Body>();
 	public static final float LEFT_SCREEN_EDGE = -GameScreen.WIDTH
 			/ GameScreen.ZOOM / 2;
@@ -59,6 +60,7 @@ public class Platforms {
 	}
 
 	public Array<Body> createPlatforms() {
+		spriteFactory = new SpriteFactory();
 		platforms.add(createPlatform(world, "Platform1", 4, 2, 2, 0.91f));
 		platforms.add(createPlatform(world, "Platform2", 4, 3, 1.6f, 1.2f));
 		platforms.add(createPlatform(world, "Platform3", 8, 1.8f, 4, 0.72f));
@@ -83,7 +85,7 @@ public class Platforms {
 		platform.createFixture(shape, 0).setUserData("platform");
 		shape.dispose();
 
-		Sprite sprite = SpriteFactory.createPlatformSprite(name, width, height);
+		Sprite sprite = spriteFactory.createPlatformSprite(name, width, height);
 
 		platform.setUserData(sprite);
 		return platform;

@@ -12,11 +12,15 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.tanyelbariser.iceaspirations.AudioManager;
 import com.tanyelbariser.iceaspirations.CollisionDetection;
+import com.tanyelbariser.iceaspirations.IceAspirations;
 import com.tanyelbariser.iceaspirations.factories.AnimationFactory;
 import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 import com.tanyelbariser.iceaspirations.screens.GameScreen;
 
 public class Player {
+	private SpriteFactory spriteFactory;
+	private AnimationFactory animationFactory;
+	private AudioManager audio = IceAspirations.getAudio();
 	private Body body;
 	private BodyDef bodyDef;
 	private FixtureDef fixDef;
@@ -39,6 +43,8 @@ public class Player {
 	private float timeDazed;
 
 	public Player(World world) {
+		spriteFactory = new SpriteFactory();
+		animationFactory = new AnimationFactory();
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(0, -HEIGHT / GameScreen.ZOOM / 3);
@@ -62,13 +68,13 @@ public class Player {
 	}
 
 	private void animationSpriteSetUp() {
-		standSprite = SpriteFactory.createPlayerSprite("Rabbit1", 2.9f, 4.2f);
-		fallingSprite = SpriteFactory.createPlayerSprite("Rabbit6", 3, 4.2f);
-		dazedSprite = SpriteFactory.createPlayerSprite("Dazed", 3, 4.2f);
-		jumpAnimation = AnimationFactory.createJumpAnimation();
-		specialJumpAnimation = AnimationFactory.createSpecialJumpAnimation();
-		fallAnimation = AnimationFactory.createSpecialFallAnimation();
-		standAnimation = AnimationFactory.createSpecialStandAnimation();
+		standSprite = spriteFactory.createPlayerSprite("Rabbit1", 2.9f, 4.2f);
+		fallingSprite = spriteFactory.createPlayerSprite("Rabbit6", 3, 4.2f);
+		dazedSprite = spriteFactory.createPlayerSprite("Dazed", 3, 4.2f);
+		jumpAnimation = animationFactory.createJumpAnimation();
+		specialJumpAnimation = animationFactory.createSpecialJumpAnimation();
+		fallAnimation = animationFactory.createSpecialFallAnimation();
+		standAnimation = animationFactory.createSpecialStandAnimation();
 	}
 	
 	
@@ -107,9 +113,9 @@ public class Player {
 			playerSprite = dazedSprite;
 			timeDazed += delta;
 			if (timeDazed == delta) {
-				AudioManager.playHitSound();
+				audio.playHitSound();
 			}
-			if (timeDazed > 3) {
+			if (timeDazed > 3.5f) {
 				contact.setDazed(false);
 				timeDazed = 0;
 			}

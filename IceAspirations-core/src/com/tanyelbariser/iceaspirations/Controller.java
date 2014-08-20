@@ -5,19 +5,20 @@ import com.badlogic.gdx.InputProcessor;
 import com.tanyelbariser.iceaspirations.entities.Player;
 
 public class Controller implements InputProcessor {
-	
+
 	private Player player;
 	private CollisionDetection contact;
+	private AudioManager audio = IceAspirations.getAudio();
 
-	public Controller (Player player, CollisionDetection contact) {
+	public Controller(Player player, CollisionDetection contact) {
 		this.player = player;
 		this.contact = contact;
 	}
-	
+
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (contact.isCanJump() && !contact.isDazed()) {
-			AudioManager.playJumpSound();
+			audio.playJumpSound();
 			contact.setDown(0);
 			contact.setAngle(0);
 			player.jump();
@@ -26,7 +27,7 @@ public class Controller implements InputProcessor {
 		}
 		return false;
 	}
-	
+
 	// Only for desktop version
 	@Override
 	public boolean keyDown(int keycode) {
@@ -39,7 +40,7 @@ public class Controller implements InputProcessor {
 			break;
 		case Keys.SPACE:
 			if (contact.isCanJump() && !contact.isDazed()) {
-				AudioManager.playJumpSound();
+				audio.playJumpSound();
 				contact.setDown(0);
 				contact.setAngle(0);
 				player.jump();

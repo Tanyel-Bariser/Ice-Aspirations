@@ -38,6 +38,7 @@ import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 
 public class GameScreen implements Screen {
 	private IceAspirations iceA;
+	private AudioManager audio = IceAspirations.getAudio();
 	private final float GRAVITY = -9.81f;
 	private SpriteBatch batch;
 	private Stage stage;
@@ -70,8 +71,8 @@ public class GameScreen implements Screen {
 	private Sprite boulderSprite;
 	private Sprite clockSprite;
 	private Sprite carrotSprite;
-	private BitmapFont red = Assets.MANAGER.get(Assets.RED_FONT,
-			BitmapFont.class);
+	private BitmapFont red = IceAspirations.getAssets().getManager()
+			.get(Assets.RED_FONT, BitmapFont.class);
 	private LabelStyle redStyle = new LabelStyle(red, Color.RED);
 	private CollisionDetection contact;
 	private final float CARROT_MODE = 1.5f;
@@ -146,13 +147,13 @@ public class GameScreen implements Screen {
 	// high speed camera catch-up lag
 	private void repositionCamera(float topScreenEdge, float bottomScreenEdge) {
 		float playerY = player.getBody().getPosition().y;
-		float veryHighSpeed = 80, highSpeed = 30;
+		float highSpeed = 80;
 		float playerSpeed = player.getBody().getLinearVelocity().y;
-		if ((playerSpeed > veryHighSpeed && camera.position.y > HEIGHT)
-				|| playerY > topScreenEdge) {
-			camera.position.y += 1;
+		Gdx.app.log("TAG", String.valueOf(Math.round(playerSpeed)));
+		if (playerY > topScreenEdge) {
+			camera.position.y += 2;
 		} else if (playerY < bottomScreenEdge) {
-			camera.position.y -= 1;
+			camera.position.y -= 2;
 		} else if ((playerSpeed > highSpeed && camera.position.y > HEIGHT)
 				|| playerY > camera.position.y + 2) {
 			camera.position.y += 0.8f;
@@ -174,22 +175,22 @@ public class GameScreen implements Screen {
 		if (allotedTime < 0) {
 			iceA.setNextScreen(new GameOverScreen(iceA, maxHeight));
 		} else if (allotedTime < 10) {
-			AudioManager.playLowTimeMusic();
+			audio.playLowTimeMusic();
 
 			timeLeft.setStyle(redStyle);
 			timeLeft.setPosition(timeLeft.getWidth() / 10,
 					HEIGHT - timeLeft.getHeight() * 2.5f);
 		} else {
-			AudioManager.stopLowTimeMusic();
+			audio.stopLowTimeMusic();
 
 			timeLeft.setStyle(yellowStyle);
 			timeLeft.setPosition(timeLeft.getWidth() / 10,
 					HEIGHT - timeLeft.getHeight() * 2);
 		}
 		if (contact.isCarrotTouched()) {
-			AudioManager.playSuperMusic();
+			audio.playSuperMusic();
 		} else {
-			AudioManager.playMainMusic();
+			audio.playMainMusic();
 		}
 	}
 
@@ -242,18 +243,19 @@ public class GameScreen implements Screen {
 		platformArray = platforms.createPlatforms();
 		platformSprites = platforms.initiseSprites();
 
+		SpriteFactory spriteFactory = new SpriteFactory();
 		boulder = new Boulder(world);
-		boulderSprite = SpriteFactory.createBoulder();
+		boulderSprite = spriteFactory.createBoulder();
 		clock = new Clock(world);
-		clockSprite = SpriteFactory.createClock();
+		clockSprite = spriteFactory.createClock();
 		carrot = new Carrot(world);
-		carrotSprite = SpriteFactory.createCarrot();
+		carrotSprite = spriteFactory.createCarrot();
 
 		scoreTimeLabelSetUp();
 	}
 
 	private void scoreTimeLabelSetUp() {
-		BitmapFont yellow = Assets.MANAGER.get(Assets.YELLOW_FONT,
+		BitmapFont yellow = IceAspirations.getAssets().getManager().get(Assets.YELLOW_FONT,
 				BitmapFont.class);
 		yellowStyle = new LabelStyle(yellow, Color.YELLOW);
 		timeLeft = new Label("60", yellowStyle);
@@ -267,7 +269,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void pauseButtonSetUp() {
-		final ImageButton pause = ButtonFactory.createImageButton("Pause",
+		final ImageButton pause = new ButtonFactory().createImageButton("Pause",
 				"Play", 0, 0, false);
 		pause.addListener(new ClickListener() {
 			@Override
@@ -301,8 +303,8 @@ public class GameScreen implements Screen {
 
 		quit.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				AudioManager.stopLowTimeMusic();
-				AudioManager.playMainMusic();
+				audio.stopLowTimeMusic();
+				audio.playMainMusic();
 				iceA.setScreen(new MainScreen(iceA));
 			}
 		});

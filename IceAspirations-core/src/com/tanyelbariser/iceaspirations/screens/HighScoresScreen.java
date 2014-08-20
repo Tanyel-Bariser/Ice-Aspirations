@@ -64,7 +64,7 @@ public class HighScoresScreen implements Screen {
 			}
 		}
 		for (int i = 0; i < 5; i++) {
-			String key ="HighScore" + String.valueOf(i);
+			String key = "HighScore" + String.valueOf(i);
 			String value = String.valueOf(highScores[i]);
 			prefs.putString(key, value);
 		}
@@ -86,7 +86,7 @@ public class HighScoresScreen implements Screen {
 				prefs.putInteger(key, 0);
 			}
 		}
-		
+
 		newScore(maxHeight);
 
 		String score1 = "1) " + prefs.getString("HighScore0");
@@ -122,8 +122,8 @@ public class HighScoresScreen implements Screen {
 	}
 
 	private void backButtonSetUp() {
-		ImageButton back = ButtonFactory
-				.createImageButton("Back", "Back", 0, 0, false);
+		ImageButton back = new ButtonFactory().createImageButton("Back",
+				"Back", 0, 0, false);
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

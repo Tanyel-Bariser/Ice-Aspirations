@@ -16,6 +16,7 @@ import com.tanyelbariser.iceaspirations.entities.Player;
 @Getter
 @Setter
 public class CollisionDetection implements ContactListener {
+	private AudioManager audio = IceAspirations.getAudio();
 	private Body body;
 	private boolean clockTouched;
 	private boolean carrotTouched;
@@ -38,12 +39,12 @@ public class CollisionDetection implements ContactListener {
 		boolean playerContact = fixA.equals("player") || fixB.equals("player");
 		boolean clockContact = fixA.equals("clock") || fixB.equals("clock");
 		if (playerContact && clockContact) {
-			AudioManager.playPickUpSound();
+			audio.playPickUpSound();
 			clockTouched = true;
 		}
 		boolean carrotContact = fixA.equals("carrot") || fixB.equals("carrot");
 		if (playerContact && carrotContact) {
-			AudioManager.playPickUpSound();
+			audio.playPickUpSound();
 			carrotTouched = true;
 		}
 	}

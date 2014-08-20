@@ -20,6 +20,7 @@ import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 
 public class MainScreen implements Screen {
 	private IceAspirations iceA;
+	private AudioManager audio = IceAspirations.getAudio();
 	private SpriteBatch batch;
 	private Sprite title;
 
@@ -38,22 +39,21 @@ public class MainScreen implements Screen {
 	public void show() {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-		
+
 		batch = new SpriteBatch();
-		title = SpriteFactory.createTitle();
+		title = new SpriteFactory().createTitle();
 		background = SpriteFactory.createBackground();
 		background.setSize(WIDTH, HEIGHT);
 		BitmapFont blue = IceAspirations.getBlue();
 		blue.setScale(WIDTH / 300);
 		style = new ImageTextButtonStyle();
 		style.font = blue;
-		
+
 		soundButtonSetup();
 		playButtonSetUp();
 		highscoreButtonSetUp();
 		exitButtonSetup();
 	}
-	
 
 	private void soundButtonSetup() {
 		final Preferences prefs = Gdx.app.getPreferences("IceAspirations");
@@ -61,18 +61,18 @@ public class MainScreen implements Screen {
 			prefs.putBoolean("Mute", false);
 			prefs.flush();
 		}
-		final ImageButton soundButton = ButtonFactory
-				.createImageButton("Unmute", "Mute", 0, 0, prefs.getBoolean("Mute"));
+		final ImageButton soundButton = new ButtonFactory().createImageButton(
+				"Unmute", "Mute", 0, 0, prefs.getBoolean("Mute"));
 		soundButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				boolean changeMute = prefs.getBoolean("Mute"); 
+				boolean changeMute = prefs.getBoolean("Mute");
 				prefs.putBoolean("Mute", !changeMute);
 				if (!changeMute) {
-					AudioManager.pauseMainMusic();
+					audio.pauseMainMusic();
 					soundButton.setChecked(true);
 				} else {
-					AudioManager.playMainMusic();
+					audio.playMainMusic();
 					soundButton.setChecked(false);
 				}
 				prefs.flush();
@@ -137,9 +137,9 @@ public class MainScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		AudioManager.playMainMusic();
-		
+
+		audio.playMainMusic();
+
 		batch.begin();
 		background.draw(batch);
 		title.draw(batch);

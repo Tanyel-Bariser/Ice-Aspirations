@@ -1,6 +1,7 @@
 package com.tanyelbariser.iceaspirations;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.tanyelbariser.iceaspirations.screens.MainScreen;
@@ -8,19 +9,33 @@ import com.tanyelbariser.iceaspirations.screens.MainScreen;
 public class IceAspirations extends Game {
 	private static BitmapFont blue;
 	private Screen nextScreen;
+	private static Assets assets;
+	private static AudioManager audio;
 
 	@Override
 	public void create() {
-		Assets.load();
-		Assets.MANAGER.finishLoading();
-		blue  = Assets.MANAGER.get(Assets.BLUE_FONT, BitmapFont.class);
+		Gdx.app.log("TAG", "REACHED HERE!!!!!!!!!!");
+		assets = new Assets();
+		assets.load();
+		assets.getManager().finishLoading();
+		audio = new AudioManager();
+		Gdx.app.log("TAG", "REACHED HERE222222222222");// Doesn't reach this point when re-opened
+		blue  = assets.getManager().get(Assets.BLUE_FONT, BitmapFont.class);
 		setScreen(new MainScreen(this));
+	}
+	
+	public static Assets getAssets() {
+		return assets;
+	}
+	
+	public static AudioManager getAudio() {
+		return audio;
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
-		Assets.dispose();
+		assets.dispose();
 	}
 
 	// nextScreen field & Override in render() & setNextScreen() methods are a

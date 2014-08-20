@@ -20,6 +20,7 @@ import com.tanyelbariser.iceaspirations.factories.SpriteFactory;
 
 public class GameOverScreen implements Screen {
 	private IceAspirations iceA;
+	private AudioManager audio = IceAspirations.getAudio();
 	private int maxHeight = 0;
 	private Stage stage;
 	private final float WIDTH = Gdx.graphics.getWidth();
@@ -38,8 +39,8 @@ public class GameOverScreen implements Screen {
 
 		// Music doesn't always work first time so is in render method to be
 		// invoked multiple times to make sure
-		AudioManager.stopLowTimeMusic();
-		AudioManager.playMainMusic();
+		audio.stopLowTimeMusic();
+		audio.playMainMusic();
 
 		SpriteBatch batch = new SpriteBatch();
 		batch.begin();
@@ -75,7 +76,7 @@ public class GameOverScreen implements Screen {
 	}
 
 	private void backButtonSetUp() {
-		ImageButton back = ButtonFactory.createImageButton("Back", "Back", 0,
+		ImageButton back = new ButtonFactory().createImageButton("Back", "Back", 0,
 				0, false);
 		back.addListener(new ClickListener() {
 			@Override
