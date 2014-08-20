@@ -149,7 +149,6 @@ public class GameScreen implements Screen {
 		float playerY = player.getBody().getPosition().y;
 		float highSpeed = 80;
 		float playerSpeed = player.getBody().getLinearVelocity().y;
-		Gdx.app.log("TAG", String.valueOf(Math.round(playerSpeed)));
 		if (playerY > topScreenEdge) {
 			camera.position.y += 2;
 		} else if (playerY < bottomScreenEdge) {
