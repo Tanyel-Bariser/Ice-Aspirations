@@ -80,6 +80,10 @@ public class GameScreen implements Screen {
 	private Boulder boulder;
 	private Carrot carrot;
 	private Clock clock;
+	private int prevTime = 100;
+	private String time = null;
+	private float topScreenEdge;
+	private float bottomScreenEdge;
 
 	public GameScreen(IceAspirations iceA) {
 		this.iceA = iceA;
@@ -100,8 +104,13 @@ public class GameScreen implements Screen {
 				delta *= CARROT_MODE;
 				contact.setDazed(false);
 			}
+			// prevents creating new string object of time every frame
+			if (allotedTime < prevTime) {
+				time = String.valueOf(prevTime);
+				prevTime = (int) allotedTime;
+			}
 			timeLeft.setText("Score: " + String.valueOf(maxHeight) + "\nTime: "
-					+ String.valueOf(Math.round(allotedTime)));
+					+ time);
 
 			float adjustedDelta = approxFPS * delta;
 
@@ -110,9 +119,8 @@ public class GameScreen implements Screen {
 
 			world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
 
-			float topScreenEdge = camera.position.y + camera.viewportHeight / 2;
-			float bottomScreenEdge = camera.position.y - camera.viewportHeight
-					/ 2;
+			topScreenEdge = camera.position.y + camera.viewportHeight / 2;
+			bottomScreenEdge = camera.position.y - camera.viewportHeight / 2;
 			player.update(adjustedDelta);
 			playerSprite = player.updateSprite(adjustedDelta, delta);
 			repositionCamera(topScreenEdge, bottomScreenEdge);
@@ -194,20 +202,45 @@ public class GameScreen implements Screen {
 	}
 
 	private void drawToScreen(float delta) {
+		Array<Sprite> cullSprites = cullSprites();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		background.draw(batch);
 		playerSprite.draw(batch);
-		boulderSprite.draw(batch);
-		clockSprite.draw(batch);
-		carrotSprite.draw(batch);
-		for (Sprite platform : platformSprites) {
-			platform.draw(batch);
+		for (Sprite sprite : cullSprites) {
+			sprite.draw(batch);
 		}
 		batch.end();
 
 		stage.act(delta);
 		stage.draw();
+	}
+	
+	private Array<Sprite> cullSprites() {
+		Array<Sprite> cullSprites = new Array<Sprite>();
+		cullSprites.clear();
+		if (boulderSprite.getY() < topScreenEdge + 4
+				&& boulderSprite.getY() > bottomScreenEdge
+						- 4) {
+			cullSprites.add(boulderSprite);
+		}
+		if (clockSprite.getY() < topScreenEdge + 4
+				&& clockSprite.getY() > bottomScreenEdge
+						- 4) {
+			cullSprites.add(clockSprite);
+		}
+		if (carrotSprite.getY() < topScreenEdge + 4
+				&& carrotSprite.getY() > bottomScreenEdge
+						- 4) {
+			cullSprites.add(carrotSprite);
+		}
+		for (Sprite platform : platformSprites) {
+			if (platform.getY() < topScreenEdge + 4
+					&& platform.getY() > bottomScreenEdge - 4) {
+				cullSprites.add(platform);
+			}
+		}
+		return cullSprites;
 	}
 
 	@Override
@@ -254,8 +287,8 @@ public class GameScreen implements Screen {
 	}
 
 	private void scoreTimeLabelSetUp() {
-		BitmapFont yellow = IceAspirations.getAssets().getManager().get(Assets.YELLOW_FONT,
-				BitmapFont.class);
+		BitmapFont yellow = IceAspirations.getAssets().getManager()
+				.get(Assets.YELLOW_FONT, BitmapFont.class);
 		yellowStyle = new LabelStyle(yellow, Color.YELLOW);
 		timeLeft = new Label("60", yellowStyle);
 		timeLeft.setPosition(timeLeft.getWidth() / 10,
@@ -268,8 +301,8 @@ public class GameScreen implements Screen {
 	}
 
 	private void pauseButtonSetUp() {
-		final ImageButton pause = new ButtonFactory().createImageButton("Pause",
-				"Play", 0, 0, false);
+		final ImageButton pause = new ButtonFactory().createImageButton(
+				"Pause", "Play", 0, 0, false);
 		pause.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -335,5 +368,6 @@ public class GameScreen implements Screen {
 
 	public void increaseAllotedTime(float increment) {
 		allotedTime += increment;
+		prevTime = (int) allotedTime;
 	}
 }
