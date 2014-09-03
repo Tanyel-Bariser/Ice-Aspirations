@@ -67,4 +67,9 @@ public class SpriteFactory {
 		sprite.setSize(width, height);
 		return sprite;
 	}
+
+	public static Sprite createMountains() {
+		return new Sprite(IceAspirations.getAssets().getManager()
+				.get(Assets.MOUNTAINS, Texture.class));
+	}
 }
