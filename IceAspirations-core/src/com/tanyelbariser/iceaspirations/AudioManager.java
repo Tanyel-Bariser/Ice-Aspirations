@@ -22,10 +22,16 @@ public class AudioManager {
 		assets = IceAspirations.getAssets();
 		mainMusic = assets.getManager().get(
 				Assets.MAIN_MUSIC, Music.class);
+		mainMusic.setLooping(true);
+		mainMusic.setVolume(0.2f);
 		superMusic = assets.getManager().get(
 				Assets.SUPER_MUSIC, Music.class);
+		superMusic.setLooping(false);
+		superMusic.setVolume(0.2f);
 		lowTimeMusic = assets.getManager().get(
 				Assets.LOW_TIME_MUSIC, Music.class);
+		lowTimeMusic.setLooping(false);
+		lowTimeMusic.setVolume(0.2f);
 		jumpSound = assets.getManager().get(
 				Assets.JUMP_SOUND, Sound.class);
 		getItemSound = assets.getManager().get(
@@ -37,8 +43,6 @@ public class AudioManager {
 	public void playMainMusic() {
 		stopSuperMusic();
 		if (!mainMusicIsPlaying() && !prefs.getBoolean("Mute")) {
-			mainMusic.setLooping(true);
-			mainMusic.setVolume(0.2f);
 			mainMusic.play();
 		}
 	}
@@ -56,8 +60,6 @@ public class AudioManager {
 	public void playSuperMusic() {
 		pauseMainMusic();
 		if (!superMusicIsPlaying() && !prefs.getBoolean("Mute")) {
-			superMusic.setLooping(false);
-			superMusic.setVolume(0.2f);
 			superMusic.play();
 		}
 	}
@@ -74,8 +76,6 @@ public class AudioManager {
 
 	public void playLowTimeMusic() {
 		if (!lowTimeMusicIsPlaying() && !prefs.getBoolean("Mute")) {
-			lowTimeMusic.setLooping(false);
-			lowTimeMusic.setVolume(0.2f);
 			lowTimeMusic.play();
 		}
 	}
