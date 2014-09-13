@@ -13,6 +13,8 @@ public class Assets {
 	public static final String ATLAS = "Atlas.atlas";
 	public static final String BACKGROUND = "Background.png";
 	public static final String MOUNTAINS = "Mountains.png";
+	public static final String N_LIGHTS = "NorthernLights.png";
+	public static final String GALAXY = "Galaxy.jpg";
 	public static final String BLUE_FONT = "blue.fnt";
 	public static final String YELLOW_FONT = "yellow.fnt";
 	public static final String RED_FONT = "red.fnt";
@@ -35,6 +37,8 @@ public class Assets {
 		manager.load(ATLAS, TextureAtlas.class);
 		manager.load(BACKGROUND, Texture.class);
 		manager.load(MOUNTAINS, Texture.class);
+		manager.load(N_LIGHTS, Texture.class);
+		manager.load(GALAXY, Texture.class);
 		manager.load(BLUE_FONT, BitmapFont.class);
 		manager.load(YELLOW_FONT, BitmapFont.class);
 		manager.load(RED_FONT, BitmapFont.class);

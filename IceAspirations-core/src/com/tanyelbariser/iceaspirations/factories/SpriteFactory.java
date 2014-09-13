@@ -23,6 +23,21 @@ public class SpriteFactory {
 				.get(Assets.BACKGROUND, Texture.class));
 	}
 
+	public static Sprite createMountains() {
+		return new Sprite(IceAspirations.getAssets().getManager()
+				.get(Assets.MOUNTAINS, Texture.class));
+	}
+	
+	public static Sprite createNLights() {
+		return new Sprite(IceAspirations.getAssets().getManager()
+				.get(Assets.N_LIGHTS, Texture.class));
+	}
+	
+	public static Sprite createGalaxy() {
+		return new Sprite(IceAspirations.getAssets().getManager()
+				.get(Assets.GALAXY, Texture.class));
+	}
+
 	public Sprite createTitle() {
 		Sprite sprite = skin.getSprite("Title");
 		float titleX = WIDTH / 2 - sprite.getWidth() / 2;
@@ -66,10 +81,5 @@ public class SpriteFactory {
 		Sprite sprite = skin.getSprite(name);
 		sprite.setSize(width, height);
 		return sprite;
-	}
-
-	public static Sprite createMountains() {
-		return new Sprite(IceAspirations.getAssets().getManager()
-				.get(Assets.MOUNTAINS, Texture.class));
 	}
 }

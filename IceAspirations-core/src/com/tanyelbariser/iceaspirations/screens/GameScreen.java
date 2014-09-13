@@ -51,6 +51,8 @@ public class GameScreen implements Screen {
 	private Box2DDebugRenderer physicsDebugger;
 	private Sprite background = SpriteFactory.createBackground();
 	private final Sprite MOUNTAINS = SpriteFactory.createMountains();
+	private final Sprite N_LIGHTS = SpriteFactory.createNLights();
+	private final Sprite GALAXY = SpriteFactory.createGalaxy();
 	private float backgroundWidth = background.getWidth();
 	private float backgroundHeight = background.getHeight();
 	private Player player;
@@ -98,9 +100,13 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		if (maxHeight > 1250 && maxHeight < 1270) {
+		if (maxHeight > 500 && maxHeight < 520) {
 			background = MOUNTAINS;
-		}
+		} else if (maxHeight > 1200 && maxHeight < 1220) {
+			background = N_LIGHTS;
+		} else  if (maxHeight > 2200 && maxHeight < 2220) {
+			background = GALAXY;
+		} 
 		if (state.equals(State.RUNNING)) {
 			allotedTime -= delta;
 			if (contact.isCarrotTouched()) {
@@ -260,6 +266,8 @@ public class GameScreen implements Screen {
 
 		background.setScale((1f / ZOOM * compatibility) * 1.1f);
 		MOUNTAINS.setScale((1f / ZOOM * compatibility) * 1.1f);
+		N_LIGHTS.setScale((1f / ZOOM * compatibility) * 1.1f);
+		GALAXY.setScale((1f / ZOOM * compatibility) * 1.1f);
 
 		pauseButtonSetUp();
 		quitButtonSetUp();
