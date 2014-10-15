@@ -100,11 +100,12 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		if (maxHeight > 500 && maxHeight < 520) {
+		// Assigns new background between 500 to 510 to make sure background changes
+		if (maxHeight > 500 && maxHeight < 510) {
 			background = MOUNTAINS;
-		} else if (maxHeight > 1200 && maxHeight < 1220) {
+		} else if (maxHeight > 1200 && maxHeight < 1210) {
 			background = N_LIGHTS;
-		} else  if (maxHeight > 2200 && maxHeight < 2220) {
+		} else  if (maxHeight > 2200 && maxHeight < 2210) {
 			background = GALAXY;
 		} 
 		if (state.equals(State.RUNNING)) {
